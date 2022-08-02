@@ -1,0 +1,12 @@
+.github/
+.vscode/
+example/
+lib/
+node_modules/
+
+.gitignore
+.npmignore
+tsconfig.json
+tsconfig.build.json
+webpack.config.dev.js
+yarn.lock
