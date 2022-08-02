@@ -1,6 +1,6 @@
 import { Map, AnyLayer, AnySourceData } from "mapbox-gl";
 import LayerGroup from './features/LayerGroup'
-import { Dict } from './features/types';
+import { Dict } from './features/utils';
 
 declare module "mapbox-gl" {
     export interface Map {

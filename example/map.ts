@@ -1,4 +1,5 @@
 import '../lib';
+import {MeasurePoint} from '../lib/features/Measure'
 import mapboxgl from 'mapbox-gl';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
@@ -41,6 +42,9 @@ map.on('load', () => {
                 [-67.79035274928509, 47.066248887716995],
                 [-67.79141211614706, 45.702585354182816],
                 [-67.13734351262877, 45.137451890638886]]]
+            },
+            'properties': {
+                title: 'mapbox'
             }
         } as any
     });
@@ -69,8 +73,16 @@ group.add({
     }
 })
 
-setTimeout(() => {
-    setInterval(() => {
-        group.show = !group.show
-    }, 1000)
-}, 1000)
+group.add({
+    id: 'maine-symble',
+    type: 'symbol',
+    source: 'source-polygon',
+    layout: {
+        "text-field": ['get','title']
+    },
+    paint: {
+
+    }
+})
+
+new MeasurePoint(map).start();
