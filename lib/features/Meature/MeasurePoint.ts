@@ -12,9 +12,7 @@ export default class MeasurePoint extends MeasureBase {
             type: 'circle',
             source: this.id,
             layout: {},
-            paint: {
-                'circle-color': '#000000'
-            }
+            paint: {}
         })
 
         this.map.addLayer({
@@ -23,7 +21,8 @@ export default class MeasurePoint extends MeasureBase {
             source: this.id,
             layout: {
                 "text-field": ['get', 'coord'],
-                'text-offset': [0, -1.2]
+                'text-offset': [0, -1.2],
+                'text-size': 12
             }
         })
     }

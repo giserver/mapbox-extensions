@@ -1,6 +1,6 @@
 import * as turf from "@turf/turf";
 import { LineString } from "@turf/turf";
-import { MapMouseEvent, EventData, GeoJSONSource } from "mapbox-gl";
+import { MapMouseEvent, EventData } from "mapbox-gl";
 import { createUUID } from "../utils";
 import MeasureBase from "./MeasureBase";
 import { MeasureType } from ".";
@@ -8,25 +8,15 @@ import { MeasureType } from ".";
 export default class MeasureLineString extends MeasureBase {
     protected type: MeasureType = 'LineString';
     private drawing: boolean = false;
-    private geojsonPoint: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {
-        'type': 'FeatureCollection',
-        'features': []
-    };
 
     protected onInit(): void {
-        // 所有线段
+
         this.map.addLayer({
             id: this.id,
             type: 'line',
             source: this.id,
             layout: {},
             paint: {}
-        });
-
-        // 所有点以及距离标记
-        this.map.addSource(this.pointSourceId, {
-            type: 'geojson',
-            data: this.geojsonPoint
         })
 
         this.map.addLayer({
@@ -62,13 +52,12 @@ export default class MeasureLineString extends MeasureBase {
 
     protected onClear(): void {
         this.drawing = false;
-        this.geojsonPoint.features.length = 0;
-        this.updatePointDataSource();
-
+        this.map.off('mousemove', this.onMouseMoveHandler);
     }
 
     protected onStop(): void {
         this.drawing = false;
+        this.map.off('mousemove', this.onMouseMoveHandler);
         this.map.off('click', this.onMapClickHandler);
         this.map.off('dblclick', this.onMapDoubleClickHandler);
     }
@@ -77,15 +66,14 @@ export default class MeasureLineString extends MeasureBase {
         const point = [e.lngLat.lng, e.lngLat.lat];
         let distance = "0";
         let featureId = createUUID();
+        
         // 判断是否已经落笔
         if (this.drawing) {
             // 获取最近一次的linestring
-            const feature = this.geojson.features[this.geojson.features.length - 1];
-            const lineString = feature.geometry as LineString;
-            const lastPoint = lineString.coordinates[lineString.coordinates.length - 1];
-            lineString.coordinates.push(point);
-            distance = this.getDistanceString(lineString);
-            featureId = feature.id!.toString();
+            const lastPoint = this.currentLine.coordinates[this.currentLine.coordinates.length - 2];
+            this.currentLine.coordinates.push(point);
+            distance = this.getDistanceString(this.currentLine);
+            featureId = this.currentFeature.id!.toString();
 
             // 添加中间点
             const centerPoint = [(point[0] + lastPoint[0]) / 2, (point[1] + lastPoint[1]) / 2];
@@ -113,7 +101,9 @@ export default class MeasureLineString extends MeasureBase {
                     coordinates: [point]
                 },
                 properties: {}
-            })
+            });
+
+            this.map.on('mousemove', this.onMouseMoveHandler);
         }
 
         this.geojsonPoint.features.push({
@@ -133,37 +123,57 @@ export default class MeasureLineString extends MeasureBase {
     }
 
     private onMapDoubleClickHandler = (e: MapMouseEvent & EventData) => {
-        const currentFeature = this.geojson.features[this.geojson.features.length - 1];
-        const currentLine = currentFeature.geometry as LineString;
+        // 结束绘制
+        this.drawing = false;
 
-        currentLine.coordinates.pop();
+        this.map.off('mousemove', this.onMouseMoveHandler);
+
+        // 排除最后一个点 中点
+        this.currentLine.coordinates.pop();
         this.geojsonPoint.features.pop();
         this.geojsonPoint.features.pop();
 
-        if (currentLine.coordinates.length === 1) {
+        // 如果直接双击，删除本次测量
+        if (this.currentLine.coordinates.length === 1) {
             this.geojson.features.pop();
             this.geojsonPoint.features.pop();
         }
 
-        console.log(this.geojsonPoint)
-
+        // 提交更新
         this.updateGeometryDataSource();
         this.updatePointDataSource();
-
-        this.drawing = false;
     }
 
+    private onMouseMoveHandler = (e: MapMouseEvent & EventData) => {
+        const point = [e.lngLat.lng, e.lngLat.lat];
+        if (this.currentLine.coordinates.length > 1) {
+            this.currentLine.coordinates.pop();
+        }
+
+        this.currentLine.coordinates.push(point);
+
+        this.updateGeometryDataSource();
+    }
+
+    /**
+     * 获取最后一个feature
+     */
+    private get currentFeature() {
+        return this.geojson.features[this.geojson.features.length - 1];
+    }
+
+    // 获取最后一个feature的线数据
+    private get currentLine() {
+        return this.currentFeature.geometry as LineString;
+    }
+
+    /**
+     * 计算linestring类型数据的长度，并转化为字符串形式
+     * @param line 
+     * @returns 
+     */
     private getDistanceString(line: LineString) {
         const length = turf.length(turf.lineString(line.coordinates));
-        return length > 1 ? `${length.toFixed(3)}km` : `${(length * 1000).toFixed(0)}m`;
-    }
-
-    private get pointSourceId() {
-        return this.id + "_point";
-    }
-
-    private updatePointDataSource() {
-        const source = this.map.getSource(this.pointSourceId) as GeoJSONSource;
-        source.setData(this.geojsonPoint);
+        return length > 1 ? `${length.toFixed(3)}km` : `${(length * 1000).toFixed(2)}m`;
     }
 }

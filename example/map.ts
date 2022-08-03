@@ -1,5 +1,5 @@
 import '../lib';
-import { MeasureLineString, MeasurePoint } from '../lib/features/Meature'
+import { MeasureBase, MeasureLineString, MeasurePoint, MeasurePolygon } from '../lib/features/Meature'
 import mapboxgl from 'mapbox-gl';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
@@ -84,15 +84,32 @@ group.add({
     }
 })
 
-let pointMeasure = new MeasureLineString(map);
+let measures = new Array<MeasureBase>();
+let pointMeasure = new MeasurePoint(map);
+let lineMeasure = new MeasureLineString(map);
+let polygonMeasure = new MeasurePolygon(map);
+measures.push(pointMeasure, lineMeasure,polygonMeasure);
+
+
 document.getElementById("measure-close")?.addEventListener('click', e => {
-    pointMeasure.stop();
+    measures.forEach(m => m.stop());
 })
 
 document.getElementById("measure-point")?.addEventListener('click', e => {
+    measures.forEach(m => m.stop());
     pointMeasure.start();
 })
 
+document.getElementById("measure-line")?.addEventListener('click',e=>{
+    measures.forEach(m => m.stop());
+    lineMeasure.start();
+})
+
+document.getElementById("measure-polygon")?.addEventListener('click',e=>{
+    measures.forEach(m=>m.stop());
+    polygonMeasure.start();
+})
+
 document.getElementById("measure-clear")?.addEventListener('click', e => {
-    pointMeasure.clear();
+    measures.forEach(m => m.clear());
 })
