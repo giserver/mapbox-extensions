@@ -84,11 +84,17 @@ group.add({
     }
 })
 
+setTimeout(() => {
+    setInterval(() => {
+        group.show = !group.show;
+    }, 1000)
+}, 1000);
+
 let measures = new Array<MeasureBase>();
 let pointMeasure = new MeasurePoint(map);
 let lineMeasure = new MeasureLineString(map);
 let polygonMeasure = new MeasurePolygon(map);
-measures.push(pointMeasure, lineMeasure,polygonMeasure);
+measures.push(pointMeasure, lineMeasure, polygonMeasure);
 
 
 document.getElementById("measure-close")?.addEventListener('click', e => {
@@ -100,13 +106,13 @@ document.getElementById("measure-point")?.addEventListener('click', e => {
     pointMeasure.start();
 })
 
-document.getElementById("measure-line")?.addEventListener('click',e=>{
+document.getElementById("measure-line")?.addEventListener('click', e => {
     measures.forEach(m => m.stop());
     lineMeasure.start();
 })
 
-document.getElementById("measure-polygon")?.addEventListener('click',e=>{
-    measures.forEach(m=>m.stop());
+document.getElementById("measure-polygon")?.addEventListener('click', e => {
+    measures.forEach(m => m.stop());
     polygonMeasure.start();
 })
 
