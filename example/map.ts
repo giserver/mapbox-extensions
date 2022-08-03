@@ -1,5 +1,5 @@
 import '../lib';
-import {MeasurePoint} from '../lib/features/Measure'
+import { MeasureLineString, MeasurePoint } from '../lib/features/Meature'
 import mapboxgl from 'mapbox-gl';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
@@ -11,7 +11,7 @@ const map = new mapboxgl.Map({
     container: 'map',
     zoom: 5,
     center: [-68.13734351262877, 45.137451890638886],
-    pitch: 60,
+    pitch: 0,
     style: lightStyle
 });
 
@@ -78,11 +78,21 @@ group.add({
     type: 'symbol',
     source: 'source-polygon',
     layout: {
-        "text-field": ['get','title']
+        "text-field": ['get', 'title']
     },
     paint: {
-
     }
 })
 
-new MeasurePoint(map).start();
+let pointMeasure = new MeasureLineString(map);
+document.getElementById("measure-close")?.addEventListener('click', e => {
+    pointMeasure.stop();
+})
+
+document.getElementById("measure-point")?.addEventListener('click', e => {
+    pointMeasure.start();
+})
+
+document.getElementById("measure-clear")?.addEventListener('click', e => {
+    pointMeasure.clear();
+})
