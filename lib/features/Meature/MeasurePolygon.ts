@@ -6,7 +6,7 @@ import { createUUID } from '../utils';
 import MeasureBase from "./MeasureBase";
 
 export default class MeasurePolygon extends MeasureBase {
-    protected type: MeasureType = 'Polygon';
+    type: MeasureType = 'Polygon';
     private drawing = false;
 
     protected onInit(): void {

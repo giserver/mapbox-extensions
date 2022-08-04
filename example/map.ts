@@ -1,6 +1,7 @@
 import '../lib';
 import { MeasureBase, MeasureLineString, MeasurePoint, MeasurePolygon } from '../lib/features/Meature'
 import mapboxgl from 'mapbox-gl';
+import MeasureControl from '../lib/controls/MeasureControl';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
 const lightStyle = 'mapbox://styles/mapbox/streets-v11';
@@ -119,3 +120,5 @@ document.getElementById("measure-polygon")?.addEventListener('click', e => {
 document.getElementById("measure-clear")?.addEventListener('click', e => {
     measures.forEach(m => m.clear());
 })
+
+map.addControl(new MeasureControl());

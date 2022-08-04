@@ -4,7 +4,7 @@ import MeasureBase from "./MeasureBase";
 import { MeasureType } from ".";
 
 export default class MeasurePoint extends MeasureBase {
-    protected readonly type: MeasureType = 'Point';
+    readonly type: MeasureType = 'Point';
 
     protected onInit(): void {
         this.map.addLayer({

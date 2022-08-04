@@ -6,7 +6,7 @@ import MeasureBase from "./MeasureBase";
 import { MeasureType } from ".";
 
 export default class MeasureLineString extends MeasureBase {
-    protected type: MeasureType = 'LineString';
+    type: MeasureType = 'LineString';
     private drawing: boolean = false;
 
     protected onInit(): void {

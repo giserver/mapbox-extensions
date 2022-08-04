@@ -3,7 +3,7 @@ import { createUUID } from '../utils';
 import { MeasureType } from ".";
 
 export default abstract class MeasureBase {
-    protected readonly abstract type: MeasureType;
+    readonly abstract type: MeasureType;
     protected geojson: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {
         'type': 'FeatureCollection',
         'features': []
