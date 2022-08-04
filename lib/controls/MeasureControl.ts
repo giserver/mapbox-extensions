@@ -1,6 +1,6 @@
 import { IControl, Map } from "mapbox-gl";
 import { MeasureBase, MeasureLineString, MeasureLineStringOptions, MeasurePoint, MeasurePointOptions, MeasurePolygon, MeasurePolygonOptions, MeasureType } from "../features/Meature";
-import { createUUID, Dict } from "../features/utils";
+import { Dict } from "../features/utils";
 
 export class MeasureControlOptions {
     constructor(
