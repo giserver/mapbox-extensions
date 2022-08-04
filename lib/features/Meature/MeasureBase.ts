@@ -87,6 +87,7 @@ export default abstract class MeasureBase {
      */
     start() {
         this.map.getCanvas().style.cursor = 'crosshair';
+        this.map.doubleClickZoom.disable();
         this.onStart();
     }
 
@@ -95,6 +96,7 @@ export default abstract class MeasureBase {
      */
     stop() {
         this.map.getCanvas().style.cursor = 'grab';
+        this.map.doubleClickZoom.enable();
         this.onStop();
     }
 

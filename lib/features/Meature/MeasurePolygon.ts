@@ -17,7 +17,8 @@ export default class MeasurePolygon extends MeasureBase {
             layout: {},
             paint: {
                 'fill-color': '#ff0000',
-                'fill-opacity': 0.3
+                'fill-opacity': 0.5,
+                'fill-outline-color' : '#000000'
             }
         });
 
@@ -27,7 +28,7 @@ export default class MeasurePolygon extends MeasureBase {
             source: this.pointSourceId,
             layout: {
                 'text-field': ['get', 'area'],
-                'text-size': 12
+                'text-size': 15
             }
         })
     }
