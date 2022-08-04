@@ -18,7 +18,7 @@ export default class MeasurePolygon extends MeasureBase {
             paint: {
                 'fill-color': '#ff0000',
                 'fill-opacity': 0.5,
-                'fill-outline-color' : '#000000'
+                'fill-outline-color': '#000000'
             }
         });
 
@@ -69,6 +69,7 @@ export default class MeasurePolygon extends MeasureBase {
             });
 
             this.map.on('mousemove', this.onMouseMoveHandler);
+            this.map.on('contextmenu', this.onRightClickHandler);
         }
 
         this.updateGeometryDataSource();
@@ -77,6 +78,7 @@ export default class MeasurePolygon extends MeasureBase {
     private onMapDoubleClickHandler = (e: MapMouseEvent & EventData) => {
         this.drawing = false;
         this.map.off('mousemove', this.onMouseMoveHandler);
+        this.map.off('contextmenu', this.onRightClickHandler);
 
         this.currentPolygon.coordinates[0].pop();
         if (this.currentPolygon.coordinates[0].length < 3) {
@@ -104,6 +106,17 @@ export default class MeasurePolygon extends MeasureBase {
         this.currentPolygon.coordinates[0].push(point);
 
         this.updateGeometryDataSource();
+    }
+
+    private onRightClickHandler = (e: MapMouseEvent & EventData) => {
+        if (this.currentPolygon.coordinates[0].length === 2)  // 只存在第一个点和动态点则不进行删除操作
+            return;
+
+        this.currentPolygon.coordinates[0].pop();
+        this.onMouseMoveHandler(e); // 调用鼠标移动事件，重新建立动态线
+
+        this.updateGeometryDataSource();
+        this.updatePointDataSource();
     }
 
     private get currentFeature() {

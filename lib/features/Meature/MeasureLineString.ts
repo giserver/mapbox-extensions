@@ -66,7 +66,7 @@ export default class MeasureLineString extends MeasureBase {
         const point = [e.lngLat.lng, e.lngLat.lat];
         let distance = "0";
         let featureId = createUUID();
-        
+
         // 判断是否已经落笔
         if (this.drawing) {
             // 获取最近一次的linestring
@@ -104,6 +104,7 @@ export default class MeasureLineString extends MeasureBase {
             });
 
             this.map.on('mousemove', this.onMouseMoveHandler);
+            this.map.on('contextmenu', this.onRightClickHandler);
         }
 
         this.geojsonPoint.features.push({
@@ -127,6 +128,7 @@ export default class MeasureLineString extends MeasureBase {
         this.drawing = false;
 
         this.map.off('mousemove', this.onMouseMoveHandler);
+        this.map.off('contextmenu', this.onRightClickHandler);
 
         // 排除最后一个点 中点
         this.currentLine.coordinates.pop();
@@ -146,6 +148,7 @@ export default class MeasureLineString extends MeasureBase {
 
     private onMouseMoveHandler = (e: MapMouseEvent & EventData) => {
         const point = [e.lngLat.lng, e.lngLat.lat];
+
         if (this.currentLine.coordinates.length > 1) {
             this.currentLine.coordinates.pop();
         }
@@ -153,6 +156,19 @@ export default class MeasureLineString extends MeasureBase {
         this.currentLine.coordinates.push(point);
 
         this.updateGeometryDataSource();
+    }
+
+    private onRightClickHandler = (e: MapMouseEvent & EventData) => {
+        if (this.currentLine.coordinates.length === 2)  // 只存在第一个点和动态点则不进行删除操作
+            return;
+
+        this.currentLine.coordinates.pop();
+        this.onMouseMoveHandler(e); // 调用鼠标移动事件，重新建立动态线
+        this.geojsonPoint.features.pop();  // 去掉端点
+        this.geojsonPoint.features.pop();  // 去掉中点
+
+        this.updateGeometryDataSource();
+        this.updatePointDataSource();
     }
 
     /**
