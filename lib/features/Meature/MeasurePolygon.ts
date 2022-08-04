@@ -1,13 +1,56 @@
 import * as turf from '@turf/turf';
 import { Polygon } from "@turf/turf";
-import { EventData, MapMouseEvent } from "mapbox-gl";
+import { EventData, Map, MapMouseEvent } from "mapbox-gl";
 import { MeasureType } from ".";
 import { createUUID } from '../utils';
 import MeasureBase from "./MeasureBase";
 
+export class MeasurePolygonOptions {
+    constructor(
+        /**
+         * 内部颜色
+         */
+        public polygonColor = "#ff0000",
+
+        /**
+         * 内部颜色透明度
+         */
+        public polygonOpacity = 0.5,
+
+        /**
+         * 边框颜色
+         */
+        public polygonOutlineColor = "#000000",
+
+        /**
+         * 文字大小
+         */
+        public textSize = 15,
+
+        /**
+         * 文字颜色
+         */
+        public textColor = "#000000",
+
+        /**
+         *  创建面积文字,area为平方米
+         */
+        public createText = (area: number) => area > 1000000 ?
+            `${(area / 1000000).toFixed(4)}km²` :
+            `${area.toFixed(4)}m²`
+    ) { }
+}
+
 export default class MeasurePolygon extends MeasureBase {
     type: MeasureType = 'Polygon';
     private drawing = false;
+
+    /**
+     *
+     */
+    constructor(map: Map, private options = new MeasurePolygonOptions()) {
+        super(map);
+    }
 
     protected onInit(): void {
         this.map.addLayer({
@@ -16,9 +59,9 @@ export default class MeasurePolygon extends MeasureBase {
             source: this.id,
             layout: {},
             paint: {
-                'fill-color': '#ff0000',
-                'fill-opacity': 0.5,
-                'fill-outline-color': '#000000'
+                'fill-color': this.options.polygonColor,
+                'fill-opacity': this.options.polygonOpacity,
+                'fill-outline-color': this.options.polygonOutlineColor
             }
         });
 
@@ -28,7 +71,10 @@ export default class MeasurePolygon extends MeasureBase {
             source: this.pointSourceId,
             layout: {
                 'text-field': ['get', 'area'],
-                'text-size': 15
+                'text-size': this.options.textSize,
+            },
+            paint: {
+                'text-color': this.options.textColor
             }
         })
     }
@@ -129,6 +175,6 @@ export default class MeasurePolygon extends MeasureBase {
 
     private getAreaString(polygon: Polygon) {
         const area = turf.area(polygon);
-        return area > 1000000 ? `${(area / 1000000).toFixed(4)}km²` : `${area.toFixed(4)}m²`;
+        return this.options.createText(area);
     }
 }

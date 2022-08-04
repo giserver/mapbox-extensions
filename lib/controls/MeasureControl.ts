@@ -1,6 +1,42 @@
 import { IControl, Map } from "mapbox-gl";
-import { MeasureBase, MeasureLineString, MeasurePoint, MeasurePolygon, MeasureType } from "../features/Meature";
+import { MeasureBase, MeasureLineString, MeasureLineStringOptions, MeasurePoint, MeasurePointOptions, MeasurePolygon, MeasurePolygonOptions, MeasureType } from "../features/Meature";
 import { createUUID, Dict } from "../features/utils";
+
+export class MeasureControlOptions {
+    constructor(
+
+        /**
+         * 按钮背景颜色
+         */
+        public btnBgColor = "#ffffff",
+
+        /**
+         * 按钮激活颜色
+         */
+        public btnActiveColor = "#fa593a",
+
+        /**
+         * 图标hover颜色
+         */
+        public svgHoverColor = "#ff0000",
+
+        /**
+         * 测量点选项
+         */
+        public measurePointOptions = new MeasurePointOptions(),
+
+        /**
+         * 测量线选项
+         */
+        public measureLineStringOptions = new MeasureLineStringOptions(),
+
+        /**
+         * 测量面选项
+         */
+        public measurePolygonOptions = new MeasurePolygonOptions()
+    ) {
+    }
+}
 
 export default class MeasureControl implements IControl {
 
@@ -9,23 +45,24 @@ export default class MeasureControl implements IControl {
     private point = `<svg t="1659591725628" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1369" width="20" height="20"><path d="M512 427.023m-90 0a90 90 0 1 0 180 0 90 90 0 1 0-180 0Z" fill="" p-id="1370"></path><path d="M512 910.402c-19.14 0-37.482-5.854-53.042-16.929-14.063-10.01-24.926-23.596-31.589-39.46L255.043 585.177l-0.154-0.25C225.522 537.209 210 482.605 210 427.021c0-80.667 31.414-156.506 88.454-213.546S431.333 125.021 512 125.021s156.506 31.414 213.546 88.454C782.587 270.515 814 346.354 814 427.021c0 55.849-15.655 110.671-45.274 158.539l-0.264 0.419-172.081 268.716c-6.755 15.726-17.66 29.176-31.704 39.055-15.485 10.895-33.7 16.652-52.677 16.652zM309.246 551.141l175.494 273.78 1.194 3.197c4.149 11.107 14.381 18.284 26.066 18.284 11.584 0 21.791-7.071 26.004-18.015l1.165-3.028L714.43 551.678C737.701 513.983 750 470.884 750 427.021c0-63.572-24.756-123.339-69.709-168.292-44.952-44.951-104.719-69.708-168.291-69.708s-123.339 24.756-168.292 69.708S274 363.449 274 427.021c0 43.64 12.186 86.552 35.246 124.12z" fill="#333333" p-id="1371"></path></svg>`;
     private clean = `<svg t="1659591688886" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1015" width="20" height="20"><path fill="#333333" d="M722.53 278.1V100.49H290V278.1H98.72v43H928v-43zM333 143.49h346.53V278.1H333zM780.8 883.35H231.71V383.89h-43v542.46H823.8V392.79h-43v490.56z" p-id="1016"></path><path fill="#333333" d="M391.52 383.79h43V773.5h-43zM578 383.79h43V773.5h-43z" p-id="1017"></path></svg>`;
 
-    private id = createUUID();
     private measures = new Dict<MeasureType, { measure: MeasureBase, svg: string, controlElement?: HTMLElement | undefined }>();
     private currentMeasure: MeasureBase | undefined;
 
+    readonly options = new MeasureControlOptions()
+
     onAdd(map: Map): HTMLElement {
-        this.measures.set('Point', { measure: new MeasurePoint(map), svg: this.point });
-        this.measures.set('LineString', { measure: new MeasureLineString(map), svg: this.line });
-        this.measures.set('Polygon', { measure: new MeasurePolygon(map), svg: this.polygon });
+        this.measures.set('Point', { measure: new MeasurePoint(map, this.options.measurePointOptions), svg: this.point });
+        this.measures.set('LineString', { measure: new MeasureLineString(map, this.options.measureLineStringOptions), svg: this.line });
+        this.measures.set('Polygon', { measure: new MeasurePolygon(map, this.options.measurePolygonOptions), svg: this.polygon });
 
         const div = document.createElement('div');
         div.style.pointerEvents = 'auto';
 
         const createClickMeasureButtonHandler = (measureType: MeasureType) => {
             return () => {
-                
-                this.measures.forEach(v=>{
-                    v.controlElement!.style.background = '#ffffff';
+
+                this.measures.forEach(v => {
+                    v.controlElement!.style.background = this.options.btnBgColor;
                 })
 
                 if (this.currentMeasure) {
@@ -38,7 +75,7 @@ export default class MeasureControl implements IControl {
                 }
 
                 const measureProps = this.measures.get(measureType)!;
-                measureProps.controlElement!.style.background = '#fa593a';
+                measureProps.controlElement!.style.background = this.options.btnActiveColor;
                 this.currentMeasure = measureProps.measure;
                 this.currentMeasure?.start();
             }
@@ -67,7 +104,7 @@ export default class MeasureControl implements IControl {
         style.display = 'flex';
         style.justifyContent = 'center';
         style.alignItems = 'center';
-        style.background = "#ffffff";
+        style.background = this.options.btnBgColor;
         style.cursor = 'pointer';
         style.borderRadius = '4px';
         style.height = '29px';
@@ -88,7 +125,7 @@ export default class MeasureControl implements IControl {
         }
 
         div.onmouseenter = e => {
-            changeSvgColor("#ff0000");
+            changeSvgColor(this.options.svgHoverColor);
         }
 
         div.onmouseleave = e => {

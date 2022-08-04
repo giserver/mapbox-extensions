@@ -1,8 +1,11 @@
 import MeasureBase from "./MeasureBase";
-import MeasurePoint from "./MeasurePoint";
-import MeasureLineString from "./MeasureLineString";
-import MeasurePolygon from "./MeasurePolygon";
+import MeasurePoint, { MeasurePointOptions } from "./MeasurePoint";
+import MeasureLineString, { MeasureLineStringOptions } from "./MeasureLineString";
+import MeasurePolygon, { MeasurePolygonOptions } from "./MeasurePolygon";
 
 export type MeasureType = 'Point' | 'LineString' | 'Polygon'
 
-export { MeasureBase, MeasurePoint, MeasureLineString,MeasurePolygon }
+export { MeasureBase, 
+    MeasurePoint, MeasurePointOptions, 
+    MeasureLineString, MeasureLineStringOptions, 
+    MeasurePolygon, MeasurePolygonOptions }

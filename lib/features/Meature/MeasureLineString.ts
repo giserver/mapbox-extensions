@@ -1,13 +1,77 @@
 import * as turf from "@turf/turf";
 import { LineString } from "@turf/turf";
-import { MapMouseEvent, EventData } from "mapbox-gl";
+import { MapMouseEvent, EventData, Map } from "mapbox-gl";
 import { createUUID } from "../utils";
 import MeasureBase from "./MeasureBase";
 import { MeasureType } from ".";
 
+export class MeasureLineStringOptions {
+    /**
+     *
+     */
+    constructor(
+        /**
+         * 线颜色
+         */
+        public lineColor = "#000000",
+
+        /**
+         * 线宽
+         */
+        public lineWidth = 1,
+
+        /**
+         * 端点颜色
+         */
+        public segmentPointColor = "#000000",
+
+        /**
+         * 文字在纵方向上的偏移
+         */
+        public textOffsetY = -1.2,
+
+        /**
+         * 端点(距离求和)文字的大小
+         */
+        public segmentTextSize = 12,
+
+        /**
+         * 端点(距离求和)文字的颜色
+         */
+        public segmentTextColor = "#000000",
+
+        /**
+         * 是否显示线段中间文字(线段长度)
+         */
+        public showCenterText = true,
+
+        /**
+         * 线段中间文字(线段长度)大小
+         */
+        public centerTextSize = 12,
+
+        /**
+         * 线段中间文字(线段长度)颜色
+         */
+        public centerTextColor = "#ff0000",
+
+        /**
+         * 计算长度显示的文字，length 单位为千米(km)
+         */
+        public createText = (length:number) => length > 1 ? `${length.toFixed(3)}km` : `${(length * 1000).toFixed(2)}m`
+    ) { }
+}
+
 export default class MeasureLineString extends MeasureBase {
     type: MeasureType = 'LineString';
     private drawing: boolean = false;
+
+    /**
+     *
+     */
+    constructor(map: Map, private options = new MeasureLineStringOptions()) {
+        super(map);
+    }
 
     protected onInit(): void {
 
@@ -16,7 +80,10 @@ export default class MeasureLineString extends MeasureBase {
             type: 'line',
             source: this.id,
             layout: {},
-            paint: {}
+            paint: {
+                'line-color': this.options.lineColor,
+                'line-width': this.options.lineWidth,
+            }
         })
 
         this.map.addLayer({
@@ -25,7 +92,7 @@ export default class MeasureLineString extends MeasureBase {
             source: this.pointSourceId,
             layout: {},
             paint: {
-                'circle-color': '#000000'
+                'circle-color': this.options.segmentPointColor
             },
             filter: ['!=', ['get', 'center'], true]
         })
@@ -36,12 +103,13 @@ export default class MeasureLineString extends MeasureBase {
             source: this.pointSourceId,
             layout: {
                 'text-field': ['get', 'distance'],
-                'text-offset': [0, -1.2],
-                'text-size': 12
+                'text-offset': [0, this.options.textOffsetY],
+                'text-size': ['case', ['==', ['get', 'center'], true], this.options.centerTextSize, this.options.segmentTextSize]
             },
             paint: {
-                "text-color": ['case', ['==', ['get', 'center'], true], "#ff0000", "#000000"]
-            }
+                "text-color": ['case', ['==', ['get', 'center'], true], this.options.centerTextColor, this.options.segmentTextColor]
+            },
+            filter: this.options.showCenterText ? ['all'] : ['!=', ['get', 'center'], true]
         })
     }
 
@@ -190,6 +258,6 @@ export default class MeasureLineString extends MeasureBase {
      */
     private getDistanceString(line: LineString) {
         const length = turf.length(turf.lineString(line.coordinates));
-        return length > 1 ? `${length.toFixed(3)}km` : `${(length * 1000).toFixed(2)}m`;
+        return this.options.createText(length);
     }
 }

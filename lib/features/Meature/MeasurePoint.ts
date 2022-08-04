@@ -1,10 +1,47 @@
-import { EventData, MapMouseEvent } from "mapbox-gl";
+import { Map, EventData, MapMouseEvent } from "mapbox-gl";
 import { createUUID } from "../utils";
 import MeasureBase from "./MeasureBase";
 import { MeasureType } from ".";
 
+export class MeasurePointOptions {
+
+    constructor(
+        /**
+         * 经纬度文字的大小
+         */
+        public textSize = 12,
+
+         /**
+         * 文字颜色
+         */
+          public textColor = "#000000",
+
+        /**
+         * 文字在众方向上的偏移 
+         */
+        public textOffsetY = -1.2,
+
+        /**
+         * 点颜色
+         */
+        public pointColor = "#000000",
+
+        /**
+         * 文字创建
+         */
+        public createText = (lng: number, lat: number) => `${lng.toFixed(4)} , ${lat.toFixed(4)}`
+    ) { }
+}
+
 export default class MeasurePoint extends MeasureBase {
     readonly type: MeasureType = 'Point';
+
+    /**
+     *
+     */
+    constructor(map: Map, private options = new MeasurePointOptions()) {
+        super(map);
+    }
 
     protected onInit(): void {
         this.map.addLayer({
@@ -12,7 +49,9 @@ export default class MeasurePoint extends MeasureBase {
             type: 'circle',
             source: this.id,
             layout: {},
-            paint: {}
+            paint: {
+                'circle-color': this.options.pointColor,
+            }
         })
 
         this.map.addLayer({
@@ -21,8 +60,11 @@ export default class MeasurePoint extends MeasureBase {
             source: this.id,
             layout: {
                 "text-field": ['get', 'coord'],
-                'text-offset': [0, -1.2],
-                'text-size': 12
+                'text-offset': [0, this.options.textOffsetY],
+                'text-size': this.options.textSize,
+            },
+            paint:{
+                'text-color':this.options.textColor
             }
         })
     }
@@ -48,7 +90,7 @@ export default class MeasurePoint extends MeasureBase {
                 coordinates: [e.lngLat.lng, e.lngLat.lat],
             },
             properties: {
-                "coord": `${e.lngLat.lng.toFixed(4)} , ${e.lngLat.lat.toFixed(4)}`
+                "coord": this.options.createText(e.lngLat.lng,e.lngLat.lat)
             }
         });
 

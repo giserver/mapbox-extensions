@@ -121,4 +121,7 @@ document.getElementById("measure-clear")?.addEventListener('click', e => {
     measures.forEach(m => m.clear());
 })
 
-map.addControl(new MeasureControl());
+const measureControl = new MeasureControl();
+measureControl.options.btnActiveColor = "#00ff00";
+measureControl.options.measurePointOptions.pointColor = "#ff00ff";
+map.addControl(measureControl);
