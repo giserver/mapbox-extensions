@@ -12,3 +12,17 @@ export function createUUID(): string {
         return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
     });
 }
+
+/**
+ * 默认值装饰器
+ * @param value 
+ * @returns 
+ */
+export function defaultValue(value: any) {
+    return function (target: any, propertyName: string) {
+        if (!target[propertyName]){
+            target[propertyName] = value;
+            console.log(target);
+        }
+    }
+}

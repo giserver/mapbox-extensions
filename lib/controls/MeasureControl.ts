@@ -2,40 +2,42 @@ import { IControl, Map } from "mapbox-gl";
 import { MeasureBase, MeasureLineString, MeasureLineStringOptions, MeasurePoint, MeasurePointOptions, MeasurePolygon, MeasurePolygonOptions, MeasureType } from "../features/Meature";
 import { Dict } from "../features/utils";
 
-export class MeasureControlOptions {
-    constructor(
+export interface MeasureControlOptions {
 
-        /**
-         * 按钮背景颜色
-         */
-        public btnBgColor = "#ffffff",
+    /**
+     * 按钮背景颜色
+     */
+    btnBgColor?: string
 
-        /**
-         * 按钮激活颜色
-         */
-        public btnActiveColor = "#fa593a",
+    /**
+     * 按钮激活颜色
+     */
+    btnActiveColor?: string
 
-        /**
-         * 图标hover颜色
-         */
-        public svgHoverColor = "#ff0000",
+    /**
+     * 图标hover颜色
+     */
+    svgHoverColor?: string
 
-        /**
-         * 测量点选项
-         */
-        public measurePointOptions = new MeasurePointOptions(),
+    /**
+     * 允许的测量模式，默认所有
+     */
+    enableModes?: MeasureType[]
 
-        /**
-         * 测量线选项
-         */
-        public measureLineStringOptions = new MeasureLineStringOptions(),
+    /**
+     * 测量点选项
+     */
+    measurePointOptions?: MeasurePointOptions
 
-        /**
-         * 测量面选项
-         */
-        public measurePolygonOptions = new MeasurePolygonOptions()
-    ) {
-    }
+    /**
+     * 测量线选项
+     */
+    measureLineStringOptions?: MeasureLineStringOptions
+
+    /**
+     * 测量面选项
+     */
+    measurePolygonOptions?: MeasurePolygonOptions
 }
 
 export default class MeasureControl implements IControl {
@@ -48,12 +50,33 @@ export default class MeasureControl implements IControl {
     private measures = new Dict<MeasureType, { measure: MeasureBase, svg: string, controlElement?: HTMLElement | undefined }>();
     private currentMeasure: MeasureBase | undefined;
 
-    readonly options = new MeasureControlOptions()
+    private btnBgColor: string;
+    private btnActiveColor: string;
+    private svgHoverColor: string;
+    private enableModes?: MeasureType[];
+    public measurePointOptions: MeasurePointOptions
+    public measureLineStringOptions: MeasureLineStringOptions
+    public measurePolygonOptions: MeasurePolygonOptions
+
+    constructor(options?: MeasureControlOptions) {
+        this.btnBgColor = options?.btnBgColor || "#ffffff";
+        this.btnActiveColor = options?.btnActiveColor || "#7F7F7F";
+        this.svgHoverColor = options?.svgHoverColor || "#8A2BE2";
+        this.enableModes = options?.enableModes || ['Point', 'LineString', 'Polygon']
+        this.measurePointOptions = options?.measurePointOptions || new MeasurePointOptions();
+        this.measureLineStringOptions = options?.measureLineStringOptions || new MeasureLineStringOptions();
+        this.measurePolygonOptions = options?.measurePolygonOptions || new MeasurePolygonOptions();
+    }
 
     onAdd(map: Map): HTMLElement {
-        this.measures.set('Point', { measure: new MeasurePoint(map, this.options.measurePointOptions), svg: this.point });
-        this.measures.set('LineString', { measure: new MeasureLineString(map, this.options.measureLineStringOptions), svg: this.line });
-        this.measures.set('Polygon', { measure: new MeasurePolygon(map, this.options.measurePolygonOptions), svg: this.polygon });
+        this.measures.set('Point', { measure: new MeasurePoint(map, this.measurePointOptions), svg: this.point });
+        this.measures.set('LineString', { measure: new MeasureLineString(map, this.measureLineStringOptions), svg: this.line });
+        this.measures.set('Polygon', { measure: new MeasurePolygon(map, this.measurePolygonOptions), svg: this.polygon });
+
+        this.measures.forEach((_, k) => {
+            if (this.enableModes?.indexOf(k) === -1)
+                this.measures.delete(k);
+        })
 
         const div = document.createElement('div');
         div.style.pointerEvents = 'auto';
@@ -62,7 +85,7 @@ export default class MeasureControl implements IControl {
             return () => {
 
                 this.measures.forEach(v => {
-                    v.controlElement!.style.background = this.options.btnBgColor;
+                    v.controlElement!.style.background = this.btnBgColor!;
                 })
 
                 if (this.currentMeasure) {
@@ -75,7 +98,7 @@ export default class MeasureControl implements IControl {
                 }
 
                 const measureProps = this.measures.get(measureType)!;
-                measureProps.controlElement!.style.background = this.options.btnActiveColor;
+                measureProps.controlElement!.style.background = this.btnActiveColor!;
                 this.currentMeasure = measureProps.measure;
                 this.currentMeasure?.start();
             }
@@ -104,7 +127,8 @@ export default class MeasureControl implements IControl {
         style.display = 'flex';
         style.justifyContent = 'center';
         style.alignItems = 'center';
-        style.background = this.options.btnBgColor;
+        style.background = this.btnBgColor;
+        console.log(style.background);
         style.cursor = 'pointer';
         style.borderRadius = '4px';
         style.height = '29px';
@@ -125,7 +149,7 @@ export default class MeasureControl implements IControl {
         }
 
         div.onmouseenter = e => {
-            changeSvgColor(this.options.svgHoverColor);
+            changeSvgColor(this.svgHoverColor);
         }
 
         div.onmouseleave = e => {
