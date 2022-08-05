@@ -22,7 +22,6 @@ export function defaultValue(value: any) {
     return function (target: any, propertyName: string) {
         if (!target[propertyName]){
             target[propertyName] = value;
-            console.log(target);
         }
     }
 }

@@ -1,5 +1,5 @@
 import { IControl, Map } from "mapbox-gl";
-import { MeasureBase, MeasureLineString, MeasureLineStringOptions, MeasurePoint, MeasurePointOptions, MeasurePolygon, MeasurePolygonOptions, MeasureType } from "../features/Meature";
+import { MeasureBase, MeasureLineString, MeasureLineStringOptions, MeasurePoint, MeasurePointOptions, MeasurePolygon, MeasurePolygonOptions, MeasureType } from "../features/meature";
 import { Dict } from "../features/utils";
 
 export interface MeasureControlOptions {
@@ -128,7 +128,6 @@ export default class MeasureControl implements IControl {
         style.justifyContent = 'center';
         style.alignItems = 'center';
         style.background = this.btnBgColor;
-        console.log(style.background);
         style.cursor = 'pointer';
         style.borderRadius = '4px';
         style.height = '29px';

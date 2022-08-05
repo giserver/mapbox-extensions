@@ -43,10 +43,14 @@ const map = new mapboxgl.Map({...});
 
 map.addControl(new MeasureControl(options)) // 参数可以为空，或自行配置
 ```
-*args*  
-[MeasureControlOptions](./lib/controls/MeasureControl.ts)  
-[MeasurePointOptions](./lib/features/Meature/MeasurePoint.ts)  
-[MeasureLineStringOptions](./lib/features/Meature/MeasureLineString.ts)  
-[MeasurePolygonOptions](./lib/features/Meature/MeasurePolygon.ts)  
+*参数*  
+- [MeasureControlOptions](./lib/controls/MeasureControl.ts)  
+- [MeasurePointOptions](./lib/features/Meature/MeasurePoint.ts)  
+- [MeasureLineStringOptions](./lib/features/Meature/MeasureLineString.ts)  
+- [MeasurePolygonOptions](./lib/features/Meature/MeasurePolygon.ts)  
 
+*鼠标操作* 
+- 左键点击 : 添加一个点
+- 右键点击 : 删除一个点
+- 左键双击 : 完成测量，开始下一次测量
 你也可以使用那三个测量类自定义ui，在 [MeasureBase](./lib/features/Meature/MeasureBase.ts) 这个抽象类中可以找到所有的公开方法，很简单😄

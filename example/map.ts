@@ -1,5 +1,4 @@
 import '../lib';
-import { MeasureBase, MeasureLineString, MeasurePoint, MeasurePolygon } from '../lib/features/Meature'
 import mapboxgl from 'mapbox-gl';
 import MeasureControl from '../lib/controls/MeasureControl';
 
