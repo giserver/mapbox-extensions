@@ -35,6 +35,19 @@ group.remove('layerid');
 group.removeAll();
 
 map.removeLayerGroup('group1');
+```  
+### `Measure`  
+a measure control implements mapboxgl.IControl, you can measure point(lng,lat), line(distance), polygon(area) with it. 
+
+``` ts
+const map = new mapboxgl.Map({...});
+
+map.addControl(new MeasureControl(options)) // options can be null
 ```
+*args*  
+[MeasureControlOptions](./lib/controls/MeasureControl.ts)  
+[MeasurePointOptions](./lib/features/Meature/MeasurePoint.ts)  
+[MeasureLineStringOptions](./lib/features/Meature/MeasureLineString.ts)  
+[MeasurePolygonOptions](./lib/features/Meature/MeasurePolygon.ts)  
 
-
+you can also config custom ui with this three class of measure， you can find all public functions in [MeasureBase](./lib/features/Meature/MeasureBase.ts), custom is so easy.

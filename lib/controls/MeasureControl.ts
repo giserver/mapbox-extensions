@@ -24,7 +24,7 @@ export interface MeasureControlOptions {
      */
     enableModes?: MeasureType[]
 
-    /**
+    /** 
      * 测量点选项
      */
     measurePointOptions?: MeasurePointOptions

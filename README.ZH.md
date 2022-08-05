@@ -34,4 +34,19 @@ group.remove('layerid');
 group.removeAll();
 
 map.removeLayerGroup('group1');
+```  
+### `Measure`  
+这个是一个自定义的测量控件，实现了mapboxgl中的IControl，所以您可以直接作为ui使用它。你可以测量点（经纬度），线（长度），面（面积）。
+
+``` ts
+const map = new mapboxgl.Map({...});
+
+map.addControl(new MeasureControl(options)) // 参数可以为空，或自行配置
 ```
+*args*  
+[MeasureControlOptions](./lib/controls/MeasureControl.ts)  
+[MeasurePointOptions](./lib/features/Meature/MeasurePoint.ts)  
+[MeasureLineStringOptions](./lib/features/Meature/MeasureLineString.ts)  
+[MeasurePolygonOptions](./lib/features/Meature/MeasurePolygon.ts)  
+
+你也可以使用那三个测量类自定义ui，在 [MeasureBase](./lib/features/Meature/MeasureBase.ts) 这个抽象类中可以找到所有的公开方法，很简单😄
