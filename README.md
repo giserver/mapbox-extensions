@@ -1,6 +1,5 @@
 # mapbox-extensions [中文](./README.ZH.md)
-[![npm](https://img.shields.io/npm/v/mapbox-extensions)](https://www.npmjs.com/package/mapbox-extensions)  
-extension of mapbox, like changeStyle instead of setStyle to preserve added-layer, define custom layer-group and operate layer with group. etc...
+measure, layer-group etc... in mapbox-gl
 ## dev & build 
 ```
 yarn
@@ -8,6 +7,7 @@ yarn dev
 yarn build
 ```
 ## usage  
+[![npm](https://img.shields.io/npm/v/mapbox-extensions)](https://www.npmjs.com/package/mapbox-extensions) 
 1. make sure mapbox installed. 
 2. `npm install` / `yarn add` `mapbox-extensions`. 
 3. add `import 'mapbox-extensions'` at your entry file. 
