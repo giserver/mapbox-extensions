@@ -68,6 +68,10 @@ export default class MeasureControl implements IControl {
         this.measurePolygonOptions = options?.measurePolygonOptions || new MeasurePolygonOptions();
     }
 
+    get isDrawing() {
+        return this.currentMeasure !== undefined;
+    }
+
     onAdd(map: Map): HTMLElement {
         this.measures.set('Point', { measure: new MeasurePoint(map, this.measurePointOptions), svg: this.point });
         this.measures.set('LineString', { measure: new MeasureLineString(map, this.measureLineStringOptions), svg: this.line });

@@ -84,13 +84,19 @@ group.add({
     }
 })
 
-setTimeout(() => {
-    setInterval(() => {
-        group.show = !group.show;
-    }, 1000)
-}, 1000);
-
 const measureControl = new MeasureControl({
-    enableModes:['LineString','Polygon']
 });
 map.addControl(measureControl);
+
+map.on('load', () => {
+    setTimeout(() => {
+        setInterval(() => {
+            group.show = !group.show;
+        }, 1000)
+    }, 1000);
+    
+    map.on('click', 'maine', features => {
+        if (!measureControl.isDrawing)
+            console.log(features)
+    })
+})

@@ -31,7 +31,7 @@ module.exports = {
         new CleanWebpackPlugin()
     ],
     devServer: {
-        host: 'localhost',
+        host: 'local-ip',
         port: 8085,
         open: true
     }

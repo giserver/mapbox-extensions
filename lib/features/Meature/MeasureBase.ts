@@ -14,12 +14,18 @@ export default abstract class MeasureBase {
         'features': []
     };
 
+    private _isDrawing = false;
+
     /**
      * 每一个测量模式的唯一id
      * 作为测量动态数据源的id
      * 可以在创建图层时作为图层id（或计算图层id）
      */
     readonly id: string
+
+    get isDrawing(){
+        return this._isDrawing;
+    }
 
     /**
      * 测量初始化时调用
@@ -86,6 +92,7 @@ export default abstract class MeasureBase {
      * 开始测量
      */
     start() {
+        this._isDrawing = true;
         this.map.getCanvas().style.cursor = 'crosshair';
         this.map.doubleClickZoom.disable();
         this.onStart();
@@ -95,6 +102,7 @@ export default abstract class MeasureBase {
      * 停止测量
      */
     stop() {
+        this._isDrawing = false;
         this.map.getCanvas().style.cursor = 'grab';
         this.map.doubleClickZoom.enable();
         this.onStop();
