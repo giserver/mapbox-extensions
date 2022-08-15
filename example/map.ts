@@ -99,4 +99,6 @@ map.on('load', () => {
         if (!measureControl.isDrawing)
             console.log(features)
     })
+
+    console.log(measureControl.layerIds);
 })

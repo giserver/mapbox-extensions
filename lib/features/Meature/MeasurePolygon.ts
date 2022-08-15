@@ -77,6 +77,8 @@ export default class MeasurePolygon extends MeasureBase {
                 'text-color': this.options.textColor
             }
         })
+
+        this.layerIds.push(...[this.id,this.pointSourceId]);
     }
 
     protected onStart(): void {

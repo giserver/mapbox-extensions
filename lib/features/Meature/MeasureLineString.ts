@@ -58,7 +58,7 @@ export class MeasureLineStringOptions {
         /**
          * 计算长度显示的文字，length 单位为千米(km)
          */
-        public createText = (length:number) => length > 1 ? `${length.toFixed(3)}km` : `${(length * 1000).toFixed(2)}m`
+        public createText = (length: number) => length > 1 ? `${length.toFixed(3)}km` : `${(length * 1000).toFixed(2)}m`
     ) { }
 }
 
@@ -111,6 +111,8 @@ export default class MeasureLineString extends MeasureBase {
             },
             filter: this.options.showCenterText ? ['all'] : ['!=', ['get', 'center'], true]
         })
+
+        this.layerIds.push(...[this.id, this.pointSourceId, this.pointSourceId + "_font"]);
     }
 
     protected onStart(): void {

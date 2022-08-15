@@ -4,6 +4,7 @@ import { MeasureType } from ".";
 
 export default abstract class MeasureBase {
     readonly abstract type: MeasureType;
+    readonly layerIds = new Array<string>();
     protected geojson: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {
         'type': 'FeatureCollection',
         'features': []
@@ -23,7 +24,7 @@ export default abstract class MeasureBase {
      */
     readonly id: string
 
-    get isDrawing(){
+    get isDrawing() {
         return this._isDrawing;
     }
 

@@ -72,6 +72,14 @@ export default class MeasureControl implements IControl {
         return this.currentMeasure !== undefined;
     }
 
+    get layerIds(){
+        let ids = new Array<string>();
+        this.measures.forEach(m=>{
+            ids = ids.concat(m.measure.layerIds);
+        })
+        return ids;
+    }
+
     onAdd(map: Map): HTMLElement {
         this.measures.set('Point', { measure: new MeasurePoint(map, this.measurePointOptions), svg: this.point });
         this.measures.set('LineString', { measure: new MeasureLineString(map, this.measureLineStringOptions), svg: this.line });

@@ -11,10 +11,10 @@ export class MeasurePointOptions {
          */
         public textSize = 12,
 
-         /**
-         * 文字颜色
-         */
-          public textColor = "#000000",
+        /**
+        * 文字颜色
+        */
+        public textColor = "#000000",
 
         /**
          * 文字在众方向上的偏移 
@@ -63,10 +63,12 @@ export default class MeasurePoint extends MeasureBase {
                 'text-offset': [0, this.options.textOffsetY],
                 'text-size': this.options.textSize,
             },
-            paint:{
-                'text-color':this.options.textColor
+            paint: {
+                'text-color': this.options.textColor
             }
         })
+
+        this.layerIds.push(...[this.id, this.id + "_font"]);
     }
 
     protected onStart(): void {
@@ -90,7 +92,7 @@ export default class MeasurePoint extends MeasureBase {
                 coordinates: [e.lngLat.lng, e.lngLat.lat],
             },
             properties: {
-                "coord": this.options.createText(e.lngLat.lng,e.lngLat.lat)
+                "coord": this.options.createText(e.lngLat.lng, e.lngLat.lat)
             }
         });
 
