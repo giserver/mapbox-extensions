@@ -66,7 +66,6 @@ export default abstract class MeasureBase {
 
             this.onInit();
         })
-
     }
 
     /**

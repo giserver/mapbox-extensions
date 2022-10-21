@@ -64,7 +64,7 @@ export class MeasureLineStringOptions {
 
 export default class MeasureLineString extends MeasureBase {
     type: MeasureType = 'LineString';
-    private drawing: boolean = false;
+    private lineing: boolean = false;
 
     /**
      *
@@ -118,12 +118,12 @@ export default class MeasureLineString extends MeasureBase {
     }
 
     protected onClear(): void {
-        this.drawing = false;
+        this.lineing = false;
         this.map.off('mousemove', this.onMouseMoveHandler);
     }
 
     protected onStop(): void {
-        this.drawing = false;
+        this.lineing = false;
         this.map.off('mousemove', this.onMouseMoveHandler);
         this.map.off('click', this.onMapClickHandler);
         this.map.off('dblclick', this.onMapDoubleClickHandler);
@@ -135,7 +135,7 @@ export default class MeasureLineString extends MeasureBase {
         let featureId = createUUID();
 
         // 判断是否已经落笔
-        if (this.drawing) {
+        if (this.lineing) {
             // 获取最近一次的linestring
             const lastPoint = this.currentLine.coordinates[this.currentLine.coordinates.length - 2];
             this.currentLine.coordinates.push(point);
@@ -159,7 +159,7 @@ export default class MeasureLineString extends MeasureBase {
             })
 
         } else {
-            this.drawing = true;
+            this.lineing = true;
             this.geojson.features.push({
                 type: 'Feature',
                 id: featureId,
@@ -192,7 +192,7 @@ export default class MeasureLineString extends MeasureBase {
 
     private onMapDoubleClickHandler = (e: MapMouseEvent & EventData) => {
         // 结束绘制
-        this.drawing = false;
+        this.lineing = false;
 
         this.map.off('mousemove', this.onMouseMoveHandler);
         this.map.off('contextmenu', this.onRightClickHandler);
