@@ -1,36 +1,34 @@
 import { Map, EventData, MapMouseEvent } from "mapbox-gl";
-import { createUUID } from "../utils";
+import { createUUID, setDefaultValue } from "../utils";
 import MeasureBase from "./MeasureBase";
 import { MeasureType } from ".";
 
-export class MeasurePointOptions {
+export interface MeasurePointOptions {
 
-    constructor(
-        /**
+    /**
          * 经纬度文字的大小
          */
-        public textSize = 12,
+    textSize?: number,
 
-        /**
-        * 文字颜色
-        */
-        public textColor = "#000000",
+    /**
+    * 文字颜色
+    */
+    textColor?: string,
 
-        /**
-         * 文字在众方向上的偏移 
-         */
-        public textOffsetY = -1.2,
+    /**
+     * 文字在众方向上的偏移 
+     */
+    textOffsetY?: number,
 
-        /**
-         * 点颜色
-         */
-        public pointColor = "#000000",
+    /**
+     * 点颜色
+     */
+    pointColor?: string,
 
-        /**
-         * 文字创建
-         */
-        public createText = (lng: number, lat: number) => `${lng.toFixed(4)} , ${lat.toFixed(4)}`
-    ) { }
+    /**
+     * 文字创建
+     */
+    createText?: (lng: number, lat: number) => string
 }
 
 export default class MeasurePoint extends MeasureBase {
@@ -39,7 +37,12 @@ export default class MeasurePoint extends MeasureBase {
     /**
      *
      */
-    constructor(map: Map, private options = new MeasurePointOptions()) {
+    constructor(map: Map, private options: MeasurePointOptions = {}) {
+        setDefaultValue(options, 'textSize', 12);
+        setDefaultValue(options, 'textColor', "#000000");
+        setDefaultValue(options, 'textOffsetY', -1.2);
+        setDefaultValue(options, 'pointColor', "#000000");
+        setDefaultValue(options, 'createText', (lng: number, lat: number) => `${lng.toFixed(4)} , ${lat.toFixed(4)}`);
         super(map);
     }
 
@@ -60,7 +63,7 @@ export default class MeasurePoint extends MeasureBase {
             source: this.id,
             layout: {
                 "text-field": ['get', 'coord'],
-                'text-offset': [0, this.options.textOffsetY],
+                'text-offset': [0, this.options.textOffsetY!],
                 'text-size': this.options.textSize,
             },
             paint: {
@@ -90,7 +93,7 @@ export default class MeasurePoint extends MeasureBase {
                 coordinates: [e.lngLat.lng, e.lngLat.lat],
             },
             properties: {
-                "coord": this.options.createText(e.lngLat.lng, e.lngLat.lat)
+                "coord": this.options.createText!(e.lngLat.lng, e.lngLat.lat)
             }
         });
 

@@ -13,6 +13,12 @@ export function createUUID(): string {
     });
 }
 
+export function setDefaultValue<T, K extends keyof T>(obj: T, prop: K, value: T[K]) {
+    if (!obj[prop]) {
+        obj[prop] = value;
+    }
+}
+
 /**
  * 默认值装饰器
  * @param value 
@@ -20,7 +26,7 @@ export function createUUID(): string {
  */
 export function defaultValue(value: any) {
     return function (target: any, propertyName: string) {
-        if (!target[propertyName]){
+        if (!target[propertyName]) {
             target[propertyName] = value;
         }
     }

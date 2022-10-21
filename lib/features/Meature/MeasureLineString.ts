@@ -1,65 +1,65 @@
 import * as turf from "@turf/turf";
 import { LineString } from "@turf/turf";
 import { MapMouseEvent, EventData, Map } from "mapbox-gl";
-import { createUUID } from "../utils";
+import { createUUID, setDefaultValue } from "../utils";
 import MeasureBase from "./MeasureBase";
 import { MeasureType } from ".";
 
-export class MeasureLineStringOptions {
+export interface MeasureLineStringOptions {
     /**
-     *
+     * 线颜色
      */
-    constructor(
-        /**
-         * 线颜色
-         */
-        public lineColor = "#000000",
+    lineColor?: string,
 
-        /**
-         * 线宽
-         */
-        public lineWidth = 1,
+    /**
+     * 线宽
+     */
+    lineWidth?: number,
 
-        /**
-         * 端点颜色
-         */
-        public segmentPointColor = "#000000",
+    /**
+     * 端点颜色
+     */
+    segmentPointColor?: string,
 
-        /**
-         * 文字在纵方向上的偏移
-         */
-        public textOffsetY = -1.2,
+    /**
+     * 端点大小
+     */
+    segmentPointSize?: number,
 
-        /**
-         * 端点(距离求和)文字的大小
-         */
-        public segmentTextSize = 12,
+    /**
+     * 文字在纵方向上的偏移
+     */
+    textOffsetY?: number,
 
-        /**
-         * 端点(距离求和)文字的颜色
-         */
-        public segmentTextColor = "#000000",
+    /**
+     * 端点(距离求和)文字的大小
+     */
+    segmentTextSize?: number,
 
-        /**
-         * 是否显示线段中间文字(线段长度)
-         */
-        public showCenterText = true,
+    /**
+     * 端点(距离求和)文字的颜色
+     */
+    segmentTextColor?: string,
 
-        /**
-         * 线段中间文字(线段长度)大小
-         */
-        public centerTextSize = 12,
+    /**
+     * 是否显示线段中间文字(线段长度)
+     */
+    showCenterText?: boolean,
 
-        /**
-         * 线段中间文字(线段长度)颜色
-         */
-        public centerTextColor = "#ff0000",
+    /**
+     * 线段中间文字(线段长度)大小
+     */
+    centerTextSize?: number,
 
-        /**
-         * 计算长度显示的文字，length 单位为千米(km)
-         */
-        public createText = (length: number) => length > 1 ? `${length.toFixed(3)}km` : `${(length * 1000).toFixed(2)}m`
-    ) { }
+    /**
+     * 线段中间文字(线段长度)颜色
+     */
+    centerTextColor?: string,
+
+    /**
+     * 计算长度显示的文字，length 单位为千米(km)
+     */
+    createText?: (length: number) => string
 }
 
 export default class MeasureLineString extends MeasureBase {
@@ -69,7 +69,19 @@ export default class MeasureLineString extends MeasureBase {
     /**
      *
      */
-    constructor(map: Map, private options = new MeasureLineStringOptions()) {
+    constructor(map: Map, private options: MeasureLineStringOptions = {}) {
+        setDefaultValue(options, 'lineColor', "#000000");
+        setDefaultValue(options, 'lineWidth', 1);
+        setDefaultValue(options, 'segmentPointColor', "#000000");
+        setDefaultValue(options, 'segmentPointSize', 4);
+        setDefaultValue(options, 'textOffsetY', -1.2);
+        setDefaultValue(options, 'segmentTextSize', 12);
+        setDefaultValue(options, 'segmentTextColor', "#000000");
+        setDefaultValue(options, 'showCenterText', true);
+        setDefaultValue(options, 'centerTextSize', 12);
+        setDefaultValue(options, 'centerTextColor', '#ff0000');
+        setDefaultValue(options, 'createText', (length: number) => length > 1 ? `${length.toFixed(3)}km` : `${(length * 1000).toFixed(2)}m`);
+
         super(map);
     }
 
@@ -91,7 +103,8 @@ export default class MeasureLineString extends MeasureBase {
             source: this.pointSourceId,
             layout: {},
             paint: {
-                'circle-color': this.options.segmentPointColor
+                'circle-color': this.options.segmentPointColor,
+                'circle-radius': this.options.segmentPointSize,
             },
             filter: ['!=', ['get', 'center'], true]
         })
@@ -102,7 +115,7 @@ export default class MeasureLineString extends MeasureBase {
             source: this.pointSourceId,
             layout: {
                 'text-field': ['get', 'distance'],
-                'text-offset': [0, this.options.textOffsetY],
+                'text-offset': [0, this.options.textOffsetY!],
                 'text-size': ['case', ['==', ['get', 'center'], true], this.options.centerTextSize, this.options.segmentTextSize]
             },
             paint: {
@@ -257,6 +270,6 @@ export default class MeasureLineString extends MeasureBase {
      */
     private getDistanceString(line: LineString) {
         const length = turf.length(turf.lineString(line.coordinates));
-        return this.options.createText(length);
+        return this.options.createText!(length);
     }
 }

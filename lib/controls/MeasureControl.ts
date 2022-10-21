@@ -63,9 +63,9 @@ export default class MeasureControl implements IControl {
         this.btnActiveColor = options?.btnActiveColor || "#7F7F7F";
         this.svgHoverColor = options?.svgHoverColor || "#8A2BE2";
         this.enableModes = options?.enableModes || ['Point', 'LineString', 'Polygon']
-        this.measurePointOptions = options?.measurePointOptions || new MeasurePointOptions();
-        this.measureLineStringOptions = options?.measureLineStringOptions || new MeasureLineStringOptions();
-        this.measurePolygonOptions = options?.measurePolygonOptions || new MeasurePolygonOptions();
+        this.measurePointOptions = options?.measurePointOptions || {};
+        this.measureLineStringOptions = options?.measureLineStringOptions || {};
+        this.measurePolygonOptions = options?.measurePolygonOptions || {};
     }
 
     get isDrawing() {
