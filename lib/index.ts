@@ -2,7 +2,7 @@ import { Map, AnyLayer, AnySourceData } from "mapbox-gl";
 import LayerGroup from './features/LayerGroup'
 import { Dict } from './features/utils';
 
-import {MeasureControl} from './controls'
+import { MeasureControl } from './controls'
 
 export {
     MeasureControl

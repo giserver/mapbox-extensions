@@ -10,95 +10,216 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY29jYWluZWNvZGVyIiwiYSI6ImNrdHA1YjlleDBqYTEzM
 const map = new mapboxgl.Map({
     container: 'map',
     zoom: 5,
-    center: [-68.13734351262877, 45.137451890638886],
+    center: [0, 0],
     pitch: 0,
     style: lightStyle
 });
 
 map.on('load', () => {
-    map.addSource("source-polygon", {
+    map.addSource("polygon1", {
         type: 'geojson',
         data: {
             'type': 'Feature',
             'geometry': {
                 'type': 'Polygon',
-                'coordinates': [[[-67.13734351262877, 45.137451890638886],
-                [-66.96466, 44.8097],
-                [-68.03252, 44.3252],
-                [-69.06, 43.98],
-                [-70.11617, 43.68405],
-                [-70.64573401557249, 43.090083319667144],
-                [-70.75102474636725, 43.08003225358635],
-                [-70.79761105007827, 43.21973948828747],
-                [-70.98176001655037, 43.36789581966826],
-                [-70.94416541205806, 43.46633942318431],
-                [-71.08482, 45.3052400000002],
-                [-70.6600225491012, 45.46022288673396],
-                [-70.30495378282376, 45.914794623389355],
-                [-70.00014034695016, 46.69317088478567],
-                [-69.23708614772835, 47.44777598732787],
-                [-68.90478084987546, 47.184794623394396],
-                [-68.23430497910454, 47.35462921812177],
-                [-67.79035274928509, 47.066248887716995],
-                [-67.79141211614706, 45.702585354182816],
-                [-67.13734351262877, 45.137451890638886]]]
+                'coordinates': [[
+                    [0,0],
+                [0,2],
+                [-3,2],
+                [-3,0],
+                ]]
             },
             'properties': {
                 title: 'mapbox'
             }
         } as any
     });
+
+    map.addSource("polygon2", {
+        type: 'geojson',
+        data: {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Polygon',
+                'coordinates': [[
+                    [0,-1],
+                [0,1],
+                [-2,1],
+                [-2,-1],
+                ]]
+            },
+            'properties': {
+                title: 'mapbox'
+            }
+        } as any
+    });
+
+    map.addSource("polygon3", {
+        type: 'geojson',
+        data: {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Polygon',
+                'coordinates': [[
+                    [2,-2],
+                [2,1],
+                [-1,1],
+                [-1,-2],
+                ]]
+            },
+            'properties': {
+                title: 'mapbox'
+            }
+        } as any
+    });
+
+    map.addLayer({
+            'id': 'red',
+            'type': 'fill',
+            'source': 'polygon1',
+            'layout': {},
+            'paint': {
+                'fill-color': 'red',
+                'fill-opacity': 0.8
+            }
+    })
+    
+    map.addLayer({
+        'id': 'green',
+        'type': 'fill',
+        'source': 'polygon2',
+        'layout': {},
+        'paint': {
+            'fill-color': 'green',
+            'fill-opacity': 0.8
+        }
+    })
+
+    map.addLayer({
+        'id': 'blue',
+        'type': 'fill',
+        'source': 'polygon3',
+        'layout': {},
+        'paint': {
+            'fill-color': 'blue',
+            'fill-opacity': 0.8
+        }
+    })
+
+    map.addLayer({
+        'id': 'yellow',
+        'type': 'fill',
+        'source': {
+            type: 'geojson',
+            data: {
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Polygon',
+                    'coordinates': [[
+                        [5,5],
+                    [5,6],
+                    [4,6],
+                    [4,5],
+                    ]]
+                },
+                'properties': {
+                    title: 'mapbox'
+                }
+            } as any
+        },
+        'layout': {},
+        'paint': {
+            'fill-color': 'yellow',
+            'fill-opacity': 0.8
+        }
+    })
 })
 
-const group = map.addLayerGroup('polygon-group');
-group.add({
-    'id': 'maine',
-    'type': 'fill',
-    'source': 'source-polygon',
-    'layout': {},
-    'paint': {
-        'fill-color': '#088',
-        'fill-opacity': 0.8
-    }
+const layerIds = ['red', 'green', 'blue','yellow'];
+map.on('click', layerIds, e => {
+    let maxIndex = 0;
+    let maxId = "";
+     
+    e.features?.forEach(x => { 
+        const li = x.layer.id;
+        const index = map.getStyle().layers.findIndex(y => y.id === li);
+        
+        if (index > maxIndex) {
+            maxId = li;
+            maxIndex = index;
+        }
+    });
+
+    console.log(maxId);
 });
 
-group.add({
-    'id': 'maine-line',
-    type: 'line',
-    source: 'source-polygon',
-    layout: {},
-    paint: {
-        "line-color": 'red',
-        "line-width": 3
-    }
-})
+let changed = false;
 
-group.add({
-    id: 'maine-symble',
-    type: 'symbol',
-    source: 'source-polygon',
-    layout: {
-        "text-field": ['get', 'title']
-    },
-    paint: {
+document.getElementById("ctrl-change")?.addEventListener('click', () => {
+
+    if (changed) {
+        map.moveLayer('blue');
     }
-})
+    else
+    {
+        map.moveLayer('red');
+    }
+
+    changed = !changed;
+});
+
+
+
+// const group = map.addLayerGroup('polygon-group');
+// group.add({
+//     'id': 'maine',
+//     'type': 'fill',
+//     'source': 'source-polygon',
+//     'layout': {},
+//     'paint': {
+//         'fill-color': '#088',
+//         'fill-opacity': 0.8
+//     }
+// });
+
+// group.add({
+//     'id': 'maine-line',
+//     type: 'line',
+//     source: 'source-polygon',
+//     layout: {},
+//     paint: {
+//         "line-color": 'red',
+//         "line-width": 3
+//     }
+// })
+
+// group.add({
+//     id: 'maine-symble',
+//     type: 'symbol',
+//     source: 'source-polygon',
+//     layout: {
+//         "text-field": ['get', 'title']
+//     },
+//     paint: {
+//     }
+// })
 
 const measureControl = new MeasureControl({
 });
 map.addControl(measureControl);
 
-map.on('load', () => {
-    setTimeout(() => {
-        setInterval(() => {
-            group.show = !group.show;
-        }, 1000)
-    }, 1000);
-    
-    map.on('click', 'maine', features => {
-        if (!measureControl.isDrawing)
-            console.log(features)
-    })
 
-    console.log(measureControl.layerIds);
-})
+// map.on('load', () => {
+//     setTimeout(() => {
+//         setInterval(() => {
+//             group.show = !group.show;
+//         }, 1000)
+//     }, 1000);
+    
+//     map.on('click', 'maine', features => {
+//         if (!measureControl.isDrawing)
+//             console.log(features)
+//     })
+
+//     console.log(measureControl.layerIds);
+// })

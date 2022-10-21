@@ -72,9 +72,9 @@ export default class MeasureControl implements IControl {
         return this.currentMeasure !== undefined;
     }
 
-    get layerIds(){
+    get layerIds() {
         let ids = new Array<string>();
-        this.measures.forEach(m=>{
+        this.measures.forEach(m => {
             ids = ids.concat(m.measure.layerIds);
         })
         return ids;

@@ -48,16 +48,17 @@ export default class LayerGroup {
      * @param layer mapbox 图层
      */
     add(layer: AnyLayer) {
-        if (this.map.getLayer(layer.id))
-            throw Error(`layer id : ${layer.id} already existed`);
-
         const map = this.map;
-        const onMapLoadHandle = function () {
-            map.addLayer(layer);
-            map.off('load', onMapLoadHandle);
+
+        // 如果不存在图层则创建图层
+        if (!map.getLayer(layer.id)) {
+            const onMapLoadHandle = function () {
+                map.addLayer(layer);
+                map.off('load', onMapLoadHandle);
+            }
+            this.map.on('load', onMapLoadHandle)
         }
 
-        this.map.on('load', onMapLoadHandle)
         this._layerIds.push(layer.id);
     }
 
@@ -76,5 +77,15 @@ export default class LayerGroup {
     removeAll() {
         this._layerIds.forEach(id => this.map.removeLayer(id));
         this._layerIds.length = 0;
+    }
+
+    /**
+     * 图层组整体移动
+     * @param beforeId 前面的图层 如果为空则图层组置顶
+     */
+    moveTo(beforeId?: string | undefined) {
+        this.layerIds.forEach(id => {
+            this.map.moveLayer(id, beforeId);
+        });
     }
 }
