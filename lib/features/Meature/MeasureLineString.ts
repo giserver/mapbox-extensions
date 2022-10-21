@@ -74,8 +74,7 @@ export default class MeasureLineString extends MeasureBase {
     }
 
     protected onInit(): void {
-
-        this.map.addLayer({
+        this.layerGroup.add({
             id: this.id,
             type: 'line',
             source: this.id,
@@ -84,9 +83,9 @@ export default class MeasureLineString extends MeasureBase {
                 'line-color': this.options.lineColor,
                 'line-width': this.options.lineWidth,
             }
-        })
+        });
 
-        this.map.addLayer({
+        this.layerGroup.add({
             id: this.pointSourceId,
             type: 'circle',
             source: this.pointSourceId,
@@ -97,7 +96,7 @@ export default class MeasureLineString extends MeasureBase {
             filter: ['!=', ['get', 'center'], true]
         })
 
-        this.map.addLayer({
+        this.layerGroup.add({
             id: this.pointSourceId + "_font",
             type: 'symbol',
             source: this.pointSourceId,
@@ -111,8 +110,6 @@ export default class MeasureLineString extends MeasureBase {
             },
             filter: this.options.showCenterText ? ['all'] : ['!=', ['get', 'center'], true]
         })
-
-        this.layerIds.push(...[this.id, this.pointSourceId, this.pointSourceId + "_font"]);
     }
 
     protected onStart(): void {

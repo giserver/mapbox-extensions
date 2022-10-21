@@ -48,15 +48,10 @@ export default class LayerGroup {
      * @param layer mapbox 图层
      */
     add(layer: AnyLayer) {
-        const map = this.map;
 
         // 如果不存在图层则创建图层
-        if (!map.getLayer(layer.id)) {
-            const onMapLoadHandle = function () {
-                map.addLayer(layer);
-                map.off('load', onMapLoadHandle);
-            }
-            this.map.on('load', onMapLoadHandle)
+        if (!this.map.getLayer(layer.id)) {
+            this.map.addLayer(layer);
         }
 
         this._layerIds.push(layer.id);

@@ -1,10 +1,12 @@
 import { GeoJSONSource, Map } from 'mapbox-gl'
 import { createUUID } from '../utils';
 import { MeasureType } from ".";
+import LayerGroup from '../LayerGroup';
 
 export default abstract class MeasureBase {
     readonly abstract type: MeasureType;
-    readonly layerIds = new Array<string>();
+    readonly layerGroup: LayerGroup;
+
     protected geojson: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {
         'type': 'FeatureCollection',
         'features': []
@@ -50,6 +52,7 @@ export default abstract class MeasureBase {
 
     constructor(protected map: Map) {
         this.id = createUUID();
+        this.layerGroup = new LayerGroup(this.id, map);
         this.map.on('load', () => {
             this.map.addSource(this.id, {
                 type: 'geojson',
@@ -67,35 +70,13 @@ export default abstract class MeasureBase {
     }
 
     /**
-     * 更新绘制图形的数据
-     */
-    protected updateGeometryDataSource() {
-        const source = this.map.getSource(this.id) as GeoJSONSource;
-        source.setData(this.geojson);
-    }
-
-    /**
-     * 更新点状数据
-     */
-    protected updatePointDataSource() {
-        const source = this.map.getSource(this.pointSourceId) as GeoJSONSource;
-        source.setData(this.geojsonPoint);
-    }
-
-    /**
-   * 获取点状数据的id
-   */
-    protected get pointSourceId() {
-        return this.id + "_point";
-    }
-
-    /**
      * 开始测量
      */
     start() {
         this._isDrawing = true;
         this.map.getCanvas().style.cursor = 'crosshair';
         this.map.doubleClickZoom.disable();
+        this.layerGroup.moveTo();
         this.onStart();
     }
 
@@ -125,6 +106,36 @@ export default abstract class MeasureBase {
      * todo : 暂时没有想好怎么实现
      */
     destroy() {
+        // 清除数据
+        this.clear();
 
+        // 删除所有图层
+        this.layerGroup.removeAll();
+
+        // 删除图层组
+        this.map.removeLayerGroup(this.id);
+    }
+
+    /**
+ * 更新绘制图形的数据
+ */
+    protected updateGeometryDataSource() {
+        const source = this.map.getSource(this.id) as GeoJSONSource;
+        source.setData(this.geojson);
+    }
+
+    /**
+     * 更新点状数据
+     */
+    protected updatePointDataSource() {
+        const source = this.map.getSource(this.pointSourceId) as GeoJSONSource;
+        source.setData(this.geojsonPoint);
+    }
+
+    /**
+   * 获取点状数据的id
+   */
+    protected get pointSourceId() {
+        return this.id + "_point";
     }
 }

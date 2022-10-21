@@ -44,7 +44,7 @@ export default class MeasurePoint extends MeasureBase {
     }
 
     protected onInit(): void {
-        this.map.addLayer({
+        this.layerGroup.add({
             id: this.id,
             type: 'circle',
             source: this.id,
@@ -52,9 +52,9 @@ export default class MeasurePoint extends MeasureBase {
             paint: {
                 'circle-color': this.options.pointColor,
             }
-        })
+        });
 
-        this.map.addLayer({
+        this.layerGroup.add({
             id: this.id + "_font",
             type: 'symbol',
             source: this.id,
@@ -67,8 +67,6 @@ export default class MeasurePoint extends MeasureBase {
                 'text-color': this.options.textColor
             }
         })
-
-        this.layerIds.push(...[this.id, this.id + "_font"]);
     }
 
     protected onStart(): void {

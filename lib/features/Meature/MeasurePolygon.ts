@@ -53,7 +53,7 @@ export default class MeasurePolygon extends MeasureBase {
     }
 
     protected onInit(): void {
-        this.map.addLayer({
+        this.layerGroup.add({
             id: this.id,
             type: 'fill',
             source: this.id,
@@ -65,7 +65,7 @@ export default class MeasurePolygon extends MeasureBase {
             }
         });
 
-        this.map.addLayer({
+        this.layerGroup.add({
             id: this.pointSourceId,
             type: 'symbol',
             source: this.pointSourceId,
@@ -76,9 +76,7 @@ export default class MeasurePolygon extends MeasureBase {
             paint: {
                 'text-color': this.options.textColor
             }
-        })
-
-        this.layerIds.push(...[this.id,this.pointSourceId]);
+        });
     }
 
     protected onStart(): void {

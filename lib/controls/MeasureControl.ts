@@ -75,9 +75,24 @@ export default class MeasureControl implements IControl {
     get layerIds() {
         let ids = new Array<string>();
         this.measures.forEach(m => {
-            ids = ids.concat(m.measure.layerIds);
+            ids = ids.concat(m.measure.layerGroup.layerIds);
         })
         return ids;
+    }
+
+    stop() {
+        if (this.currentMeasure) {
+            const type = this.currentMeasure.type;
+
+            // 停止测量
+            this.currentMeasure.stop();
+            // 颜色恢复默认
+            this.measures.get(this.currentMeasure.type)!.controlElement!.style.background = this.btnBgColor!
+
+            this.currentMeasure = undefined;
+
+            return type;
+        }
     }
 
     onAdd(map: Map): HTMLElement {
@@ -96,19 +111,14 @@ export default class MeasureControl implements IControl {
         const createClickMeasureButtonHandler = (measureType: MeasureType) => {
             return () => {
 
-                this.measures.forEach(v => {
-                    v.controlElement!.style.background = this.btnBgColor!;
-                })
+                // 停止测量 如果当前测量类型按钮再次点击 则取消测量
+                if (this.stop() === measureType)
+                    return;
 
-                if (this.currentMeasure) {
-                    this.currentMeasure.stop();
-
-                    if (this.currentMeasure.type === measureType) {
-                        this.currentMeasure = undefined;
-                        return;
-                    }
-                }
-
+                // 根据类型获取测量模式
+                // 将这个测量模式的按钮设置为激活状态样式
+                // 设置当前的测量模式
+                // 测量开始
                 const measureProps = this.measures.get(measureType)!;
                 measureProps.controlElement!.style.background = this.btnActiveColor!;
                 this.currentMeasure = measureProps.measure;
@@ -129,12 +139,14 @@ export default class MeasureControl implements IControl {
     }
 
     onRemove(map: Map): void {
+        this.measures.forEach(m => m.measure.destroy());
     }
 
     getDefaultPosition?: (() => string) | undefined;
 
     private createButton(svg: string, onclick: () => (boolean | void)) {
         const div = document.createElement('div');
+        div.id = "jas-measures";
         const style = div.style;
         style.display = 'flex';
         style.justifyContent = 'center';
