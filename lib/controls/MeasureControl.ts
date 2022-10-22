@@ -1,5 +1,8 @@
 import { IControl, Map } from "mapbox-gl";
-import { MeasureBase, MeasureLineString, MeasureLineStringOptions, MeasurePoint, MeasurePointOptions, MeasurePolygon, MeasurePolygonOptions, MeasureType } from "../features/meature";
+import MeasureBase, { MeasureType } from "../features/Meature/MeasureBase";
+import MeasurePoint, { MeasurePointOptions } from "../features/Meature/MeasurePoint";
+import MeasureLineString, { MeasureLineStringOptions } from "../features/Meature/MeasureLineString";
+import MeasurePolygon, { MeasurePolygonOptions } from "../features/Meature/MeasurePolygon";
 import { Dict } from "../features/utils";
 
 export interface MeasureControlOptions {

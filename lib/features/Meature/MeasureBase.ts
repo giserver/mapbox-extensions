@@ -1,7 +1,8 @@
 import { GeoJSONSource, Map } from 'mapbox-gl'
 import { createUUID } from '../utils';
-import { MeasureType } from ".";
 import LayerGroup from '../LayerGroup';
+
+export type MeasureType = 'Point' | 'LineString' | 'Polygon'
 
 export default abstract class MeasureBase {
     readonly abstract type: MeasureType;

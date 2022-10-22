@@ -1,9 +1,8 @@
 import * as turf from '@turf/turf';
 import { Polygon } from "@turf/turf";
 import { EventData, Map, MapMouseEvent } from "mapbox-gl";
-import { MeasureType } from ".";
 import { createUUID, setDefaultValue } from '../utils';
-import MeasureBase from "./MeasureBase";
+import MeasureBase, { MeasureType } from "./MeasureBase";
 
 export interface MeasurePolygonOptions {
     /**

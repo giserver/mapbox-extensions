@@ -1,7 +1,6 @@
 import { Map, EventData, MapMouseEvent } from "mapbox-gl";
 import { createUUID, setDefaultValue } from "../utils";
-import MeasureBase from "./MeasureBase";
-import { MeasureType } from ".";
+import MeasureBase, { MeasureType } from "./MeasureBase";
 
 export interface MeasurePointOptions {
 

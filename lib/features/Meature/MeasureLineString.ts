@@ -2,8 +2,7 @@ import * as turf from "@turf/turf";
 import { LineString } from "@turf/turf";
 import { MapMouseEvent, EventData, Map } from "mapbox-gl";
 import { createUUID, setDefaultValue } from "../utils";
-import MeasureBase from "./MeasureBase";
-import { MeasureType } from ".";
+import MeasureBase, { MeasureType } from "./MeasureBase";
 
 export interface MeasureLineStringOptions {
     /**
