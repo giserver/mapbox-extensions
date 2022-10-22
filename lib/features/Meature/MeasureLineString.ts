@@ -144,15 +144,14 @@ export default class MeasureLineString extends MeasureBase {
     private onMapClickHandler = (e: MapMouseEvent & EventData) => {
         const point = [e.lngLat.lng, e.lngLat.lat];
         let distance = "0";
-        let featureId = createUUID();
 
         // 判断是否已经落笔
         if (this.lineing) {
-            // 获取最近一次的linestring
             const lastPoint = this.currentLine.coordinates[this.currentLine.coordinates.length - 2];
+            if (!lastPoint) // 防止双击
+                return;
             this.currentLine.coordinates.push(point);
             distance = this.getDistanceString(this.currentLine);
-            featureId = this.currentFeature.id!.toString();
 
             // 添加中间点
             const centerPoint = [(point[0] + lastPoint[0]) / 2, (point[1] + lastPoint[1]) / 2];
@@ -165,7 +164,7 @@ export default class MeasureLineString extends MeasureBase {
                 },
                 properties: {
                     distance: segment,
-                    parentId: featureId,
+                    parentId: this.currentFeature.id,
                     center: true
                 }
             })
@@ -174,7 +173,7 @@ export default class MeasureLineString extends MeasureBase {
             this.lineing = true;
             this.geojson.features.push({
                 type: 'Feature',
-                id: featureId,
+                id: createUUID(),
                 geometry: {
                     type: 'LineString',
                     coordinates: [point]
@@ -194,7 +193,7 @@ export default class MeasureLineString extends MeasureBase {
             },
             properties: {
                 distance,
-                parentId: featureId
+                parentId: this.currentFeature.id
             }
         })
 
@@ -209,13 +208,12 @@ export default class MeasureLineString extends MeasureBase {
         this.map.off('mousemove', this.onMouseMoveHandler);
         this.map.off('contextmenu', this.onRightClickHandler);
 
-        // 排除最后一个点 中点
+        // 排除最后一个点 动态点
         this.currentLine.coordinates.pop();
-        this.geojsonPoint.features.pop();
-        this.geojsonPoint.features.pop();
+        this.currentLine.coordinates.pop();
 
         // 如果直接双击，删除本次测量
-        if (this.currentLine.coordinates.length === 1) {
+        if (this.currentLine.coordinates.length < 2) {
             this.geojson.features.pop();
             this.geojsonPoint.features.pop();
         }

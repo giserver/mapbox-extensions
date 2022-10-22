@@ -38,7 +38,7 @@ export interface MeasurePolygonOptions {
 
 export default class MeasurePolygon extends MeasureBase {
     type: MeasureType = 'Polygon';
-    private drawing = false;
+    private polygoning = false;
 
     /**
      *
@@ -88,11 +88,11 @@ export default class MeasurePolygon extends MeasureBase {
         this.map.on('dblclick', this.onMapDoubleClickHandler);
     }
     protected onClear(): void {
-        this.drawing = false;
+        this.polygoning = false;
         this.map.off('mousemove', this.onMouseMoveHandler);
     }
     protected onStop(): void {
-        this.drawing = false;
+        this.polygoning = false;
         this.map.off('mousemove', this.onMouseMoveHandler);
         this.map.off('click', this.onMapClickHandler);
         this.map.off('dblclick', this.onMapDoubleClickHandler);
@@ -100,17 +100,16 @@ export default class MeasurePolygon extends MeasureBase {
 
     private onMapClickHandler = (e: MapMouseEvent & EventData) => {
         const point = [e.lngLat.lng, e.lngLat.lat];
-        let featureId = createUUID();
 
         // 判断是否已经落笔
-        if (this.drawing) {
+        if (this.polygoning) {
             this.currentPolygon.coordinates[0].push(point);
 
         } else {
-            this.drawing = true;
+            this.polygoning = true;
             this.geojson.features.push({
                 type: 'Feature',
-                id: featureId,
+                id: createUUID(),
                 geometry: {
                     type: 'Polygon',
                     coordinates: [[point]]
@@ -126,7 +125,7 @@ export default class MeasurePolygon extends MeasureBase {
     };
 
     private onMapDoubleClickHandler = (e: MapMouseEvent & EventData) => {
-        this.drawing = false;
+        this.polygoning = false;
         this.map.off('mousemove', this.onMouseMoveHandler);
         this.map.off('contextmenu', this.onRightClickHandler);
 
@@ -137,6 +136,7 @@ export default class MeasurePolygon extends MeasureBase {
             const center = turf.center(this.currentPolygon);
             const area = this.getAreaString(this.currentPolygon);
             center.properties = {
+                parentId: this.currentFeature.id,
                 area
             };
 
