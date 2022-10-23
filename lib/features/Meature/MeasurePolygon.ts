@@ -135,8 +135,8 @@ export default class MeasurePolygon extends MeasureBase {
         } else {
             const center = turf.center(this.currentPolygon);
             const area = this.getAreaString(this.currentPolygon);
+            center.id = this.currentFeature.id;
             center.properties = {
-                parentId: this.currentFeature.id,
                 area
             };
 

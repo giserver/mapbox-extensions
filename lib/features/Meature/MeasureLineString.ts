@@ -158,13 +158,13 @@ export default class MeasureLineString extends MeasureBase {
             const segment = this.getDistanceString({ type: 'LineString', coordinates: [lastPoint, point] });
             this.geojsonPoint.features.push({
                 type: 'Feature',
+                id: this.currentFeature.id,
                 geometry: {
                     type: 'Point',
                     coordinates: centerPoint,
                 },
                 properties: {
                     distance: segment,
-                    parentId: this.currentFeature.id,
                     center: true
                 }
             })
@@ -187,13 +187,13 @@ export default class MeasureLineString extends MeasureBase {
 
         this.geojsonPoint.features.push({
             type: 'Feature',
+            id: this.currentFeature.id,
             geometry: {
                 type: 'Point',
                 coordinates: point
             },
             properties: {
-                distance,
-                parentId: this.currentFeature.id
+                distance
             }
         })
 
