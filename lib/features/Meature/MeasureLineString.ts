@@ -208,7 +208,7 @@ export default class MeasureLineString extends MeasureBase {
         this.map.off('mousemove', this.onMouseMoveHandler);
         this.map.off('contextmenu', this.onRightClickHandler);
 
-        // 排除最后一个点 动态点
+        // 排除最后一个点和动态点
         this.currentLine.coordinates.pop();
         this.currentLine.coordinates.pop();
 
@@ -217,6 +217,12 @@ export default class MeasureLineString extends MeasureBase {
             this.geojson.features.pop();
             this.geojsonPoint.features.pop();
         }
+        else { // 删除最后一个点和动态点
+            this.geojsonPoint.features.pop();
+            this.geojsonPoint.features.pop();
+        }
+
+        console.log(this.geojson, this.geojsonPoint);
 
         // 提交更新
         this.updateGeometryDataSource();
