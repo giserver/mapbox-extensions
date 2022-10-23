@@ -23,10 +23,10 @@ map.on('load', () => {
             'geometry': {
                 'type': 'Polygon',
                 'coordinates': [[
-                    [0,0],
-                [0,2],
-                [-3,2],
-                [-3,0],
+                    [0, 0],
+                    [0, 2],
+                    [-3, 2],
+                    [-3, 0],
                 ]]
             },
             'properties': {
@@ -42,10 +42,10 @@ map.on('load', () => {
             'geometry': {
                 'type': 'Polygon',
                 'coordinates': [[
-                    [0,-1],
-                [0,1],
-                [-2,1],
-                [-2,-1],
+                    [0, -1],
+                    [0, 1],
+                    [-2, 1],
+                    [-2, -1],
                 ]]
             },
             'properties': {
@@ -61,10 +61,10 @@ map.on('load', () => {
             'geometry': {
                 'type': 'Polygon',
                 'coordinates': [[
-                    [2,-2],
-                [2,1],
-                [-1,1],
-                [-1,-2],
+                    [2, -2],
+                    [2, 1],
+                    [-1, 1],
+                    [-1, -2],
                 ]]
             },
             'properties': {
@@ -74,16 +74,16 @@ map.on('load', () => {
     });
 
     map.addLayer({
-            'id': 'red',
-            'type': 'fill',
-            'source': 'polygon1',
-            'layout': {},
-            'paint': {
-                'fill-color': 'red',
-                'fill-opacity': 0.8
-            }
+        'id': 'red',
+        'type': 'fill',
+        'source': 'polygon1',
+        'layout': {},
+        'paint': {
+            'fill-color': 'red',
+            'fill-opacity': 0.8
+        }
     })
-    
+
     map.addLayer({
         'id': 'green',
         'type': 'fill',
@@ -116,10 +116,10 @@ map.on('load', () => {
                 'geometry': {
                     'type': 'Polygon',
                     'coordinates': [[
-                        [5,5],
-                    [5,6],
-                    [4,6],
-                    [4,5],
+                        [5, 5],
+                        [5, 6],
+                        [4, 6],
+                        [4, 5],
                     ]]
                 },
                 'properties': {
@@ -135,15 +135,15 @@ map.on('load', () => {
     })
 })
 
-const layerIds = ['red', 'green', 'blue','yellow'];
+const layerIds = ['red', 'green', 'blue', 'yellow'];
 map.on('click', layerIds, e => {
     let maxIndex = 0;
     let maxId = "";
-     
-    e.features?.forEach(x => { 
+
+    e.features?.forEach(x => {
         const li = x.layer.id;
         const index = map.getStyle().layers.findIndex(y => y.id === li);
-        
+
         if (index > maxIndex) {
             maxId = li;
             maxIndex = index;
@@ -160,66 +160,15 @@ document.getElementById("ctrl-change")?.addEventListener('click', () => {
     if (changed) {
         map.moveLayer('blue');
     }
-    else
-    {
+    else {
         map.moveLayer('red');
     }
 
     changed = !changed;
 });
 
-
-
-// const group = map.addLayerGroup('polygon-group');
-// group.add({
-//     'id': 'maine',
-//     'type': 'fill',
-//     'source': 'source-polygon',
-//     'layout': {},
-//     'paint': {
-//         'fill-color': '#088',
-//         'fill-opacity': 0.8
-//     }
-// });
-
-// group.add({
-//     'id': 'maine-line',
-//     type: 'line',
-//     source: 'source-polygon',
-//     layout: {},
-//     paint: {
-//         "line-color": 'red',
-//         "line-width": 3
-//     }
-// })
-
-// group.add({
-//     id: 'maine-symble',
-//     type: 'symbol',
-//     source: 'source-polygon',
-//     layout: {
-//         "text-field": ['get', 'title']
-//     },
-//     paint: {
-//     }
-// })
-
 const measureControl = new MeasureControl({
+    geometryClick: true
 });
+
 map.addControl(measureControl);
-
-
-// map.on('load', () => {
-//     setTimeout(() => {
-//         setInterval(() => {
-//             group.show = !group.show;
-//         }, 1000)
-//     }, 1000);
-    
-//     map.on('click', 'maine', features => {
-//         if (!measureControl.isDrawing)
-//             console.log(features)
-//     })
-
-//     console.log(measureControl.layerIds);
-// })

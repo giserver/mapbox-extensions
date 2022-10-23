@@ -3,17 +3,17 @@ import { Map, AnyLayer } from 'mapbox-gl'
 /**
 * 图层组
 */
-export default class LayerGroup {
+class LayerGroupBase<T extends AnyLayer> {
 
     private _show = true;
-    private _layerIds: string[] = [];
+    protected _layers = Array<T>();
 
     /**
      * 创建图层组
      * @param id 图层组id
      * @param map mapboxgl.Map
      */
-    constructor(id: string, private map: Map) {
+    constructor(id: string, protected map: Map) {
         if (!id.trim())
             throw Error('layer-group id can not be empty or white');
 
@@ -32,7 +32,7 @@ export default class LayerGroup {
 
     set show(value: boolean) {
         const visibility = value ? "visible" : "none";
-        this._layerIds.forEach(id => this.map.setLayoutProperty(id, "visibility", visibility));
+        this.layerIds.forEach(id => this.map.setLayoutProperty(id, "visibility", visibility));
         this._show = value;
     }
 
@@ -40,21 +40,21 @@ export default class LayerGroup {
      * 所有的layer id
      */
     get layerIds() {
-        return this._layerIds;
+        return this._layers.map(l => l.id);
     }
 
     /**
      * 添加图层
      * @param layer mapbox 图层
      */
-    add(layer: AnyLayer) {
+    add(layer: T) {
 
         // 如果不存在图层则创建图层
         if (!this.map.getLayer(layer.id)) {
             this.map.addLayer(layer);
         }
 
-        this._layerIds.push(layer.id);
+        this._layers.push(layer);
     }
 
     /**
@@ -63,15 +63,15 @@ export default class LayerGroup {
      */
     remove(id: string) {
         this.map.removeLayer(id);
-        this._layerIds = this._layerIds.filter(x => x !== id);
+        this._layers = this._layers.filter(l => l.id !== id);
     }
 
     /**
      * 删除所有图层
      */
     removeAll() {
-        this._layerIds.forEach(id => this.map.removeLayer(id));
-        this._layerIds.length = 0;
+        this._layers.forEach(l => this.map.removeLayer(l.id));
+        this._layers.length = 0;
     }
 
     /**
@@ -83,4 +83,8 @@ export default class LayerGroup {
             this.map.moveLayer(id, beforeId);
         });
     }
+}
+
+export default class LayerGroup extends LayerGroupBase<AnyLayer>{
+
 }

@@ -161,6 +161,7 @@ export default class MeasureLineString extends MeasureBase {
                     coordinates: centerPoint,
                 },
                 properties: {
+                    id: this.currentFeature.id,
                     distance: segment,
                     center: true
                 }
@@ -168,14 +169,17 @@ export default class MeasureLineString extends MeasureBase {
 
         } else {
             this._isDrawing = true;
+            const id = createUUID();
             this.geojson.features.push({
                 type: 'Feature',
-                id: createUUID(),
+                id,
                 geometry: {
                     type: 'LineString',
                     coordinates: [point]
                 },
-                properties: {}
+                properties: {
+                    id
+                }
             });
 
             this.map.on('mousemove', this.onMouseMoveHandler);
@@ -190,6 +194,7 @@ export default class MeasureLineString extends MeasureBase {
                 coordinates: point
             },
             properties: {
+                id: this.currentFeature.id,
                 distance
             }
         })

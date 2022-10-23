@@ -104,14 +104,17 @@ export default class MeasurePolygon extends MeasureBase {
 
         } else {
             this._isDrawing = true;
+            const id = createUUID();
             this.geojson.features.push({
                 type: 'Feature',
-                id: createUUID(),
+                id,
                 geometry: {
                     type: 'Polygon',
                     coordinates: [[point]]
                 },
-                properties: {}
+                properties: {
+                    id
+                }
             });
 
             this.map.on('mousemove', this.onMouseMoveHandler);
@@ -134,7 +137,8 @@ export default class MeasurePolygon extends MeasureBase {
             const area = this.getAreaString(this.currentPolygon);
             center.id = this.currentFeature.id;
             center.properties = {
-                area
+                area,
+                id: this.currentFeature.id
             };
 
             this.geojsonPoint.features.push(center);

@@ -5,9 +5,14 @@ import MeasureBase, { MeasureType } from "./MeasureBase";
 export interface MeasurePointOptions {
 
     /**
-         * 经纬度文字的大小
-         */
+     * 经纬度文字的大小
+     */
     textSize?: number,
+
+    /**
+     * 
+     */
+    pointSize?: number,
 
     /**
     * 文字颜色
@@ -38,6 +43,7 @@ export default class MeasurePoint extends MeasureBase {
      */
     constructor(map: Map, private options: MeasurePointOptions = {}) {
         setDefaultValue(options, 'textSize', 12);
+        setDefaultValue(options, 'pointSize', 5);
         setDefaultValue(options, 'textColor', "#000000");
         setDefaultValue(options, 'textOffsetY', -1.2);
         setDefaultValue(options, 'pointColor', "#000000");
@@ -53,6 +59,7 @@ export default class MeasurePoint extends MeasureBase {
             layout: {},
             paint: {
                 'circle-color': this.options.pointColor,
+                'circle-radius': this.options.pointSize
             }
         });
 
@@ -84,15 +91,17 @@ export default class MeasurePoint extends MeasureBase {
     }
 
     private onMapClickHandle = (e: MapMouseEvent & EventData) => {
+        const id = createUUID();
         this.geojson.features.push({
             type: 'Feature',
-            id: createUUID(),
+            id,
             geometry: {
                 type: 'Point',
                 coordinates: [e.lngLat.lng, e.lngLat.lat],
             },
             properties: {
-                "coord": this.options.createText!(e.lngLat.lng, e.lngLat.lat)
+                "coord": this.options.createText!(e.lngLat.lng, e.lngLat.lat),
+                id
             }
         });
 

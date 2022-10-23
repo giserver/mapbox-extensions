@@ -31,6 +31,9 @@ group.show = true;
 
 console.log(group.layerIds); // ['layerid']
 
+group.moveTo(); // move all layers in group to front
+group.moveTo("beforeId"); // move all layers in group to the back of beforeId layer
+
 group.remove('layerid');
 group.removeAll();
 
@@ -57,3 +60,6 @@ map.addControl(new MeasureControl(options)) // options can be null
 - left double click : finish measure and start next
 
 you can also config custom ui with this three class of measure， you can find all public functions in [MeasureBase](./lib/features/Meature/MeasureBase.ts), custom is so easy.
+
+*add*  
+- [MeasureControlOptions](./lib/controls/MeasureControl.ts) `geometryClick` creat measure geometry click handler to popup Copy/Delete feature

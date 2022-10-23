@@ -1,4 +1,4 @@
-import { GeoJSONSource, Map, Marker, Popup } from 'mapbox-gl'
+import { GeoJSONSource, Map } from 'mapbox-gl'
 import { createUUID } from '../utils';
 import LayerGroup from '../LayerGroup';
 
@@ -102,6 +102,21 @@ export default abstract class MeasureBase {
         this.onClear();
         this.updateGeometryDataSource();
         this.updatePointDataSource();
+    }
+
+    getFeatrue(id: string) {
+        return this.geojson.features.find(f => f.id === id);
+    }
+
+    deleteFeature(...ids: Array<string>) {
+        const source1 = this.map.getSource(this.id) as GeoJSONSource;
+        const source2 = this.map.getSource(this.pointSourceId) as GeoJSONSource;
+
+        this.geojson.features = this.geojson.features.filter(f => !ids.some(id => id === f.id));
+        this.geojsonPoint.features = this.geojsonPoint.features.filter(f => !ids.some(id => id === f.id));
+
+        source1.setData(this.geojson);
+        source2.setData(this.geojsonPoint);
     }
 
     /**

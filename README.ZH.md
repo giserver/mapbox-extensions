@@ -30,6 +30,9 @@ group.show = true;
 
 console.log(group.layerIds); // ['layerid']
 
+group.moveTo(); // 图层组的所有图层置顶
+group.moveTo("beforeId"); // 移动图层至id为beforeId的图层之后
+
 group.remove('layerid');
 group.removeAll();
 
@@ -44,7 +47,7 @@ const map = new mapboxgl.Map({...});
 map.addControl(new MeasureControl(options)) // 参数可以为空，或自行配置
 ```
 *参数*  
-- [MeasureControlOptions](./lib/controls/MeasureControl.ts)  
+- [MeasureControlOptions](./lib/controls/MeasureControl.ts)
 - [MeasurePointOptions](./lib/features/Meature/MeasurePoint.ts)  
 - [MeasureLineStringOptions](./lib/features/Meature/MeasureLineString.ts)  
 - [MeasurePolygonOptions](./lib/features/Meature/MeasurePolygon.ts)  
@@ -54,3 +57,6 @@ map.addControl(new MeasureControl(options)) // 参数可以为空，或自行配
 - 右键点击 : 删除一个点
 - 左键双击 : 完成测量，开始下一次测量  
 你也可以使用那三个测量类自定义ui，在 [MeasureBase](./lib/features/Meature/MeasureBase.ts) 这个抽象类中可以找到所有的公开方法，很简单😄
+
+*增加的功能*  
+- [MeasureControlOptions](./lib/controls/MeasureControl.ts) 参数中的 `geometryClick` 控制图形(包括文字标注)是否可以点击，点击后弹出 复制、删除功能
