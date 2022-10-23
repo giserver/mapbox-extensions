@@ -38,7 +38,6 @@ export interface MeasurePolygonOptions {
 
 export default class MeasurePolygon extends MeasureBase {
     type: MeasureType = 'Polygon';
-    private polygoning = false;
 
     /**
      *
@@ -88,11 +87,9 @@ export default class MeasurePolygon extends MeasureBase {
         this.map.on('dblclick', this.onMapDoubleClickHandler);
     }
     protected onClear(): void {
-        this.polygoning = false;
         this.map.off('mousemove', this.onMouseMoveHandler);
     }
     protected onStop(): void {
-        this.polygoning = false;
         this.map.off('mousemove', this.onMouseMoveHandler);
         this.map.off('click', this.onMapClickHandler);
         this.map.off('dblclick', this.onMapDoubleClickHandler);
@@ -102,11 +99,11 @@ export default class MeasurePolygon extends MeasureBase {
         const point = [e.lngLat.lng, e.lngLat.lat];
 
         // 判断是否已经落笔
-        if (this.polygoning) {
+        if (this._isDrawing) {
             this.currentPolygon.coordinates[0].push(point);
 
         } else {
-            this.polygoning = true;
+            this._isDrawing = true;
             this.geojson.features.push({
                 type: 'Feature',
                 id: createUUID(),
@@ -125,7 +122,7 @@ export default class MeasurePolygon extends MeasureBase {
     };
 
     private onMapDoubleClickHandler = (e: MapMouseEvent & EventData) => {
-        this.polygoning = false;
+        this._isDrawing = false;
         this.map.off('mousemove', this.onMouseMoveHandler);
         this.map.off('contextmenu', this.onRightClickHandler);
 

@@ -63,7 +63,6 @@ export interface MeasureLineStringOptions {
 
 export default class MeasureLineString extends MeasureBase {
     type: MeasureType = 'LineString';
-    private lineing: boolean = false;
 
     /**
      *
@@ -130,12 +129,10 @@ export default class MeasureLineString extends MeasureBase {
     }
 
     protected onClear(): void {
-        this.lineing = false;
         this.map.off('mousemove', this.onMouseMoveHandler);
     }
 
     protected onStop(): void {
-        this.lineing = false;
         this.map.off('mousemove', this.onMouseMoveHandler);
         this.map.off('click', this.onMapClickHandler);
         this.map.off('dblclick', this.onMapDoubleClickHandler);
@@ -146,7 +143,7 @@ export default class MeasureLineString extends MeasureBase {
         let distance = "0";
 
         // 判断是否已经落笔
-        if (this.lineing) {
+        if (this._isDrawing) {
             const lastPoint = this.currentLine.coordinates[this.currentLine.coordinates.length - 2];
             if (!lastPoint) // 防止双击
                 return;
@@ -170,7 +167,7 @@ export default class MeasureLineString extends MeasureBase {
             })
 
         } else {
-            this.lineing = true;
+            this._isDrawing = true;
             this.geojson.features.push({
                 type: 'Feature',
                 id: createUUID(),
@@ -203,7 +200,7 @@ export default class MeasureLineString extends MeasureBase {
 
     private onMapDoubleClickHandler = (e: MapMouseEvent & EventData) => {
         // 结束绘制
-        this.lineing = false;
+        this._isDrawing = false;
 
         this.map.off('mousemove', this.onMouseMoveHandler);
         this.map.off('contextmenu', this.onRightClickHandler);
@@ -221,8 +218,6 @@ export default class MeasureLineString extends MeasureBase {
             this.geojsonPoint.features.pop();
             this.geojsonPoint.features.pop();
         }
-
-        console.log(this.geojson, this.geojsonPoint);
 
         // 提交更新
         this.updateGeometryDataSource();

@@ -1,4 +1,4 @@
-import { GeoJSONSource, Map } from 'mapbox-gl'
+import { GeoJSONSource, Map, Marker, Popup } from 'mapbox-gl'
 import { createUUID } from '../utils';
 import LayerGroup from '../LayerGroup';
 
@@ -18,7 +18,10 @@ export default abstract class MeasureBase {
         'features': []
     };
 
-    private _isDrawing = false;
+    /**
+     * 是否正在绘制图形
+     */
+    protected _isDrawing = false;
 
     /**
      * 每一个测量模式的唯一id
@@ -73,7 +76,6 @@ export default abstract class MeasureBase {
      * 开始测量
      */
     start() {
-        this._isDrawing = true;
         this.map.getCanvas().style.cursor = 'crosshair';
         this.map.doubleClickZoom.disable();
         this.layerGroup.moveTo();
@@ -94,6 +96,7 @@ export default abstract class MeasureBase {
      * 清楚测量数据
      */
     clear() {
+        this._isDrawing = false;
         this.geojson.features.length = 0;
         this.geojsonPoint.features.length = 0;
         this.onClear();
@@ -117,8 +120,8 @@ export default abstract class MeasureBase {
     }
 
     /**
- * 更新绘制图形的数据
- */
+    * 更新绘制图形的数据
+    */
     protected updateGeometryDataSource() {
         const source = this.map.getSource(this.id) as GeoJSONSource;
         source.setData(this.geojson);
@@ -133,8 +136,8 @@ export default abstract class MeasureBase {
     }
 
     /**
-   * 获取点状数据的id
-   */
+     * 获取点状数据的id
+     */
     protected get pointSourceId() {
         return this.id + "_point";
     }
