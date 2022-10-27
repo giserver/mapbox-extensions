@@ -130,6 +130,7 @@ export default class MeasurePolygon extends MeasureBase {
         this.map.off('contextmenu', this.onRightClickHandler);
 
         this.currentPolygon.coordinates[0].pop();
+        this.currentPolygon.coordinates[0].pop();
         if (this.currentPolygon.coordinates[0].length < 3) {
             this.geojson.features.pop();
         } else {
