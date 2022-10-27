@@ -1,7 +1,7 @@
 import * as turf from "@turf/turf";
 import { LineString } from "@turf/turf";
 import { MapMouseEvent, EventData, Map } from "mapbox-gl";
-import { createUUID, setDefaultValue } from "../utils";
+import { createUUID, setDefaultValue } from "../../utils";
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
 export interface MeasureLineStringOptions extends MeasureOptions<GeoJSON.LineString> {

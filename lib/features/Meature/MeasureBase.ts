@@ -1,5 +1,5 @@
 import { GeoJSONSource, Map } from 'mapbox-gl'
-import { createUUID } from '../utils';
+import { createUUID } from '../../utils';
 import LayerGroup from '../LayerGroup';
 
 export type MeasureType = 'Point' | 'LineString' | 'Polygon'

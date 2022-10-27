@@ -1,6 +1,6 @@
 import { Map, AnyLayer, AnySourceData } from "mapbox-gl";
 import LayerGroup from './features/LayerGroup'
-import { Dict } from './features/utils';
+import { Dict } from './utils';
 
 import MeasureControl from "./controls/MeasureControl";
 

@@ -1,5 +1,5 @@
 import { Map, EventData, MapMouseEvent } from "mapbox-gl";
-import { createUUID, setDefaultValue } from "../utils";
+import { createUUID, setDefaultValue } from "../../utils";
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
 export interface MeasurePointOptions extends MeasureOptions<GeoJSON.Point> {

@@ -1,7 +1,7 @@
 import * as turf from '@turf/turf';
 import { Polygon } from "@turf/turf";
 import { EventData, Map, MapMouseEvent } from "mapbox-gl";
-import { createUUID, setDefaultValue } from '../utils';
+import { createUUID, setDefaultValue } from '../../utils';
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
 export interface MeasurePolygonOptions extends MeasureOptions<GeoJSON.Polygon> {
