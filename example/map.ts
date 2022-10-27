@@ -170,7 +170,7 @@ document.getElementById("ctrl-change")?.addEventListener('click', () => {
 const measureControl = new MeasureControl({
     geometryClick: true,
     measurePolygonOptions: {
-        onDrawed: (type, geometry) => { console.log(type, JSON.stringify(geometry)) }
+        onDrawed: (id, geometry) => { console.log(id, JSON.stringify(geometry)) }
     }
 });
 

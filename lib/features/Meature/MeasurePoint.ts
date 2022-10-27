@@ -2,7 +2,7 @@ import { Map, EventData, MapMouseEvent } from "mapbox-gl";
 import { createUUID, setDefaultValue } from "../utils";
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
-export interface MeasurePointOptions extends MeasureOptions {
+export interface MeasurePointOptions extends MeasureOptions<GeoJSON.Point> {
 
     /**
      * 经纬度文字的大小
@@ -105,7 +105,7 @@ export default class MeasurePoint extends MeasureBase {
             }
         });
 
-        this.options.onDrawed?.call(this, 'Point', this.geojson.features.at(-1)!.geometry);
+        this.options.onDrawed?.call(this, id, this.geojson.features.at(-1)!.geometry as GeoJSON.Point);
 
         this.updateGeometryDataSource();
     }

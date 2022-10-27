@@ -4,8 +4,8 @@ import LayerGroup from '../LayerGroup';
 
 export type MeasureType = 'Point' | 'LineString' | 'Polygon'
 
-export interface MeasureOptions {
-    onDrawed?: (type: MeasureType, geometry: GeoJSON.Geometry) => void;
+export interface MeasureOptions<G extends GeoJSON.Geometry> {
+    onDrawed?: (id: string, geometry: G) => void;
 }
 
 export default abstract class MeasureBase {

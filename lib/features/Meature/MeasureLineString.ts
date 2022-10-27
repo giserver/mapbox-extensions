@@ -4,7 +4,7 @@ import { MapMouseEvent, EventData, Map } from "mapbox-gl";
 import { createUUID, setDefaultValue } from "../utils";
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
-export interface MeasureLineStringOptions extends MeasureOptions {
+export interface MeasureLineStringOptions extends MeasureOptions<GeoJSON.LineString> {
     /**
      * 线颜色
      */
@@ -223,7 +223,7 @@ export default class MeasureLineString extends MeasureBase {
             this.geojsonPoint.features.pop();
             this.geojsonPoint.features.pop();
 
-            this.options.onDrawed?.call(this, 'LineString', this.currentLine);
+            this.options.onDrawed?.call(this, this.currentFeature.id!.toString(), this.currentLine);
         }
 
         // 提交更新

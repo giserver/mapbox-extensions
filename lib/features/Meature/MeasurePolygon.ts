@@ -4,7 +4,7 @@ import { EventData, Map, MapMouseEvent } from "mapbox-gl";
 import { createUUID, setDefaultValue } from '../utils';
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
-export interface MeasurePolygonOptions extends MeasureOptions {
+export interface MeasurePolygonOptions extends MeasureOptions<GeoJSON.Polygon> {
     /**
         * 内部颜色
         */
@@ -143,7 +143,7 @@ export default class MeasurePolygon extends MeasureBase {
             };
 
             this.geojsonPoint.features.push(center);
-            this.options.onDrawed?.call(this, 'Polygon', this.currentPolygon);
+            this.options.onDrawed?.call(this, this.currentFeature.id!.toString(), this.currentPolygon);
         }
 
         this.updateGeometryDataSource();
