@@ -168,7 +168,10 @@ document.getElementById("ctrl-change")?.addEventListener('click', () => {
 });
 
 const measureControl = new MeasureControl({
-    geometryClick: true
+    geometryClick: true,
+    measurePolygonOptions: {
+        onDrawed: (type, geometry) => { console.log(type, JSON.stringify(geometry)) }
+    }
 });
 
 map.addControl(measureControl);

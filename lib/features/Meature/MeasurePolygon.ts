@@ -2,9 +2,9 @@ import * as turf from '@turf/turf';
 import { Polygon } from "@turf/turf";
 import { EventData, Map, MapMouseEvent } from "mapbox-gl";
 import { createUUID, setDefaultValue } from '../utils';
-import MeasureBase, { MeasureType } from "./MeasureBase";
+import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
-export interface MeasurePolygonOptions {
+export interface MeasurePolygonOptions extends MeasureOptions {
     /**
         * 内部颜色
         */
@@ -142,6 +142,7 @@ export default class MeasurePolygon extends MeasureBase {
             };
 
             this.geojsonPoint.features.push(center);
+            this.options.onDrawed?.call(this, 'Polygon', this.currentPolygon);
         }
 
         this.updateGeometryDataSource();

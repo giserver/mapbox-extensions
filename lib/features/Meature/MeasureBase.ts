@@ -4,6 +4,10 @@ import LayerGroup from '../LayerGroup';
 
 export type MeasureType = 'Point' | 'LineString' | 'Polygon'
 
+export interface MeasureOptions {
+    onDrawed?: (type: MeasureType, geometry: GeoJSON.Geometry) => void;
+}
+
 export default abstract class MeasureBase {
     readonly abstract type: MeasureType;
     readonly layerGroup: LayerGroup;

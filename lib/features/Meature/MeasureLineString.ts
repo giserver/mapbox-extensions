@@ -2,9 +2,9 @@ import * as turf from "@turf/turf";
 import { LineString } from "@turf/turf";
 import { MapMouseEvent, EventData, Map } from "mapbox-gl";
 import { createUUID, setDefaultValue } from "../utils";
-import MeasureBase, { MeasureType } from "./MeasureBase";
+import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
-export interface MeasureLineStringOptions {
+export interface MeasureLineStringOptions extends MeasureOptions {
     /**
      * 线颜色
      */
@@ -222,6 +222,8 @@ export default class MeasureLineString extends MeasureBase {
         else { // 删除最后一个点和动态点
             this.geojsonPoint.features.pop();
             this.geojsonPoint.features.pop();
+
+            this.options.onDrawed?.call(this, 'LineString', this.currentLine);
         }
 
         // 提交更新
