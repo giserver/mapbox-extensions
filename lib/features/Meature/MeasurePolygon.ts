@@ -33,7 +33,12 @@ export interface MeasurePolygonOptions extends MeasureOptions<GeoJSON.Polygon> {
     /**
      *  创建面积文字,area为平方米
      */
-    createText?: (area: number) => string
+    createText?: (area: number) => string,
+
+    /**
+     *  计算长度显示的文字，length 单位为千米(km)
+     */
+    createLengthText?: (length: number) => string,
 }
 
 export default class MeasurePolygon extends MeasureBase {
@@ -46,12 +51,15 @@ export default class MeasurePolygon extends MeasureBase {
         setDefaultValue(options, 'polygonColor', "#ff0000");
         setDefaultValue(options, 'polygonOpacity', 0.5);
         setDefaultValue(options, 'polygonOutlineColor', "#000000");
-        setDefaultValue(options, 'textSize', 15);
+        setDefaultValue(options, 'textSize', 12);
         setDefaultValue(options, 'textColor', "#000000");
         setDefaultValue(options, 'createText', (area: number) => area > 1000000 ?
             `${(area / 1000000).toFixed(4)}km²` :
             `${area.toFixed(4)}m²`);
 
+        setDefaultValue(options, 'createLengthText', (length: number) => length > 1 ?
+            `${length.toFixed(3)}km` :
+            `${(length * 1000).toFixed(2)}m`);
         super(map);
     }
 
@@ -73,11 +81,12 @@ export default class MeasurePolygon extends MeasureBase {
             type: 'symbol',
             source: this.pointSourceId,
             layout: {
-                'text-field': ['get', 'area'],
+                'text-field': ['format', ['concat', "面积 : ", ['get', 'area']], {}, '\n', {}, ['concat', "周长 : ", ['get', 'length']], {}],
                 'text-size': this.options.textSize,
+                'text-justify': 'left'
             },
             paint: {
-                'text-color': this.options.textColor
+                'text-color': this.options.textColor,
             }
         });
     }
@@ -139,10 +148,12 @@ export default class MeasurePolygon extends MeasureBase {
 
             // 在中心点添加标注
             const center = turf.center(this.currentPolygon);
-            const area = this.getAreaString(this.currentPolygon);
+            const area = this.options.createText!(turf.area(this.currentFeature));
+            const length = this.options.createLengthText!(turf.length(this.currentFeature));
             center.id = this.currentFeature.id;
             center.properties = {
                 area,
+                length,
                 id: this.currentFeature.id
             };
 
@@ -182,10 +193,5 @@ export default class MeasurePolygon extends MeasureBase {
 
     private get currentPolygon() {
         return this.currentFeature.geometry as Polygon;
-    }
-
-    private getAreaString(polygon: Polygon) {
-        const area = turf.area(polygon);
-        return this.options.createText!(area);
     }
 }
