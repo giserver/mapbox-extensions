@@ -134,6 +134,10 @@ export default class MeasurePolygon extends MeasureBase {
         if (this.currentPolygon.coordinates[0].length < 3) {
             this.geojson.features.pop();
         } else {
+            // 添加第一个点 (闭合)
+            this.currentPolygon.coordinates[0].push(this.currentPolygon.coordinates[0][0]);
+
+            // 在中心点添加标注
             const center = turf.center(this.currentPolygon);
             const area = this.getAreaString(this.currentPolygon);
             center.id = this.currentFeature.id;
