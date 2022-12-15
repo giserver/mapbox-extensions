@@ -143,7 +143,7 @@ export default abstract class MeasureBase {
     */
     protected updateGeometryDataSource() {
         const source = this.map.getSource(this.id) as GeoJSONSource;
-        source.setData(this.geojson);
+        source && source.setData(this.geojson);
     }
 
     /**
@@ -151,7 +151,7 @@ export default abstract class MeasureBase {
      */
     protected updatePointDataSource() {
         const source = this.map.getSource(this.pointSourceId) as GeoJSONSource;
-        source.setData(this.geojsonPoint);
+        source && source.setData(this.geojsonPoint);
     }
 
     /**
