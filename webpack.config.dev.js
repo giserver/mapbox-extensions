@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const path = require('path');
 
 module.exports = {
     entry: './example/map.ts',
@@ -32,6 +33,7 @@ module.exports = {
     ],
     devServer: {
         port: 8085,
-        open: true
+        open: true,
+        static: path.join(__dirname, 'example'),
     }
 }

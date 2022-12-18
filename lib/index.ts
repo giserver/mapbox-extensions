@@ -46,6 +46,13 @@ declare module "mapbox-gl" {
          */
         changeStyle(style: string, preserveLayerIds: string[],
             options?: { diff?: boolean | undefined; localIdeographFontFamily?: string | undefined }): void
+
+        /**
+         * 加载多个图片
+         * @param images 图片数据 eg : {'image-name1':'image-src1','image-name2':'image-src2'} 
+         * @param loaded 所有数据加载完成回调
+         */
+        addImages(images: Record<string, string>, loaded: () => void): void
     }
 }
 
@@ -76,7 +83,6 @@ Map.prototype.removeLayerGroup = function (this: Map, id: string) {
     }
 }
 
-
 Map.prototype.changeStyle = function (this: Map, style: string, preserveLayerIds: string[],
     options?: { diff?: boolean | undefined; localIdeographFontFamily?: string | undefined }) {
 
@@ -106,4 +112,16 @@ Map.prototype.changeStyle = function (this: Map, style: string, preserveLayerIds
     map.on('style.load', onStyleLoadHandle);
 
     map.setStyle(style, options);
+}
+
+Map.prototype.addImages = function (this: Map, images: Record<string, string>, loaded: () => void) {
+    Object.getOwnPropertyNames(images).reduce((pre, cur) => () => {
+        this.loadImage(images[cur], (err, ret) => {
+            if (err) throw err;
+            if (!ret) throw new Error("image load error");
+
+            this.addImage(cur, ret);
+            pre();
+        })
+    }, loaded)();
 }

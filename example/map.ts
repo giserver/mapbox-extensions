@@ -133,6 +133,44 @@ map.on('load', () => {
             'fill-opacity': 0.8
         }
     })
+
+    map.addImages({ 'img1': '/relics.png', 'img2': '/relics.png' }, () => {
+        map.addLayer({
+            id: 'images',
+            type: 'symbol',
+            source: {
+                type: 'geojson',
+                data: {
+                    type: 'FeatureCollection',
+                    features: [
+                        {
+                            type: 'Feature',
+                            properties: {
+                                img: 'img1'
+                            },
+                            geometry: {
+                                type: 'Point',
+                                coordinates: [0, 0]
+                            }
+                        },
+                        {
+                            type: 'Feature',
+                            properties: {
+                                img: 'img2'
+                            },
+                            geometry: {
+                                type: 'Point',
+                                coordinates: [1, 1]
+                            }
+                        }
+                    ]
+                }
+            },
+            layout: {
+                'icon-image': ['get', 'img']
+            }
+        })
+    });
 })
 
 const layerIds = ['red', 'green', 'blue', 'yellow'];
