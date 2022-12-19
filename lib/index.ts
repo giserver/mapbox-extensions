@@ -53,6 +53,11 @@ declare module "mapbox-gl" {
          * @param loaded 所有数据加载完成回调
          */
         addImages(images: Record<string, string>, loaded: () => void): void
+
+        /**
+         * 销毁mapboxgl.Map实例(即使用map.remove())，并且删除所有图层组，在map document 卸载之前调用
+         */
+        destroy() :void
     }
 }
 
@@ -124,4 +129,12 @@ Map.prototype.addImages = function (this: Map, images: Record<string, string>, l
             pre();
         })
     }, loaded)();
+}
+
+Map.prototype.destroy = function(this:Map){
+    this.layerGroups.forEach((_,id)=>{
+        this.removeLayerGroup(id);
+    })
+
+    this.remove();
 }
