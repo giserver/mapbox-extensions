@@ -1,6 +1,7 @@
 import '../lib';
 import mapboxgl from 'mapbox-gl';
 import MeasureControl from '../lib/controls/MeasureControl';
+import SwitchMapControl from '../lib/controls/SwitchMapControl';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
 const lightStyle = 'mapbox://styles/mapbox/streets-v11';
@@ -15,7 +16,12 @@ const map = new mapboxgl.Map({
     style: lightStyle
 });
 
+map.addControl(new SwitchMapControl());
+map.addControl(new mapboxgl.NavigationControl());
+
 map.on('load', () => {
+
+
     map.addSource("polygon1", {
         type: 'geojson',
         data: {
