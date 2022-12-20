@@ -3,9 +3,11 @@ import LayerGroup from './features/LayerGroup'
 import { Dict } from './utils';
 
 import MeasureControl from "./controls/MeasureControl";
+import SwitchMapControl from "./controls/SwitchMapControl";
 
 export {
-    MeasureControl
+    MeasureControl,
+    SwitchMapControl
 }
 
 declare module "mapbox-gl" {
