@@ -58,5 +58,17 @@ map.addControl(new MeasureControl(options)) // 参数可以为空，或自行配
 - 左键双击 : 完成测量，开始下一次测量  
 你也可以使用那三个测量类自定义ui，在 [MeasureBase](./lib/features/Meature/MeasureBase.ts) 这个抽象类中可以找到所有的公开方法，很简单😄
 
-*增加的功能*  
+*增加的功能*
 - [MeasureControlOptions](./lib/controls/MeasureControl.ts) 参数中的 `geometryClick` 控制图形(包括文字标注)是否可以点击，点击后弹出 复制、删除功能
+
+### `切换底图`  
+这个仅仅是切换到卫星影像(由于setStyle会删除当前所有图层，这个之后考虑吧) , 您可以自定义 `textColor` `backgroundImage` 和显示名字 `name`  
+
+``` ts
+map.addControl(new SwitchMapControl({
+    satelliteOption: {
+        textColor: 'white',
+        //backgroundImage: '/relics.png'
+    }
+}));
+```

@@ -63,3 +63,16 @@ you can also config custom ui with this three class of measure， you can find a
 
 *add*  
 - [MeasureControlOptions](./lib/controls/MeasureControl.ts) `geometryClick` creat measure geometry click handler to popup Copy/Delete feature
+
+
+### `Change Base Map`  
+Just add a satellite layer and change visible , you can custom `textColor` `backgroundImage` and display `name`
+
+``` ts
+map.addControl(new SwitchMapControl({
+    satelliteOption: {
+        textColor: 'white',
+        //backgroundImage: '/relics.png'
+    }
+}));
+```
