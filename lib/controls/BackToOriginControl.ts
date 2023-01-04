@@ -31,6 +31,7 @@ export default class BackToOriginControl implements IControl{
         setDefaultValue(this.options,'zoom',map.getZoom());
 
         const div = document.createElement('div');
+        div.className = 'btn-jas-hover'
         const style = div.style;
         div.innerHTML = this.img;
         style.pointerEvents = 'auto';
@@ -46,6 +47,12 @@ export default class BackToOriginControl implements IControl{
         style.overflow = 'hidden';
         style.borderRadius = '4px';
         style.float = 'right';
+
+        div.innerHTML +=`<style>
+            .btn-jas-hover:hover{
+                background-color : #ddd !important;
+            }
+        </style>`;
 
         div.addEventListener('click',e=>{
             map.easeTo({
