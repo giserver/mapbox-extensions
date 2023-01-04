@@ -26,9 +26,25 @@ map.addControl(new SwitchMapControl({
     }
 }));
 
+let doodleControl: DoodleControl;
+let measureControl: MeasureControl;
 
+// 测量
+measureControl = new MeasureControl({
+    horizontal: true,
+    geometryClick: true,
+    onGeometryCopy: (geom: string) => { alert(`复制成功 : ${geom}`) },
+    onFeatureDelete: (id: string) => { alert(`删除成功 : ${id}`) },
+    onStart: () => { doodleControl.stop() },
+    measurePolygonOptions: {
+        onDrawed: (id, geometry) => { console.log(id, JSON.stringify(geometry)) }
+    }
+});
 
-
+doodleControl = new DoodleControl({
+    name: '画圈搜索',
+    onStart: () => { measureControl.stop() }
+})
 
 map.on('load', () => {
 
@@ -73,18 +89,8 @@ map.on('load', () => {
 
     map.addControl(new mapboxgl.NavigationControl())
 
-    map.addControl(new DoodleControl());
+    map.addControl(doodleControl);
 })
 
-// 测量
-const measureControl = new MeasureControl({
-    horizontal : true,
-    geometryClick: true,
-    onGeometryCopy: (geom: string) => { alert(`复制成功 : ${geom}`) },
-    onFeatureDelete: (id: string) => { alert(`删除成功 : ${id}`) },
-    measurePolygonOptions: {
-        onDrawed: (id, geometry) => { console.log(id, JSON.stringify(geometry)) }
-    }
-});
 map.addControl(measureControl);
 map.addControl(new BackToOriginControl());

@@ -7,11 +7,11 @@ import MeasurePolygon, { MeasurePolygonOptions } from "../features/Meature/Measu
 import { setDefaultValue, Dict, copyToClipboard, changeSvgColor } from "../utils";
 
 export interface MeasureControlOptions {
-    
+
     /**
      * 控件是否横置(default false)
      */
-    horizontal? : boolean;
+    horizontal?: boolean;
 
     /**
      * 按钮背景颜色
@@ -42,6 +42,8 @@ export interface MeasureControlOptions {
      * 复制完成
      */
     onGeometryCopy?: (geometry: string) => void;
+
+    onStart?: () => void;
 
     /** 
      * 测量点选项
@@ -131,10 +133,10 @@ export default class MeasureControl implements IControl {
         const style = div.style;
         style.display = 'flex';
         style.flexDirection = this.options.horizontal ? 'row' : 'column';
-        if(!this.options.horizontal)
+        if (!this.options.horizontal)
             style.width = '29px';
 
-        div.innerHTML =`<style>
+        div.innerHTML = `<style>
             .jas-ctrl:hover{
                 background-color : ${this.options.btnActiveColor} !important;
             }
@@ -158,7 +160,7 @@ export default class MeasureControl implements IControl {
 
     getDefaultPosition?: (() => string) | undefined;
 
-    private stop() {
+    stop() {
         if (this.currentMeasure) {
             const type = this.currentMeasure.type;
 
@@ -175,6 +177,8 @@ export default class MeasureControl implements IControl {
 
     private createClickMeasureButtonHandler(map: Map, measureType: MeasureType) {
         return () => {
+
+            this.options.onStart?.call(this);
 
             // 停止测量 如果当前测量类型按钮再次点击 则取消测量
             if (this.stop() === measureType) {
