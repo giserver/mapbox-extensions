@@ -4,10 +4,12 @@ import { Dict } from './utils';
 
 import MeasureControl from "./controls/MeasureControl";
 import SwitchMapControl from "./controls/SwitchMapControl";
+import BackToOriginControl from "./controls/BackToOriginControl";
 
 export {
     MeasureControl,
-    SwitchMapControl
+    SwitchMapControl,
+    BackToOriginControl,
 }
 
 declare module "mapbox-gl" {
