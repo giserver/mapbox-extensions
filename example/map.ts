@@ -3,6 +3,7 @@ import mapboxgl from 'mapbox-gl';
 import MeasureControl from '../lib/controls/MeasureControl';
 import SwitchMapControl from '../lib/controls/SwitchMapControl';
 import BackToOriginControl from '../lib/controls/BackToOriginControl';
+import DoodleControl from '../lib/controls/DoodleControl';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
 const lightStyle = 'mapbox://styles/mapbox/streets-v11';
@@ -27,16 +28,7 @@ map.addControl(new SwitchMapControl({
 
 
 
-// 测量
-const measureControl = new MeasureControl({
-    horizontal : true,
-    geometryClick: true,
-    onGeometryCopy: (geom: string) => { alert(`复制成功 : ${geom}`) },
-    onFeatureDelete: (id: string) => { alert(`删除成功 : ${id}`) },
-    measurePolygonOptions: {
-        onDrawed: (id, geometry) => { console.log(id, JSON.stringify(geometry)) }
-    }
-});
+
 
 map.on('load', () => {
 
@@ -80,7 +72,19 @@ map.on('load', () => {
     });
 
     map.addControl(new mapboxgl.NavigationControl())
+
+    map.addControl(new DoodleControl());
 })
 
+// 测量
+const measureControl = new MeasureControl({
+    horizontal : true,
+    geometryClick: true,
+    onGeometryCopy: (geom: string) => { alert(`复制成功 : ${geom}`) },
+    onFeatureDelete: (id: string) => { alert(`删除成功 : ${id}`) },
+    measurePolygonOptions: {
+        onDrawed: (id, geometry) => { console.log(id, JSON.stringify(geometry)) }
+    }
+});
 map.addControl(measureControl);
 map.addControl(new BackToOriginControl());

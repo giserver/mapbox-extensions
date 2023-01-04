@@ -61,7 +61,7 @@ export default class SwitchMapControl implements IControl {
     const style = div.style;
     const divSize = '89px';
 
-    div.className = 'switch-map-control';
+    div.className = 'jas-ctrl-switchmap';
     style.cursor = 'pointer';
     style.height = divSize;
     style.width = divSize;
@@ -77,7 +77,7 @@ export default class SwitchMapControl implements IControl {
 
     // 创建文字
     const text_div = document.createElement('div');
-    text_div.className = "switch-map-control-text";
+    text_div.className = "jas-ctrl-switchmap-text";
     text_div.style.position = 'absolute';
     text_div.style.fontWeight = '600';
     text_div.style.letterSpacing = '2px';

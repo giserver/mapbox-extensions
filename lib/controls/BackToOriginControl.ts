@@ -31,25 +31,18 @@ export default class BackToOriginControl implements IControl{
         setDefaultValue(this.options,'zoom',map.getZoom());
 
         const div = document.createElement('div');
-        div.className = 'btn-jas-hover'
+        div.className = 'jas-ctrl jas-ctrl-backtoorigin mapboxgl-ctrl mapboxgl-ctrl-group'
         const style = div.style;
         div.innerHTML = this.img;
-        style.pointerEvents = 'auto';
         style.cursor = 'pointer';
-        style.backgroundColor = '#ffffff';
         style.display= 'flex';
         style.justifyContent = 'center';
         style.alignItems = 'center';
         style.height = '29px';
         style.width = '29px';
-        style.margin = '10px 10px 0 0'
-        style.boxShadow = '0 0 0 2px rgb(0 0 0 / 10%)';
-        style.overflow = 'hidden';
-        style.borderRadius = '4px';
-        style.float = 'right';
 
         div.innerHTML +=`<style>
-            .btn-jas-hover:hover{
+            .jas-ctrl:hover{
                 background-color : #ddd !important;
             }
         </style>`;

@@ -127,19 +127,15 @@ export default class MeasureControl implements IControl {
         })
 
         const div = document.createElement('div');
+        div.className = "jas-ctrl-measure mapboxgl-ctrl mapboxgl-ctrl-group"
         const style = div.style;
-        style.pointerEvents = 'auto';
-        style.boxShadow = '0 0 0 2px rgb(0 0 0 / 10%)';
-        style.overflow = 'hidden';
-        style.borderRadius = '4px';
-        style.margin = '10px 10px 0 0'
         style.display = 'flex';
         style.flexDirection = this.options.horizontal ? 'row' : 'column';
         if(!this.options.horizontal)
             style.width = '29px';
 
         div.innerHTML =`<style>
-            .btn-jas-hover:hover{
+            .jas-ctrl:hover{
                 background-color : ${this.options.btnActiveColor} !important;
             }
         </style>`;
@@ -201,7 +197,7 @@ export default class MeasureControl implements IControl {
 
     private createButton(svg: string, onclick: () => (boolean | void)) {
         const div = document.createElement('div');
-        div.className = 'btn-jas-hover';
+        div.className = 'jas-ctrl';
         const style = div.style;
         style.display = 'flex';
         style.justifyContent = 'center';
@@ -254,8 +250,8 @@ export default class MeasureControl implements IControl {
                     if (pf) {
                         const center = turf.center(pf.geometry as turf.AllGeoJSON).geometry.coordinates;
                         this.popup.setHTML(`<div style="display:flex;align-items:center;">
-                                                <div id="popup-btn-copy" class='btn-jas-hover' style="margin:0 5px 0 0;cursor:pointer;">${this.copy}</div>
-                                                <div id="popup-btn-clean" class='btn-jas-hover' style="cursor:pointer;">${this.clean}</div>
+                                                <div id="popup-btn-copy" class='jas-ctrl' style="margin:0 5px 0 0;cursor:pointer;">${this.copy}</div>
+                                                <div id="popup-btn-clean" class='jas-ctrl' style="cursor:pointer;">${this.clean}</div>
                                             </div>`).setLngLat(ev.lngLat).addTo(ev.target);
 
                         this.popup.getElement().childNodes.forEach(child => {
