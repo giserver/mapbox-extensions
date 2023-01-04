@@ -7,6 +7,11 @@ import MeasurePolygon, { MeasurePolygonOptions } from "../features/Meature/Measu
 import { setDefaultValue, Dict, copyToClipboard, changeSvgColor } from "../utils";
 
 export interface MeasureControlOptions {
+    
+    /**
+     * 控件是否横置(default false)
+     */
+    horizontal? : boolean;
 
     /**
      * 按钮背景颜色
@@ -72,6 +77,7 @@ export default class MeasureControl implements IControl {
     private popup = new Popup({ closeButton: false, className: 'custom-popup' });
 
     constructor(private options: MeasureControlOptions = {}) {
+        setDefaultValue(options, 'horizontal', false);
         setDefaultValue(options, 'btnBgColor', "#ffffff");
         setDefaultValue(options, 'btnActiveColor', '#7F7F7F');
         setDefaultValue(options, 'svgHoverColor', "#8A2BE2");
@@ -105,12 +111,16 @@ export default class MeasureControl implements IControl {
         })
 
         const div = document.createElement('div');
-        div.style.pointerEvents = 'auto';
-        div.style.boxShadow = '0 0 0 2px rgb(0 0 0 / 10%)';
-        div.style.overflow = 'hidden';
-        div.style.borderRadius = '4px';
-        div.style.width = '29px';
-        div.style.margin = '10px 10px 0 0'
+        const style = div.style;
+        style.pointerEvents = 'auto';
+        style.boxShadow = '0 0 0 2px rgb(0 0 0 / 10%)';
+        style.overflow = 'hidden';
+        style.borderRadius = '4px';
+        style.margin = '10px 10px 0 0'
+        style.display = 'flex';
+        style.flexDirection = this.options.horizontal ? 'row' : 'column';
+        if(!this.options.horizontal)
+            style.width = '29px';
 
         this.measures.forEach((value, key) => {
             const btn = this.createButton(value.svg, this.createClickMeasureButtonHandler(map, key));
@@ -177,6 +187,8 @@ export default class MeasureControl implements IControl {
         style.background = this.options.btnBgColor!;
         style.cursor = 'pointer';
         style.height = '29px';
+        style.width = '29px';
+        style.float = 'right';
         div.innerHTML += svg;
         div.onclick = (e) => {
             onclick();

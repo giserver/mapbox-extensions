@@ -72,6 +72,7 @@ export default class SwitchMapControl implements IControl {
     style.display = 'flex';
     style.justifyContent = 'center';
     style.alignItems = 'flex-end';
+    style.float = 'right';
     style.backgroundSize = divSize;
 
     // 创建文字

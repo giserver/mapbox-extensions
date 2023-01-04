@@ -45,6 +45,7 @@ export default class BackToOriginControl implements IControl{
         style.boxShadow = '0 0 0 2px rgb(0 0 0 / 10%)';
         style.overflow = 'hidden';
         style.borderRadius = '4px';
+        style.float = 'right';
 
         div.addEventListener('click',e=>{
             map.easeTo({

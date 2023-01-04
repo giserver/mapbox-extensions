@@ -25,10 +25,11 @@ map.addControl(new SwitchMapControl({
     }
 }));
 
-map.addControl(new BackToOriginControl());
+
 
 // 测量
 const measureControl = new MeasureControl({
+    horizontal : true,
     geometryClick: true,
     onGeometryCopy: (geom: string) => { alert(`复制成功 : ${geom}`) },
     onFeatureDelete: (id: string) => { alert(`删除成功 : ${id}`) },
@@ -82,3 +83,4 @@ map.on('load', () => {
 })
 
 map.addControl(measureControl);
+map.addControl(new BackToOriginControl());
