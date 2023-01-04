@@ -106,6 +106,11 @@ export default class MeasureControl implements IControl {
 
         const div = document.createElement('div');
         div.style.pointerEvents = 'auto';
+        div.style.boxShadow = '0 0 0 2px rgb(0 0 0 / 10%)';
+        div.style.overflow = 'hidden';
+        div.style.borderRadius = '4px';
+        div.style.width = '29px';
+        div.style.margin = '10px 10px 0 0'
 
         this.measures.forEach((value, key) => {
             const btn = this.createButton(value.svg, this.createClickMeasureButtonHandler(map, key));
@@ -171,9 +176,7 @@ export default class MeasureControl implements IControl {
         style.alignItems = 'center';
         style.background = this.options.btnBgColor!;
         style.cursor = 'pointer';
-        style.borderRadius = '4px';
         style.height = '29px';
-        style.width = '29px';
         div.innerHTML += svg;
         div.onclick = (e) => {
             onclick();

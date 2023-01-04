@@ -2,6 +2,7 @@ import '../lib';
 import mapboxgl from 'mapbox-gl';
 import MeasureControl from '../lib/controls/MeasureControl';
 import SwitchMapControl from '../lib/controls/SwitchMapControl';
+import BackToOriginControl from '../lib/controls/BackToOriginControl';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
 const lightStyle = 'mapbox://styles/mapbox/streets-v11';
@@ -23,6 +24,8 @@ map.addControl(new SwitchMapControl({
         //backgroundImage: '/relics.png'
     }
 }));
+
+map.addControl(new BackToOriginControl());
 
 // 测量
 const measureControl = new MeasureControl({
@@ -74,6 +77,8 @@ map.on('load', () => {
             }
         })
     });
+
+    map.addControl(new mapboxgl.NavigationControl())
 })
 
 map.addControl(measureControl);
