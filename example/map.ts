@@ -42,7 +42,6 @@ measureControl = new MeasureControl({
 });
 
 doodleControl = new DoodleControl({
-    name: '画圈搜索',
     onStart: () => { measureControl.stop() }
 })
 

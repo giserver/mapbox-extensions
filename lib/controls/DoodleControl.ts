@@ -8,6 +8,18 @@ export interface DoodleControlOptions {
      */
     name?: string;
 
+    reName?: string;
+
+    exitText?: string;
+
+    lineColor?: string;
+
+    lineWidth?: number;
+
+    polygonColor?: string;
+
+    polygonOpacity?: number;
+
     onStart?(): void;
 
     /**
@@ -49,6 +61,12 @@ export default class DoodleControl implements IControl {
      */
     constructor(private options: DoodleControlOptions = {}) {
         setDefaultValue(this.options, 'name', "画圈");
+        setDefaultValue(this.options, 'reName', '重画');
+        setDefaultValue(this.options, 'exitText', '退出画圈');
+        setDefaultValue(this.options, 'lineColor', 'blue');
+        setDefaultValue(this.options, 'lineWidth', 5);
+        setDefaultValue(this.options, 'polygonColor', 'cyan');
+        setDefaultValue(this.options, 'polygonOpacity', 0.5);
 
         this.div_doodle_switch = document.createElement('div');
         this.div_doodle_switch.className = "jas-ctrl mapboxgl-ctrl-group"
@@ -85,7 +103,7 @@ export default class DoodleControl implements IControl {
         style.fontSize = '13px';
         style.fontWeight = '500';
 
-        this.div_redraw.innerHTML = `<span>重画</span>`;
+        this.div_redraw.innerHTML = `<span>${this.options.reName}</span>`;
         this.div_redraw.style.display = 'none';
     }
 
@@ -132,8 +150,8 @@ export default class DoodleControl implements IControl {
             source: 'doodle-line',
             layout: {},
             paint: {
-                "line-width": 5,
-                "line-color": 'blue'
+                "line-width": this.options.lineWidth,
+                "line-color": this.options.lineColor
             }
         })
 
@@ -143,8 +161,8 @@ export default class DoodleControl implements IControl {
             source: 'doodle-polygon',
             layout: {},
             paint: {
-                'fill-color': 'cyan',
-                'fill-opacity': 0.5
+                'fill-color': this.options.polygonColor,
+                'fill-opacity': this.options.polygonOpacity
             }
         })
 
@@ -196,6 +214,7 @@ export default class DoodleControl implements IControl {
         }
 
         this.stop = () => {
+            this.drawing = false;
             this.svg_doodle_switch.style.display = '';
             this.div_redraw.style.display = 'none';
             this.span_doodle_switch.innerText = `${this.options.name}`;
@@ -220,13 +239,12 @@ export default class DoodleControl implements IControl {
                 this.options.onStart?.call(this);
 
                 this.svg_doodle_switch.style.display = 'none';
-                this.span_doodle_switch.innerText = `退出${this.options.name}`;
+                this.span_doodle_switch.innerText = this.options.exitText!;
                 canvas.style.cursor = `url("${that.pencilImage}"),auto`;
 
                 map.once('mousedown', onMouseDown);
+                this.drawing = true;
             }
-
-            this.drawing = !this.drawing;
         });
 
         /**
