@@ -66,7 +66,7 @@ you can also config custom ui with this three class of measure， you can find a
 
 
 ### `Change Base Map`  
-Just add a satellite layer and change visible , you can custom `textColor` `backgroundImage` and display `name`
+just add a satellite layer and change visible , you can custom `textColor` `backgroundImage` and display `name`
 
 ``` ts
 map.addControl(new SwitchMapControl({
@@ -75,4 +75,24 @@ map.addControl(new SwitchMapControl({
         //backgroundImage: '/relics.png'
     }
 }));
+```
+
+### `Back To Origin`
+default , ease to map default zoom and center
+
+``` ts
+map.addControl(new BackToOriginControl({
+    //center:[0,0],
+    //zoom : 0
+}))
+```
+
+### `Doodle`
+emulate a pencil to draw a polygon
+
+``` ts
+map.addControl(new DoodleControl({
+    name: '画圈搜索',
+    onStart: () => { measureControl.stop() }
+}))
 ```

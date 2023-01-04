@@ -5,11 +5,13 @@ import { Dict } from './utils';
 import MeasureControl from "./controls/MeasureControl";
 import SwitchMapControl from "./controls/SwitchMapControl";
 import BackToOriginControl from "./controls/BackToOriginControl";
+import DoodleControl from "./controls/DoodleControl";
 
 export {
     MeasureControl,
     SwitchMapControl,
     BackToOriginControl,
+    DoodleControl
 }
 
 declare module "mapbox-gl" {
@@ -61,7 +63,7 @@ declare module "mapbox-gl" {
         /**
          * 销毁mapboxgl.Map实例(即使用map.remove())，并且删除所有图层组，在map document 卸载之前调用
          */
-        destroy() :void
+        destroy(): void
     }
 }
 
@@ -135,8 +137,8 @@ Map.prototype.addImages = function (this: Map, images: Record<string, string>, l
     }, loaded)();
 }
 
-Map.prototype.destroy = function(this:Map){
-    this.layerGroups.forEach((_,id)=>{
+Map.prototype.destroy = function (this: Map) {
+    this.layerGroups.forEach((_, id) => {
         this.removeLayerGroup(id);
     })
 
