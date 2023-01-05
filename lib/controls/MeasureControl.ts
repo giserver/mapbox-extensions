@@ -4,7 +4,7 @@ import MeasureBase, { MeasureType } from "../features/Meature/MeasureBase";
 import MeasurePoint, { MeasurePointOptions } from "../features/Meature/MeasurePoint";
 import MeasureLineString, { MeasureLineStringOptions } from "../features/Meature/MeasureLineString";
 import MeasurePolygon, { MeasurePolygonOptions } from "../features/Meature/MeasurePolygon";
-import { setDefaultValue, Dict, copyToClipboard, changeSvgColor } from "../utils";
+import { setDefaultValue, Dict, copyToClipboard } from "../utils";
 
 export interface MeasureControlOptions {
 

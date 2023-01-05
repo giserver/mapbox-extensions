@@ -61,7 +61,7 @@ export default class SwitchMapControl implements IControl {
     const style = div.style;
     const divSize = '89px';
 
-    div.className = 'jas-ctrl-switchmap';
+    div.className = 'jas-ctrl-switchmap mapboxgl-ctrl mapboxgl-ctrl-group';
     style.cursor = 'pointer';
     style.height = divSize;
     style.width = divSize;
@@ -73,6 +73,7 @@ export default class SwitchMapControl implements IControl {
     style.justifyContent = 'center';
     style.alignItems = 'flex-end';
     style.float = 'right';
+    style.border = '2px solid rgba(0,0,0,0)';
     style.backgroundSize = divSize;
 
     // 创建文字
@@ -105,7 +106,7 @@ export default class SwitchMapControl implements IControl {
     })
 
     div.addEventListener('mouseout', () => {
-      div.style.border = '';
+      div.style.border = '2px solid rgba(0,0,0,0)';
     })
     return div;
   }

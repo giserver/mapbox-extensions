@@ -50,7 +50,8 @@ export default class BackToOriginControl implements IControl{
         div.addEventListener('click',e=>{
             map.easeTo({
                 center: this.options.center,
-                zoom : this.options.zoom
+                zoom : this.options.zoom,
+                pitch: 0
             })
         })
 

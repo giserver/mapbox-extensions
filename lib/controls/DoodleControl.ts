@@ -1,5 +1,5 @@
-import { LineString, Polygon, Position } from "@turf/turf";
-import { EventData, GeoJSONSource, IControl, LngLat, Map, MapEventType } from "mapbox-gl";
+import { LineString, Polygon } from "@turf/turf";
+import { EventData, GeoJSONSource, IControl, Map, MapEventType } from "mapbox-gl";
 import { setDefaultValue } from "../utils";
 
 export interface DoodleControlOptions {
@@ -8,16 +8,34 @@ export interface DoodleControlOptions {
      */
     name?: string;
 
+    /**
+     * 重绘名字（默认 ：重画）
+     */
     reName?: string;
 
+    /**
+     * 退出文字
+     */
     exitText?: string;
 
+    /**
+     * 线颜色
+     */
     lineColor?: string;
 
+    /**
+     * 线宽度
+     */
     lineWidth?: number;
 
+    /**
+     * 多边形颜色
+     */
     polygonColor?: string;
 
+    /**
+     * 多边形透明度
+     */
     polygonOpacity?: number;
 
     onStart?(): void;
@@ -84,6 +102,7 @@ export default class DoodleControl implements IControl {
 
         this.svg_doodle_switch = document.createElement('div');
         this.svg_doodle_switch.innerHTML = this.penImage;
+        this.svg_doodle_switch.style.height = '20px';
         this.span_doodle_switch = document.createElement('span');
         this.span_doodle_switch.innerText = this.options.name!;
 
@@ -254,8 +273,11 @@ export default class DoodleControl implements IControl {
             that.div_redraw.style.display = 'none';
             canvas.style.cursor = `url("${that.pencilImage}"),auto`;
             currentLine.coordinates.length = 0;
+
             updateDataSource(true);
+
             this.options.onClear?.call(this);
+
             map.once('mousedown', onMouseDown);
         });
 
