@@ -1,4 +1,4 @@
-import mapboxgl, { IControl, Map } from "mapbox-gl";
+import mapboxgl, { AnyLayer, IControl, Map } from "mapbox-gl";
 import { setDefaultValue } from "../utils";
 
 //#region img_satellite & img_base
@@ -14,9 +14,22 @@ interface SwitchItemOption {
   backgroundImage?: string,
 }
 
+interface LayerItem {
+  name: string,
+  layer: AnyLayer,
+  center?: mapboxgl.LngLat,
+  backgroundImage: string,
+}
+
+interface GroupLayers {
+  mutex: boolean,
+  layers: Array<LayerItem>
+}
+
 export interface SwitchMapControlOptions {
   baseOption?: SwitchItemOption,
   satelliteOption?: SwitchItemOption,
+  extraLayers?: Record<string, GroupLayers>
 }
 
 export default class SwitchMapControl implements IControl {
@@ -54,7 +67,6 @@ export default class SwitchMapControl implements IControl {
         }
       })
     });
-
 
     // 创建按钮
     const div = document.createElement('div');
