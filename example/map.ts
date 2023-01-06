@@ -18,14 +18,6 @@ const map = new mapboxgl.Map({
     style: lightStyle
 });
 
-// 切换卫星影像
-map.addControl(new SwitchMapControl({
-    satelliteOption: {
-        textColor: 'white',
-        //backgroundImage: '/relics.png'
-    }
-}));
-
 let doodleControl: DoodleControl;
 let measureControl: MeasureControl;
 
@@ -46,6 +38,39 @@ doodleControl = new DoodleControl({
 })
 
 map.on('load', () => {
+
+    // 切换卫星影像
+    map.addControl(new SwitchMapControl({
+        satelliteOption: {
+            textColor: 'white',
+            //backgroundImage: '/relics.png'
+        },
+        extraLayers:{foo:{mutex:true,layers:[{
+            name:'foo',
+            layer:{
+                id:'fff',
+                type:'fill',
+                source:''
+            },
+            'backgroundImage':'',
+        },{
+            name:'foo',
+            layer:{
+                id:'fff',
+                type:'fill',
+                source:''
+            },
+            'backgroundImage':'',
+        },{
+            name:'foo',
+            layer:{
+                id:'fff',
+                type:'fill',
+                source:''
+            },
+            'backgroundImage':'',
+        }]},'foo2':{mutex:false,layers:[]}}
+    }));
 
     // 加载多个图片
     map.addImages({ 'img1': '/relics.png', 'img2': '/relics.png' }, () => {

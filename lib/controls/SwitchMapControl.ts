@@ -34,6 +34,10 @@ export interface SwitchMapControlOptions {
 
 export default class SwitchMapControl implements IControl {
 
+  private layerImg = `<svg t="1673002593279" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3507" width="20" height="20">
+  <path d="M852.6 462.9l12.1 7.6c24.8 15.6 32.3 48.3 16.7 73.2-4.2 6.7-9.9 12.4-16.7 16.7L540.4 764.1c-17.3 10.8-39.2 10.8-56.4 0L159.3 560c-24.8-15.6-32.3-48.3-16.7-73.2 4.2-6.7 9.9-12.4 16.7-16.7l12.1-7.6L483.9 659c17.3 10.8 39.2 10.8 56.4 0l312.2-196 0.1-0.1z m0 156.1l12.1 7.6c24.8 15.6 32.3 48.3 16.7 73.2-4.2 6.7-9.9 12.4-16.7 16.7L540.4 920.2c-17.3 10.8-39.2 10.8-56.4 0L159.3 716.1c-24.8-15.6-32.3-48.3-16.7-73.2 4.2-6.7 9.9-12.4 16.7-16.7l12.1-7.6L483.9 815c17.3 10.8 39.2 10.8 56.4 0l312.2-196h0.1zM540 106.4l324.6 204.1c24.8 15.6 32.3 48.3 16.7 73.2-4.2 6.7-9.9 12.4-16.7 16.7L540.4 604c-17.3 10.8-39.2 10.8-56.4 0L159.3 399.8c-24.8-15.6-32.3-48.3-16.7-73.2 4.2-6.7 9.9-12.4 16.7-16.7l324.4-203.7c17.3-10.8 39.2-10.8 56.4 0l-0.1 0.2z" p-id="3508" fill="#2c2c2c">
+  </path></svg>`
+
   constructor(private options: SwitchMapControlOptions = {}) {
     setDefaultValue(options, 'baseOption', {});
     setDefaultValue(options.baseOption!, 'name', '电子地图');
@@ -53,24 +57,74 @@ export default class SwitchMapControl implements IControl {
       attribDiv.style.display = 'none';
     }
 
-    map.on('load', () => {
-      map.addLayer({
-        id: "mapbox-satellite",
-        type: "raster",
-        source: {
-          type: 'raster',
-          tiles: [`https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?sku=${mapboxgl.accessToken}`],
-          tileSize: 256
-        },
-        layout: {
-          visibility: 'none'
-        }
-      })
-    });
+    map.addLayer({
+      id: "mapbox-satellite",
+      type: "raster",
+      source: {
+        type: 'raster',
+        tiles: [`https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?sku=${mapboxgl.accessToken}`],
+        tileSize: 256
+      },
+      layout: {
+        visibility: 'none'
+      }
+    })
 
+    const baseDiv = this.createBaseLayerDiv(map);
+
+    const extraLayers = this.options.extraLayers;
+    if (extraLayers) {
+      const groupLayerContainerDiv = this.createGroupLayerContainerDiv();
+      
+      for (let groupName in extraLayers) {
+        const { layers, mutex } = extraLayers[groupName];
+        const {groupDiv,layerDiv} = this.createGroupLayerDiv(groupName);
+
+        layers.forEach(layer => {
+          layerDiv.append(this.createGroupLayerItemDiv(layer, groupName, mutex));
+        })
+
+        groupLayerContainerDiv.append(groupDiv);
+      }
+
+      baseDiv.append(groupLayerContainerDiv);
+      baseDiv.addEventListener('mouseover',e=>{
+        groupLayerContainerDiv.style.pointerEvents = 'auto';
+      })
+    }
+
+    return baseDiv;
+  }
+
+  onRemove(map: Map): void {
+
+  }
+  getDefaultPosition() {
+    return 'bottom-right'
+  }
+
+  /**
+   * 基础图层切换
+   * @param map 
+   * @param extra 存在其他图层
+   * @returns 
+   */
+  private createBaseLayerDiv(map: Map) {
     // 创建按钮
     const div = document.createElement('div');
-    const style = div.style;
+    div.innerHTML = `<style>
+    .jas-ctrl-switchmap .alert {
+      transition: 0.25s;
+      opacity: 0;
+    }
+
+    .jas-ctrl-switchmap.alert-is-shown .alert {
+        transition: 0.25s;
+        opacity: 1;
+    }
+    </style>` ;
+
+    let style = div.style;
     const divSize = '89px';
 
     div.className = 'jas-ctrl-switchmap mapboxgl-ctrl mapboxgl-ctrl-group';
@@ -79,7 +133,6 @@ export default class SwitchMapControl implements IControl {
     style.width = divSize;
     style.margin = '0 10px 10px 0'
     style.borderRadius = '10px';
-    style.overflow = 'hidden';
     style.pointerEvents = 'auto';
     style.display = 'flex';
     style.justifyContent = 'center';
@@ -91,17 +144,18 @@ export default class SwitchMapControl implements IControl {
     // 创建文字
     const text_div = document.createElement('div');
     text_div.className = "jas-ctrl-switchmap-text";
-    text_div.style.position = 'absolute';
-    text_div.style.fontWeight = '600';
-    text_div.style.letterSpacing = '2px';
-    text_div.style.pointerEvents = 'none';
-    text_div.style.marginBottom = '10px';
+    style = text_div.style;
+    style.position = 'absolute';
+    style.fontWeight = '500';
+    style.letterSpacing = '2px';
+    style.pointerEvents = 'none';
+    style.marginBottom = '10px';
     div.append(text_div);
 
     const changeDiv = (option: SwitchItemOption) => {
-      div.style.backgroundImage = `url("${option.backgroundImage}")`;
       text_div.innerText = option.name!;
       text_div.style.color = option.textColor!;
+      div.style.backgroundImage = `url("${option.backgroundImage}")`;
     }
 
     // 初始化
@@ -113,20 +167,73 @@ export default class SwitchMapControl implements IControl {
       map.setLayoutProperty('mapbox-satellite', 'visibility', satelliteVisibled ? 'none' : 'visible');
     });
 
-    div.addEventListener('mouseenter', () => {
-      div.style.border = '2px solid'
+    div.addEventListener('mouseover', () => {
+      div.style.border = '2px solid';
+      div.classList.toggle('alert-is-shown');
     })
 
     div.addEventListener('mouseout', () => {
       div.style.border = '2px solid rgba(0,0,0,0)';
+      div.classList.toggle('alert-is-shown');
     })
+
     return div;
   }
 
-  onRemove(map: Map): void {
+  private createGroupLayerContainerDiv() : HTMLDivElement{
+    const div = document.createElement('div');
+    const style = div.style;
+    div.className = "alert mapboxgl-ctrl-group";
+    style.height = '200px';
+    style.width = "200px";
+    style.right = "100px";
+    style.backgroundColor = '#fff';
+    style.position = 'absolute';
+    style.zIndex = '10';
+    style.pointerEvents = 'none';
 
+    div.addEventListener('click',e=>{
+      e.stopPropagation()
+    })
+
+    div.addEventListener('mouseout',()=>{
+      style.pointerEvents = 'none';
+    })
+    
+    return div;
   }
-  getDefaultPosition() {
-    return 'bottom-right'
+
+  private createGroupLayerDiv(name: string): {groupDiv:HTMLDivElement,layerDiv:HTMLDivElement} {
+    const groupDiv = document.createElement('div');
+    let style = groupDiv.style;
+    style.margin = '10px 5px';
+    style.height = '20px';
+
+    const header = document.createElement('div');
+    header.innerHTML = this.layerImg;
+    header.innerHTML += `<span>${name}</span>`
+    style = header.style;
+    style.display = 'flex';
+    style.alignItems = 'flex-end';
+    style.borderBottom = '1px solid #8a8a8a'
+    groupDiv.append(header);
+
+    const layerDiv = document.createElement('div');
+    style = layerDiv.style;
+    style.display = 'grid';
+    style.gridTemplateColumns = '1fr 1fr 1fr';
+    
+    groupDiv.append(layerDiv);
+
+    return {groupDiv,layerDiv}
+  }
+
+  private createGroupLayerItemDiv(layer: LayerItem, group: string, mutex: boolean): HTMLDivElement {
+    const div = document.createElement('div');
+    const style = div.style;
+    style.height = '40px';
+    style.width = '40px';
+    style.backgroundColor = 'red';
+    return div;
   }
 }
