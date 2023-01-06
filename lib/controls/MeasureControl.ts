@@ -132,6 +132,7 @@ export default class MeasureControl implements IControl {
         div.className = "jas-ctrl-measure mapboxgl-ctrl mapboxgl-ctrl-group"
         const style = div.style;
         style.display = 'flex';
+        style.overflow = 'hidden';
         style.flexDirection = this.options.horizontal ? 'row' : 'column';
         if (!this.options.horizontal)
             style.width = '29px';

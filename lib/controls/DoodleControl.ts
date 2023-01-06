@@ -117,7 +117,7 @@ export default class DoodleControl implements IControl {
         style.justifyContent = 'center';
         style.alignItems = 'center';
         style.cursor = 'pointer';
-        style.height = '36px';
+        style.height = '29px';
         style.padding = '0 5px';
         style.fontSize = '13px';
         style.fontWeight = '500';
