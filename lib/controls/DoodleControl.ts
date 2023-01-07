@@ -205,18 +205,22 @@ export default class DoodleControl implements IControl {
 
         function onMouseUp<T extends keyof MapEventType>(e: MapEventType[T] & EventData) {
             map.getCanvas().style.cursor = '';
-            that.options.onDrawed?.call(that, { type: 'Polygon', coordinates: [[...currentLine.coordinates, currentLine.coordinates[0]]] })
-            updateDataSource(true);
+            const polygon = updateDataSource(true);
             map.off('mousemove', onMouseMove);
+
+            if (that.options.onDrawed && polygon)
+                that.options.onDrawed(polygon);
         }
 
         function updateDataSource(polygon: boolean = false) {
             if (polygon) {
+                const polygon: Polygon = {
+                    type: 'Polygon',
+                    coordinates: currentLine.coordinates.length === 0 ? [] : [[...currentLine.coordinates, currentLine.coordinates[0]]]
+                };
+
                 (map.getSource('doodle-polygon') as GeoJSONSource).setData({
-                    type: 'Feature', geometry: {
-                        type: 'Polygon',
-                        coordinates: currentLine.coordinates.length === 0 ? [] : [[...currentLine.coordinates, currentLine.coordinates[0]]]
-                    }, properties: {}
+                    type: 'Feature', geometry: polygon, properties: {}
                 });
 
                 (map.getSource('doodle-line') as GeoJSONSource).setData({
@@ -227,6 +231,7 @@ export default class DoodleControl implements IControl {
                 });
 
                 currentLine.coordinates.length = 0;
+                return polygon;
             } else {
                 (map.getSource('doodle-line') as GeoJSONSource).setData({ type: 'Feature', geometry: currentLine, properties: {} });
             }

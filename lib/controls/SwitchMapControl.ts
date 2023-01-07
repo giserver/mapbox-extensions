@@ -147,7 +147,7 @@ export default class SwitchMapControl implements IControl {
     }
 
     .jas-ctrl-switchmap-layer:hover{
-      border: 2px solid blue;
+      border: 2px solid black;
       box-sizing: border-box;
     }
     </style>` ;
@@ -307,8 +307,8 @@ export default class SwitchMapControl implements IControl {
       if (typeof textDiv === 'string')
         textDiv = document.getElementById(textDiv)!;
 
-      imgDiv.style.border = visible ? '2px solid black' : '';
-      textDiv.style.color = visible ? 'blue' : 'black';
+      imgDiv.style.border = visible ? '2px solid #0066FF' : '';
+      textDiv.style.color = visible ? '#0066FF' : 'black';
     }
 
     if (layerItem.active) {

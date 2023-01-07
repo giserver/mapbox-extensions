@@ -6,7 +6,7 @@ import BackToOriginControl from '../lib/controls/BackToOriginControl';
 import DoodleControl from '../lib/controls/DoodleControl';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
-const lightStyle = 'mapbox://styles/mapbox/streets-v11';
+const lightStyle = 'mapbox://styles/mapbox/light-v11';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiY29jYWluZWNvZGVyIiwiYSI6ImNrdHA1YjlleDBqYTEzMm85bTBrOWE0aXMifQ.J8k3R1QBqh3pyoZi_5Yx9w';
 
@@ -34,7 +34,8 @@ measureControl = new MeasureControl({
 });
 
 doodleControl = new DoodleControl({
-    onStart: () => { measureControl.stop() }
+    onStart: () => { measureControl.stop() },
+    onDrawed: polygon => { setTimeout(() => { alert(JSON.stringify(polygon)) }, 200) }
 })
 
 map.on('load', () => {
@@ -80,7 +81,7 @@ map.on('load', () => {
                                 type: 'Feature',
                                 geometry: {
                                     type: 'Point',
-                                    coordinates: [120.51, 31.1]
+                                    coordinates: [120.51, 31.2]
                                 },
                                 properties: { name: '建筑群1' }
                             }
@@ -122,7 +123,7 @@ map.on('load', () => {
                                 type: 'Feature',
                                 geometry: {
                                     type: 'Point',
-                                    coordinates: [120.53, 31.1]
+                                    coordinates: [120.53, 31.2]
                                 },
                                 properties: { name: '公路1' }
                             }
@@ -132,6 +133,9 @@ map.on('load', () => {
                         }
                     },
                     'backgroundImage': '/road.png',
+                    easeToOptions: {
+                        center: [120.53, 31.2]
+                    }
                 }]
             }, '乡村建设': {
                 mutex: false, layers: [{
@@ -155,11 +159,7 @@ map.on('load', () => {
                         }
                     },
                     'backgroundImage': '',
-                    mutex: true,
-                    easeToOptions: {
-                        center: [120.54, 31.1],
-                        zoom: 14
-                    }
+                    mutex: true
                 }, {
                     name: 'fff5',
                     layer: {
@@ -171,7 +171,7 @@ map.on('load', () => {
                                 type: 'Feature',
                                 geometry: {
                                     type: 'Point',
-                                    coordinates: [120.55, 31.1]
+                                    coordinates: [120.6, 31.2]
                                 },
                                 properties: { name: 'fff5' }
                             }
@@ -194,7 +194,7 @@ map.on('load', () => {
                                 type: 'Feature',
                                 geometry: {
                                     type: 'Point',
-                                    coordinates: [120.66, 31.1]
+                                    coordinates: [120.6, 31.1]
                                 },
                                 properties: { name: 'fff6' }
                             }
