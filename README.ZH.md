@@ -12,14 +12,16 @@ yarn build
 2. `npm install` / `yarn add` `mapbox-extensions`. 
 3. add `import 'mapbox-extensions'` at your entry file. 
 ## 功能 
-### `changeStyle`  
+### `修改样式`  
 在map对象中的使用setStyle方法会将现有的所有数据源和图层清空，使用changeStyle可以保存这些数据源和图层，但是必须设置要保存的图层id
 ``` ts
 const map = new mapboxgl.Map({...});
 map.changeStyle(["layer-polygon","xxxlayer"] , options);
 ```
 
-### `Layer Group`
+### `图层组`
+
+![](https://img2022.cnblogs.com/blog/1375435/202208/1375435-20220806221407867-1122089688.gif)
 ``` ts
 const map = new mapboxgl.Map({...});
 const group = map.addLayerGroup('group1');
@@ -38,8 +40,12 @@ group.removeAll();
 
 map.removeLayerGroup('group1');
 ```  
-### `Measure`  
+### `测量`  
 这个是一个自定义的测量控件，实现了mapboxgl中的IControl，所以您可以直接作为ui使用它。你可以测量点（经纬度），线（长度），面（面积）。
+
+![绘制](https://img2022.cnblogs.com/blog/1375435/202208/1375435-20220806221426272-27170389.gif)
+
+![右键删除](https://img2022.cnblogs.com/blog/1375435/202210/1375435-20221023175344373-2003003842.gif)
 
 ``` ts
 const map = new mapboxgl.Map({...});
@@ -60,15 +66,69 @@ map.addControl(new MeasureControl(options)) // 参数可以为空，或自行配
 
 *增加的功能*
 - [MeasureControlOptions](./lib/controls/MeasureControl.ts) 参数中的 `geometryClick` 控制图形(包括文字标注)是否可以点击，点击后弹出 复制、删除功能
+![](https://img2022.cnblogs.com/blog/1375435/202210/1375435-20221023175524217-370679180.gif)
 
-### `切换底图`  
-这个仅仅是切换到卫星影像(由于setStyle会删除当前所有图层，这个之后考虑吧) , 您可以自定义 `textColor` `backgroundImage` 和显示名字 `name`  
+### `回到初始位置`
+就是一个很简单的map.easeTo功能的封装，默认 zoom center pitch bearing 从map的初始值中取
 
+``` ts
+map.addControl(new BackToOriginControl({
+    //eastToOptions:{}
+}))
+```
+
+![](https://img2023.cnblogs.com/blog/1375435/202301/1375435-20230107191736719-914259791.gif)
+
+### `切换图层` 
+- 切换到卫星影像
+
+    可以自定义 `textColor` `backgroundImage` 和显示名字 `name` 
+
+- 附加图层
+
+    通过配置`extraLayers`参数，激活附加图层ui，提供图层分组功能，组与组之间图层的显隐不互斥，组可以通过`mutex`直接设置各个图层互斥，也可以在非互斥组内配置`LayerItem`的`mutex`参数设置该图层与其他图层互斥。
+
+    您还可以通过设置active属性设置图层默认加载到地图(显示)，但这个active会在初始化控件时检查互斥是否正确，如果互斥组内存在一个以上的active图层或者非互斥组内存在一个互斥图层以及其他的active图层，则抛出异常。
 ``` ts
 map.addControl(new SwitchMapControl({
     satelliteOption: {
         textColor: 'white',
         //backgroundImage: '/relics.png'
+    },
+    extraLayers:{
+      'foo':{
+      }
     }
 }));
+```
+![](https://img2023.cnblogs.com/blog/1375435/202301/1375435-20230107192936756-2062484649.gif)
+
+### `涂鸦` 
+为圈选做的控件，模仿画笔在地图上画出多边形，在回调中配置扩展逻辑
+
+``` ts
+map.addControl(new DoodleControl({
+
+    name: '',           // 控件名字
+    reName : '',        // 重绘名
+    exitText : '',      // 退出文本
+    lineColor : '',     //线颜色
+    lineWidth : 1,      // 线宽
+    polygonColor: '',   // 多边形颜色
+    polygonOpacity : 1, // 多边形透明度
+
+    // 绘制开始
+    onStart: () => { measureControl.stop() },
+
+    // 绘制多边形完成
+    onDrawed: polygon => { () => { alert(JSON.stringify(polygon)) } },
+
+    // 清空回调
+    onClear:()=>{},
+
+    // 退出回调
+    onExit:()=>{}
+}))
+```
+![](https://img2023.cnblogs.com/blog/1375435/202301/1375435-20230107191837523-1099243574.gif)
 ```
