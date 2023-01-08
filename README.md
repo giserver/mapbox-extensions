@@ -21,7 +21,6 @@ map.changeStyle(["layer-polygon","xxxlayer"] , options);
 ```
 
 ### `Layer Group`
-![](https://img2022.cnblogs.com/blog/1375435/202208/1375435-20220806221407867-1122089688.gif)
 ``` ts
 const map = new mapboxgl.Map({...});
 const group = map.addLayerGroup('group1');
