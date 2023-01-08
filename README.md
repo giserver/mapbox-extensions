@@ -76,7 +76,7 @@ map.addControl(new BackToOriginControl({
 }))
 ```
 
-![](./doc/img/back2origin.gif)
+![back2origin](./doc/img/back2origin.gif)
 
 ### `Switch Map` 
 - switch to satellite map 
@@ -100,7 +100,7 @@ map.addControl(new SwitchMapControl({
     }
 }));
 ```
-![](./doc/img/switchmap.gif)
+![switchmap](./doc/img/switchmap.gif)
 
 ### `Doodle` 
 The control made for the circle, imitating the brush to draw polygons on the map, configure the expansion logic in the callback
@@ -122,5 +122,4 @@ map.addControl(new DoodleControl({
     onExit:()=>{}
 }))
 ```
-![](./doc/img/doodle.gif)
-```
+![doodle](./doc/img/doodle.gif)
