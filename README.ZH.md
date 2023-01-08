@@ -43,9 +43,7 @@ map.removeLayerGroup('group1');
 ### `测量`  
 这个是一个自定义的测量控件，实现了mapboxgl中的IControl，所以您可以直接作为ui使用它。你可以测量点（经纬度），线（长度），面（面积）。
 
-![绘制](https://img2022.cnblogs.com/blog/1375435/202208/1375435-20220806221426272-27170389.gif)
-
-![右键删除](https://img2022.cnblogs.com/blog/1375435/202210/1375435-20221023175344373-2003003842.gif)
+![draw](./doc/img/draw.gif)
 
 ``` ts
 const map = new mapboxgl.Map({...});
@@ -66,7 +64,7 @@ map.addControl(new MeasureControl(options)) // 参数可以为空，或自行配
 
 *增加的功能*
 - [MeasureControlOptions](./lib/controls/MeasureControl.ts) 参数中的 `geometryClick` 控制图形(包括文字标注)是否可以点击，点击后弹出 复制、删除功能
-![](https://img2022.cnblogs.com/blog/1375435/202210/1375435-20221023175524217-370679180.gif)
+![](./doc/img/draw1.gif)
 
 ### `回到初始位置`
 就是一个很简单的map.easeTo功能的封装，默认 zoom center pitch bearing 从map的初始值中取
@@ -77,7 +75,7 @@ map.addControl(new BackToOriginControl({
 }))
 ```
 
-![](https://img2023.cnblogs.com/blog/1375435/202301/1375435-20230107191736719-914259791.gif)
+![](./doc/img/back2origin.gif)
 
 ### `切换图层` 
 - 切换到卫星影像
@@ -101,7 +99,7 @@ map.addControl(new SwitchMapControl({
     }
 }));
 ```
-![](https://img2023.cnblogs.com/blog/1375435/202301/1375435-20230107192936756-2062484649.gif)
+![](./doc/img/switchmap.gif)
 
 ### `涂鸦` 
 为圈选做的控件，模仿画笔在地图上画出多边形，在回调中配置扩展逻辑
@@ -130,5 +128,5 @@ map.addControl(new DoodleControl({
     onExit:()=>{}
 }))
 ```
-![](https://img2023.cnblogs.com/blog/1375435/202301/1375435-20230107191837523-1099243574.gif)
+![](./doc/img/doodle.gif)
 ```

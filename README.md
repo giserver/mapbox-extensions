@@ -43,9 +43,7 @@ map.removeLayerGroup('group1');
 ### `Measure`  
 a measure control implements mapboxgl.IControl, you can measure point(lng,lat), line(distance), polygon(area) with it. 
 
-![绘制](https://img2022.cnblogs.com/blog/1375435/202208/1375435-20220806221426272-27170389.gif)
-
-![右键删除](https://img2022.cnblogs.com/blog/1375435/202210/1375435-20221023175344373-2003003842.gif)
+![draw](./doc/img/draw.gif)
 
 ``` ts
 const map = new mapboxgl.Map({...});
@@ -68,7 +66,7 @@ you can also config custom ui with this three class of measure， you can find a
 
 *add*  
 - [MeasureControlOptions](./lib/controls/MeasureControl.ts) `geometryClick` creat measure geometry click handler to popup Copy/Delete feature
-![](https://img2022.cnblogs.com/blog/1375435/202210/1375435-20221023175524217-370679180.gif)
+![](./doc/img/draw1.gif)
 
 ### `Back to origin`
 map.easeTo，default zoom center pitch bearing from map
@@ -79,7 +77,7 @@ map.addControl(new BackToOriginControl({
 }))
 ```
 
-![](https://img2023.cnblogs.com/blog/1375435/202301/1375435-20230107191736719-914259791.gif)
+![](./doc/img/back2origin.gif)
 
 ### `Switch Map` 
 - switch to satellite map 
@@ -103,7 +101,7 @@ map.addControl(new SwitchMapControl({
     }
 }));
 ```
-![](https://img2023.cnblogs.com/blog/1375435/202301/1375435-20230107192936756-2062484649.gif)
+![](./doc/img/switchmap.gif)
 
 ### `Doodle` 
 The control made for the circle, imitating the brush to draw polygons on the map, configure the expansion logic in the callback
@@ -125,5 +123,5 @@ map.addControl(new DoodleControl({
     onExit:()=>{}
 }))
 ```
-![](https://img2023.cnblogs.com/blog/1375435/202301/1375435-20230107191837523-1099243574.gif)
+![](./doc/img/doodle.gif)
 ```
