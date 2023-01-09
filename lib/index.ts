@@ -8,6 +8,7 @@ import BackToOriginControl from "./controls/BackToOriginControl";
 import DoodleControl from "./controls/DoodleControl";
 
 export {
+    LayerGroup,
     MeasureControl,
     SwitchMapControl,
     BackToOriginControl,

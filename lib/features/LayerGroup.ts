@@ -6,14 +6,13 @@ import { Map, AnyLayer } from 'mapbox-gl'
 class LayerGroupBase<T extends AnyLayer> {
 
     private _show = true;
-    protected _layers = Array<T>();
 
     /**
      * 创建图层组
      * @param id 图层组id
      * @param map mapboxgl.Map
      */
-    constructor(id: string, protected map: Map) {
+    constructor(public id: string, protected map: Map, protected _layers = Array<T>()) {
         if (!id.trim())
             throw Error('layer-group id can not be empty or white');
 
@@ -21,6 +20,15 @@ class LayerGroupBase<T extends AnyLayer> {
             throw Error(`layer-group id : ${id} already existed`);
 
         map.layerGroups.set(id, this);
+        _layers.forEach(layer => {
+            if (!this.map.getLayer(layer.id)) {
+                this.map.addLayer(layer);
+            }
+        })
+
+        map.on('remove', e => {
+            map.layerGroups.delete(id);
+        });
     }
 
     /**
