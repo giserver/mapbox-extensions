@@ -2,6 +2,7 @@
 .vscode/
 example/
 lib/
+doc/
 node_modules/
 
 .gitignore
