@@ -48,16 +48,16 @@ export default class MeasurePolygon extends MeasureBase {
      *
      */
     constructor(map: Map, private options: MeasurePolygonOptions = {}) {
-        options.polygonColor??="#ff0000";
-        options.polygonOpacity??=0.5;
-        options.polygonOutlineColor??="#000000";
-        options.textSize??=12;
-        options.textColor??="#000000";
-        options.createText??=(area: number) => area > 1000000 ?
+        options.polygonColor ??= "#ff0000";
+        options.polygonOpacity ??= 0.5;
+        options.polygonOutlineColor ??= "#000000";
+        options.textSize ??= 12;
+        options.textColor ??= "#000000";
+        options.createText ??= (area: number) => area > 1000000 ?
             `${(area / 1000000).toFixed(4)}km²` :
             `${area.toFixed(4)}m²`;
 
-        options.createLengthText??=(length: number) => length > 1 ?
+        options.createLengthText ??= (length: number) => length > 1 ?
             `${length.toFixed(3)}km` :
             `${(length * 1000).toFixed(2)}m`;
         super(map);
@@ -109,8 +109,11 @@ export default class MeasurePolygon extends MeasureBase {
 
         // 判断是否已经落笔
         if (this._isDrawing) {
-            this.currentPolygon.coordinates[0].push(point);
-
+            const coords = this.currentPolygon.coordinates[0];
+            if (coords.length > 2)
+                coords.pop(); //删除第一个点
+            coords.push(point);
+            coords.push(coords[0]);
         } else {
             this._isDrawing = true;
             const id = createUUID();
@@ -138,16 +141,18 @@ export default class MeasurePolygon extends MeasureBase {
         this.map.off('mousemove', this.onMouseMoveHandler);
         this.map.off('contextmenu', this.onRightClickHandler);
 
-        this.currentPolygon.coordinates[0].pop();
-        this.currentPolygon.coordinates[0].pop();
-        if (this.currentPolygon.coordinates[0].length < 3) {
+        const coords = this.currentPolygon.coordinates[0];
+        coords.pop();
+        coords.pop();
+        coords.pop();
+        if (coords.length < 3) {
             this.geojson.features.pop();
         } else {
             // 添加第一个点 (闭合)
-            this.currentPolygon.coordinates[0].push(this.currentPolygon.coordinates[0][0]);
+            coords.push(coords[0]);
 
             // 在中心点添加标注
-            const center = turf.center(this.currentPolygon);
+            const center = turf.centroid(this.currentPolygon);
             const area = this.options.createText!(turf.area(this.currentFeature));
             const length = this.options.createLengthText!(turf.length(this.currentFeature));
             center.id = this.currentFeature.id;
@@ -167,20 +172,30 @@ export default class MeasurePolygon extends MeasureBase {
 
     private onMouseMoveHandler = (e: MapMouseEvent & EventData) => {
         const point = [e.lngLat.lng, e.lngLat.lat];
-        if (this.currentPolygon.coordinates[0].length > 1) {
-            this.currentPolygon.coordinates[0].pop();
+        const coords = this.currentPolygon.coordinates[0];
+
+        if (coords.length > 1)
+            coords.pop();
+
+        if (coords.length > 1) {
+            coords.pop();
         }
 
-        this.currentPolygon.coordinates[0].push(point);
+        coords.push(point);
+
+        if (coords.length > 2)
+            coords.push(coords[0]);
 
         this.updateGeometryDataSource();
     }
 
     private onRightClickHandler = (e: MapMouseEvent & EventData) => {
-        if (this.currentPolygon.coordinates[0].length === 2)  // 只存在第一个点和动态点则不进行删除操作
+        const coords = this.currentPolygon.coordinates[0];
+
+        if (coords.length === 2)  // 只存在第一个点和动态点则不进行删除操作
             return;
 
-        this.currentPolygon.coordinates[0].pop();
+        coords.pop();
         this.onMouseMoveHandler(e); // 调用鼠标移动事件，重新建立动态线
 
         this.updateGeometryDataSource();
