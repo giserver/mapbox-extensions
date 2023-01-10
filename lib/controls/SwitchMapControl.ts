@@ -21,6 +21,8 @@ interface LayerItem {
   mutex?: boolean,
   active?: boolean,
   backgroundImage: string,
+
+  onVisibleChange?: (visible: boolean) => void
 }
 
 interface GroupLayers {
@@ -29,8 +31,15 @@ interface GroupLayers {
 }
 
 interface ExtraInfo {
-  name? : string;
-  layerGroups? : Record<string, GroupLayers>;
+  name?: string;
+  nailActiveColor?: string,
+  groupsContainerHeight? : number,
+
+  layerItemActiveColor?: string,
+  layerItemHoverColor?: string,
+  layerItemImgSize?: number,
+  
+  layerGroups?: Record<string, GroupLayers>;
 }
 
 export interface SwitchMapControlOptions {
@@ -40,10 +49,6 @@ export interface SwitchMapControlOptions {
 }
 
 export default class SwitchMapControl implements IControl {
-
-  private layerImg = `<svg t="1673002593279" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3507" width="20" height="20">
-  <path d="M852.6 462.9l12.1 7.6c24.8 15.6 32.3 48.3 16.7 73.2-4.2 6.7-9.9 12.4-16.7 16.7L540.4 764.1c-17.3 10.8-39.2 10.8-56.4 0L159.3 560c-24.8-15.6-32.3-48.3-16.7-73.2 4.2-6.7 9.9-12.4 16.7-16.7l12.1-7.6L483.9 659c17.3 10.8 39.2 10.8 56.4 0l312.2-196 0.1-0.1z m0 156.1l12.1 7.6c24.8 15.6 32.3 48.3 16.7 73.2-4.2 6.7-9.9 12.4-16.7 16.7L540.4 920.2c-17.3 10.8-39.2 10.8-56.4 0L159.3 716.1c-24.8-15.6-32.3-48.3-16.7-73.2 4.2-6.7 9.9-12.4 16.7-16.7l12.1-7.6L483.9 815c17.3 10.8 39.2 10.8 56.4 0l312.2-196h0.1zM540 106.4l324.6 204.1c24.8 15.6 32.3 48.3 16.7 73.2-4.2 6.7-9.9 12.4-16.7 16.7L540.4 604c-17.3 10.8-39.2 10.8-56.4 0L159.3 399.8c-24.8-15.6-32.3-48.3-16.7-73.2 4.2-6.7 9.9-12.4 16.7-16.7l324.4-203.7c17.3-10.8 39.2-10.8 56.4 0l-0.1 0.2z" p-id="3508" fill="#2c2c2c">
-  </path></svg>`
 
   private nailImg = `<svg t="1673283468858" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2736" data-darkreader-inline-fill="" width="22" height="22">
   <path d="M912.9 380.2L643.5 110.9c-12.1-12.1-29.6-15.8-45.6-9.8s-26.6 20.5-27.6 37.6l-4.9 83.7-299.1 199.4-112.6-5.4c-17.8-0.7-34 9.2-41.3 25.5s-3.7 35 8.9 47.7L314.7 683 102.5 895.2c-7.2 7.2-7.2 18.8 0 26 3.6 3.6 8.3 5.4 13 5.4s9.4-1.8 13-5.4L340.7 709l193.4 193.4c8.3 8.3 19.1 12.6 30.2 12.6 5.9 0 11.8-1.2 17.4-3.7 16.3-7.2 26.3-23.4 25.5-41.3l-5.4-112.6 199.5-299.2 83.7-4.9c17.1-1 31.5-11.6 37.6-27.6s2.4-33.4-9.7-45.5z m-24.6 32.5c-0.5 1.4-1.9 3.7-5.4 3.9l-85.2 5-135.3-135.3c-7.2-7.2-18.8-7.2-26 0s-7.2 18.8 0 26l130.9 130.9-187.5 281.2-223.7-223.7c-7.2-7.2-18.8-7.2-26 0s-7.2 18.8 0 26l225.1 225.1c2.8 2.8 6.3 4.5 9.9 5.1l5.5 114.9c0.2 3.5-1.9 5.1-3.6 5.9-1.7 0.8-4.4 1.2-6.8-1.3L147.3 463.6c-2.5-2.5-2-5.1-1.3-6.8 0.8-1.7 2.5-4 5.9-3.6l118.6 5.6c3.9 0.2 7.8-0.9 11.1-3.1l311.9-207.9c4.8-3.2 7.8-8.5 8.2-14.2l5.5-92.8c0.2-3.5 2.6-4.8 3.9-5.4 1.4-0.5 4.1-1 6.5 1.4l269.3 269.3c2.4 2.5 1.9 5.2 1.4 6.6z" fill="#2D3742" p-id="2737" data-darkreader-inline-fill="" style="--darkreader-inline-fill:#0d1722;">
@@ -62,8 +67,14 @@ export default class SwitchMapControl implements IControl {
     options.satelliteOption.textColor ??= 'black';
     options.satelliteOption.backgroundImage ??= img_satellite;
 
-    if(options.extra){
+    if (options.extra) {
       options.extra.name ??= '附加图层';
+      options.extra.nailActiveColor ??= "#0066FF";
+      options.extra.groupsContainerHeight = 300;
+    
+      options.extra.layerItemActiveColor ??= "#0066FF";
+      options.extra.layerItemHoverColor ??= "black";
+      options.extra.layerItemImgSize ??= 50;
     }
   }
 
@@ -162,7 +173,7 @@ export default class SwitchMapControl implements IControl {
     }
 
     .jas-ctrl-switchmap-layer:hover{
-      border: 2px solid black;
+      border: 2px solid ${this.options.extra?.layerItemHoverColor};
       box-sizing: border-box;
     }
     </style>` ;
@@ -229,7 +240,6 @@ export default class SwitchMapControl implements IControl {
 
   private createGroupLayerContainerDiv(): { containerDiv: HTMLDivElement, groupsDiv: HTMLDivElement } {
     const headerHeight = 30;
-    const groupsHeight = 300;
 
     const containerDiv = document.createElement('div');
     let style = containerDiv.style;
@@ -268,13 +278,13 @@ export default class SwitchMapControl implements IControl {
 
     nailDiv.addEventListener('click', () => {
       this.layerContainerDivShowAlways = !this.layerContainerDivShowAlways;
-      changeSvgColor(nailDiv.children[0] as SVGAElement, this.layerContainerDivShowAlways ? '#0066FF' : '#2D3742');
+      changeSvgColor(nailDiv.children[0] as SVGAElement, this.layerContainerDivShowAlways ? this.options.extra!.nailActiveColor! : '#2D3742');
     });
 
     const groupsDiv = document.createElement('div');
     groupsDiv.classList.add('jas-ctrl-switchmap-alert-groups');
     style = groupsDiv.style;
-    style.height = `${groupsHeight}px`
+    style.height = `${this.options.extra?.groupsContainerHeight}px`;
     style.overflowY = 'auto';
 
     containerDiv.append(headerDiv);
@@ -289,22 +299,22 @@ export default class SwitchMapControl implements IControl {
     style.margin = '5px 5px 10px 5px';
 
     const header = document.createElement('div');
-    header.innerHTML = `<span>${name}</span>`
+    header.innerHTML = `<span>${name}</span>`;
     style = header.style;
     style.display = 'flex';
     style.alignItems = 'flex-end';
-    style.fontWeight = '500'
-    style.marginBottom = '5px'
+    style.fontWeight = '500';
+    style.marginBottom = '5px';
     groupDiv.append(header);
 
     const layerDiv = document.createElement('div');
     style = layerDiv.style;
     style.display = 'grid';
     style.gridTemplateColumns = '1fr 1fr 1fr';
-    style.gap = '30px'
+    style.gap = '30px';
     style.rowGap = '7px';
     style.justifyItems = 'center';
-    
+
 
     groupDiv.append(layerDiv);
 
@@ -325,13 +335,13 @@ export default class SwitchMapControl implements IControl {
     imgDiv.className = lclass;
     imgDiv.id = imgDivId;
     style = imgDiv.style;
-    style.height = '50px';
-    style.width = '50px';
+    style.height = `${this.options.extra?.layerItemImgSize}px`;
+    style.width = `${this.options.extra?.layerItemImgSize}px`;
     style.boxShadow = '0 0 0 2px rgb(0 0 0 / 10%)';
     style.boxSizing = 'border-box';
     style.borderRadius = '4px';
     style.backgroundColor = 'white';
-    style.backgroundSize = '46px';
+    style.backgroundSize = `${this.options.extra!.layerItemImgSize! - 4}px`;
     style.backgroundImage = `url('${layerItem.backgroundImage}')`;
     style.backgroundRepeat = 'no-repeat';
     style.backgroundPositionX = 'center';
@@ -340,18 +350,21 @@ export default class SwitchMapControl implements IControl {
     container.append(imgDiv);
 
     const textDiv = document.createElement('div');
+    textDiv.className = `${lclass}-text`;
     textDiv.id = textDivId;
     textDiv.innerText = layerItem.name;
     style = textDiv.style;
     style.textAlign = 'center';
     container.append(textDiv);
 
-    function setLayerVisibleAndChangeUI(layer: AnyLayer, imgDiv: HTMLElement | string, textDiv: HTMLElement | string, visible: boolean) {
-      if (!map.getLayer(layer.id)) {
-        map.addLayer(layer);
+    const that = this;
+    function setLayerVisibleAndChangeUI(item: LayerItem, imgDiv: HTMLElement | string, textDiv: HTMLElement | string, visible: boolean) {
+      if (!map.getLayer(item.layer.id)) {
+        map.addLayer(item.layer);
       }
 
-      map.setLayoutProperty(layer.id, 'visibility', visible ? 'visible' : 'none');
+      map.setLayoutProperty(item.layer.id, 'visibility', visible ? 'visible' : 'none');
+      item.onVisibleChange?.call(undefined, visible);
 
       if (typeof imgDiv === 'string')
         imgDiv = document.getElementById(imgDiv)!;
@@ -359,12 +372,12 @@ export default class SwitchMapControl implements IControl {
       if (typeof textDiv === 'string')
         textDiv = document.getElementById(textDiv)!;
 
-      imgDiv.style.border = visible ? '2px solid #0066FF' : '';
-      textDiv.style.color = visible ? '#0066FF' : 'black';
+      imgDiv.style.border = visible ? `2px solid ${that.options.extra!.layerItemActiveColor!}` : '';
+      textDiv.style.color = visible ? that.options.extra!.layerItemActiveColor! : '';
     }
 
     if (layerItem.active) {
-      setLayerVisibleAndChangeUI(layerItem.layer, imgDiv, textDiv, true);
+      setLayerVisibleAndChangeUI(layerItem, imgDiv, textDiv, true);
     }
 
     container.addEventListener('click', e => {
@@ -372,7 +385,7 @@ export default class SwitchMapControl implements IControl {
       const toVisible = !map.getLayer(layerId) || map.getLayoutProperty(layerId, 'visibility') === 'none';
 
       // 设置layer显示或隐藏
-      setLayerVisibleAndChangeUI(layerItem.layer, imgDiv, textDiv, toVisible);
+      setLayerVisibleAndChangeUI(layerItem, imgDiv, textDiv, toVisible);
 
       if (toVisible) {
 
@@ -384,12 +397,10 @@ export default class SwitchMapControl implements IControl {
           const otherId = l.layer.id;
 
           if (otherId !== layerId && map.getLayer(otherId) && (mutex || l.mutex)) {
-            setLayerVisibleAndChangeUI(l.layer, `${lclass}-${otherId}`, `${lclass}-${otherId}-text`, false);
+            setLayerVisibleAndChangeUI(l, `${lclass}-${otherId}`, `${lclass}-${otherId}-text`, false);
           }
         });
       }
-
-
     })
 
     return container;
