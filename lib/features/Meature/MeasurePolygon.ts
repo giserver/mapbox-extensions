@@ -1,7 +1,7 @@
 import * as turf from '@turf/turf';
 import { Polygon } from "@turf/turf";
 import { EventData, Map, MapMouseEvent } from "mapbox-gl";
-import { createUUID, setDefaultValue } from '../../utils';
+import { createUUID } from '../../utils';
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
 export interface MeasurePolygonOptions extends MeasureOptions<GeoJSON.Polygon> {
@@ -48,18 +48,18 @@ export default class MeasurePolygon extends MeasureBase {
      *
      */
     constructor(map: Map, private options: MeasurePolygonOptions = {}) {
-        setDefaultValue(options, 'polygonColor', "#ff0000");
-        setDefaultValue(options, 'polygonOpacity', 0.5);
-        setDefaultValue(options, 'polygonOutlineColor', "#000000");
-        setDefaultValue(options, 'textSize', 12);
-        setDefaultValue(options, 'textColor', "#000000");
-        setDefaultValue(options, 'createText', (area: number) => area > 1000000 ?
+        options.polygonColor??="#ff0000";
+        options.polygonOpacity??=0.5;
+        options.polygonOutlineColor??="#000000";
+        options.textSize??=12;
+        options.textColor??="#000000";
+        options.createText??=(area: number) => area > 1000000 ?
             `${(area / 1000000).toFixed(4)}km²` :
-            `${area.toFixed(4)}m²`);
+            `${area.toFixed(4)}m²`;
 
-        setDefaultValue(options, 'createLengthText', (length: number) => length > 1 ?
+        options.createLengthText??=(length: number) => length > 1 ?
             `${length.toFixed(3)}km` :
-            `${(length * 1000).toFixed(2)}m`);
+            `${(length * 1000).toFixed(2)}m`;
         super(map);
     }
 

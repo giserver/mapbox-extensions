@@ -18,18 +18,6 @@ export function createUUID(): string {
 }
 
 /**
- * 设置object类型的默认值
- * @param obj 
- * @param prop 
- * @param value 
- */
-export function setDefaultValue<T, K extends keyof T>(obj: T, prop: K, value: T[K]) {
-    if (!obj[prop]) {
-        obj[prop] = value;
-    }
-}
-
-/**
  * 复制到剪切板
  * @param textToCopy 
  * @returns 

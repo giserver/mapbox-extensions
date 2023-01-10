@@ -1,6 +1,5 @@
 import { LineString, Polygon } from "@turf/turf";
 import { EventData, GeoJSONSource, IControl, Map, MapEventType } from "mapbox-gl";
-import { setDefaultValue } from "../utils";
 
 export interface DoodleControlOptions {
     /**
@@ -78,13 +77,13 @@ export default class DoodleControl implements IControl {
      *
      */
     constructor(private options: DoodleControlOptions = {}) {
-        setDefaultValue(this.options, 'name', "画圈");
-        setDefaultValue(this.options, 'reName', '重画');
-        setDefaultValue(this.options, 'exitText', '退出画圈');
-        setDefaultValue(this.options, 'lineColor', 'blue');
-        setDefaultValue(this.options, 'lineWidth', 5);
-        setDefaultValue(this.options, 'polygonColor', 'cyan');
-        setDefaultValue(this.options, 'polygonOpacity', 0.5);
+        this.options.name ??= "画圈";
+        this.options.reName ??= '重画';
+        this.options.exitText ??= '退出画圈';
+        this.options.lineColor ??= 'blue';
+        this.options.lineWidth ??= 5;
+        this.options.polygonColor ??= 'cyan';
+        this.options.polygonOpacity ??= 0.5;
 
         this.div_doodle_switch = document.createElement('div');
         this.div_doodle_switch.className = "jas-ctrl mapboxgl-ctrl-group"

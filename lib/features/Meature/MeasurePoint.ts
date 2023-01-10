@@ -1,5 +1,5 @@
 import { Map, EventData, MapMouseEvent } from "mapbox-gl";
-import { createUUID, setDefaultValue } from "../../utils";
+import { createUUID } from "../../utils";
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
 export interface MeasurePointOptions extends MeasureOptions<GeoJSON.Point> {
@@ -42,12 +42,12 @@ export default class MeasurePoint extends MeasureBase {
      *
      */
     constructor(map: Map, private options: MeasurePointOptions = {}) {
-        setDefaultValue(options, 'textSize', 12);
-        setDefaultValue(options, 'pointSize', 5);
-        setDefaultValue(options, 'textColor', "#000000");
-        setDefaultValue(options, 'textOffsetY', -1.2);
-        setDefaultValue(options, 'pointColor', "#000000");
-        setDefaultValue(options, 'createText', (lng: number, lat: number) => `${lng.toFixed(4)} , ${lat.toFixed(4)}`);
+        options.textSize ??= 12;
+        options.pointSize ??= 5;
+        options.textColor ??= "#000000";
+        options.textOffsetY ??= -1.2;
+        options.pointColor ??= "#000000";
+        options.createText ??= (lng: number, lat: number) => `${lng.toFixed(4)} , ${lat.toFixed(4)}`;
         super(map);
     }
 

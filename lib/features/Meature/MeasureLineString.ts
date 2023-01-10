@@ -1,7 +1,7 @@
 import * as turf from "@turf/turf";
 import { LineString } from "@turf/turf";
 import { MapMouseEvent, EventData, Map } from "mapbox-gl";
-import { createUUID, setDefaultValue } from "../../utils";
+import { createUUID } from "../../utils";
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
 export interface MeasureLineStringOptions extends MeasureOptions<GeoJSON.LineString> {
@@ -68,17 +68,17 @@ export default class MeasureLineString extends MeasureBase {
      *
      */
     constructor(map: Map, private options: MeasureLineStringOptions = {}) {
-        setDefaultValue(options, 'lineColor', "#000000");
-        setDefaultValue(options, 'lineWidth', 1);
-        setDefaultValue(options, 'segmentPointColor', "#000000");
-        setDefaultValue(options, 'segmentPointSize', 4);
-        setDefaultValue(options, 'textOffsetY', -1.2);
-        setDefaultValue(options, 'segmentTextSize', 12);
-        setDefaultValue(options, 'segmentTextColor', "#000000");
-        setDefaultValue(options, 'showCenterText', true);
-        setDefaultValue(options, 'centerTextSize', 12);
-        setDefaultValue(options, 'centerTextColor', '#ff0000');
-        setDefaultValue(options, 'createText', (length: number) => length > 1 ? `${length.toFixed(3)}km` : `${(length * 1000).toFixed(2)}m`);
+        options.lineColor ??= "#000000";
+        options.lineWidth ??= 1;
+        options.segmentPointColor ??= "#000000";
+        options.segmentPointSize ??= 4;
+        options.textOffsetY ??= -1.2;
+        options.segmentTextSize ??= 12;
+        options.segmentTextColor ??= "#000000";
+        options.showCenterText ??= true;
+        options.centerTextSize ??= 12;
+        options.centerTextColor ??= '#ff0000';
+        options.createText ??= (length: number) => length > 1 ? `${length.toFixed(3)}km` : `${(length * 1000).toFixed(2)}m`;
 
         super(map);
     }

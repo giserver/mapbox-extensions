@@ -1,5 +1,4 @@
 import { EaseToOptions, IControl, Map } from "mapbox-gl";
-import { setDefaultValue } from "../utils";
 
 export interface BackToOriginControlOptions {
     easeToOptions?: EaseToOptions
@@ -26,12 +25,12 @@ export default class BackToOriginControl implements IControl {
     }
 
     onAdd(map: Map): HTMLElement {
-        setDefaultValue(this.options, 'easeToOptions', {
+        this.options.easeToOptions ??= {
             center: map.getCenter(),
             zoom: map.getZoom(),
             pitch: map.getPitch(),
             bearing: map.getBearing()
-        });
+        };
 
         const div = document.createElement('div');
         div.className = 'jas-ctrl jas-ctrl-backtoorigin mapboxgl-ctrl mapboxgl-ctrl-group'

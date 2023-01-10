@@ -46,167 +46,169 @@ map.on('load', () => {
             textColor: 'white',
             //backgroundImage: '/relics.png'
         },
-        extraLayers: {
-            '城市规划': {
-                mutex: true, layers: [{
-                    name: '房屋管理',
-                    layer: {
-                        id: 'fff',
-                        type: 'symbol',
-                        source: {
-                            type: 'geojson',
-                            data: {
-                                type: 'Feature',
-                                geometry: {
-                                    type: 'Point',
-                                    coordinates: [120.5, 31.1]
-                                },
-                                properties: { name: '房屋1' }
+        extra:{
+            layerGroups: {
+                '城市规划': {
+                    mutex: true, layers: [{
+                        name: '房屋管理',
+                        layer: {
+                            id: 'fff',
+                            type: 'symbol',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'Feature',
+                                    geometry: {
+                                        type: 'Point',
+                                        coordinates: [120.5, 31.1]
+                                    },
+                                    properties: { name: '房屋1' }
+                                }
+                            },
+                            layout: {
+                                'text-field': ['get', 'name']
                             }
                         },
-                        layout: {
-                            'text-field': ['get', 'name']
-                        }
-                    },
-                    'backgroundImage': '/house-user.png',
-                    active: true
-                }, {
-                    name: '建筑群',
-                    layer: {
-                        id: 'fff1',
-                        type: 'symbol',
-                        source: {
-                            type: 'geojson',
-                            data: {
-                                type: 'Feature',
-                                geometry: {
-                                    type: 'Point',
-                                    coordinates: [120.51, 31.2]
-                                },
-                                properties: { name: '建筑群1' }
+                        'backgroundImage': '/house-user.png',
+                        active: true
+                    }, {
+                        name: '建筑群',
+                        layer: {
+                            id: 'fff1',
+                            type: 'symbol',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'Feature',
+                                    geometry: {
+                                        type: 'Point',
+                                        coordinates: [120.51, 31.2]
+                                    },
+                                    properties: { name: '建筑群1' }
+                                }
+                            },
+                            layout: {
+                                "text-field": ['get', 'name']
                             }
                         },
-                        layout: {
-                            "text-field": ['get', 'name']
-                        }
-                    },
-                    'backgroundImage': '/building.png',
-                }, {
-                    name: '水路规划',
-                    layer: {
-                        id: 'fff2',
-                        type: 'symbol',
-                        source: {
-                            type: 'geojson',
-                            data: {
-                                type: 'Feature',
-                                geometry: {
-                                    type: 'Point',
-                                    coordinates: [120.52, 31.1]
-                                },
-                                properties: { name: '水路1' }
+                        'backgroundImage': '/building.png',
+                    }, {
+                        name: '水路规划',
+                        layer: {
+                            id: 'fff2',
+                            type: 'symbol',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'Feature',
+                                    geometry: {
+                                        type: 'Point',
+                                        coordinates: [120.52, 31.1]
+                                    },
+                                    properties: { name: '水路1' }
+                                }
+                            },
+                            layout: {
+                                "text-field": ['get', 'name']
                             }
                         },
-                        layout: {
-                            "text-field": ['get', 'name']
-                        }
-                    },
-                    'backgroundImage': '/wetland.png',
-                }, {
-                    name: '公路规划',
-                    layer: {
-                        id: 'fff3',
-                        type: 'symbol',
-                        source: {
-                            type: 'geojson',
-                            data: {
-                                type: 'Feature',
-                                geometry: {
-                                    type: 'Point',
-                                    coordinates: [120.53, 31.2]
-                                },
-                                properties: { name: '公路1' }
+                        'backgroundImage': '/wetland.png',
+                    }, {
+                        name: '公路规划',
+                        layer: {
+                            id: 'fff3',
+                            type: 'symbol',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'Feature',
+                                    geometry: {
+                                        type: 'Point',
+                                        coordinates: [120.53, 31.2]
+                                    },
+                                    properties: { name: '公路1' }
+                                }
+                            },
+                            layout: {
+                                "text-field": ['get', 'name']
                             }
                         },
-                        layout: {
-                            "text-field": ['get', 'name']
+                        'backgroundImage': '/road.png',
+                        easeToOptions: {
+                            center: [120.53, 31.2]
                         }
-                    },
-                    'backgroundImage': '/road.png',
-                    easeToOptions: {
-                        center: [120.53, 31.2]
-                    }
-                }]
-            }, '乡村建设': {
-                mutex: false, layers: [{
-                    name: 'fff4',
-                    layer: {
-                        id: 'fff4',
-                        type: 'symbol',
-                        source: {
-                            type: 'geojson',
-                            data: {
-                                type: 'Feature',
-                                geometry: {
-                                    type: 'Point',
-                                    coordinates: [120.54, 31.1]
-                                },
-                                properties: { name: 'fff4' }
+                    }]
+                }, '乡村建设': {
+                    mutex: false, layers: [{
+                        name: 'fff4',
+                        layer: {
+                            id: 'fff4',
+                            type: 'symbol',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'Feature',
+                                    geometry: {
+                                        type: 'Point',
+                                        coordinates: [120.54, 31.1]
+                                    },
+                                    properties: { name: 'fff4' }
+                                }
+                            },
+                            layout: {
+                                "text-field": ['get', 'name']
                             }
                         },
-                        layout: {
-                            "text-field": ['get', 'name']
-                        }
-                    },
-                    'backgroundImage': '',
-                    mutex: true
-                }, {
-                    name: 'fff5',
-                    layer: {
-                        id: 'fff5',
-                        type: 'symbol',
-                        source: {
-                            type: 'geojson',
-                            data: {
-                                type: 'Feature',
-                                geometry: {
-                                    type: 'Point',
-                                    coordinates: [120.6, 31.2]
-                                },
-                                properties: { name: 'fff5' }
+                        'backgroundImage': '',
+                        mutex: true
+                    }, {
+                        name: 'fff5',
+                        layer: {
+                            id: 'fff5',
+                            type: 'symbol',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'Feature',
+                                    geometry: {
+                                        type: 'Point',
+                                        coordinates: [120.6, 31.2]
+                                    },
+                                    properties: { name: 'fff5' }
+                                }
+                            },
+                            layout: {
+                                "text-field": ['get', 'name'],
+                                'text-size': 30,
                             }
                         },
-                        layout: {
-                            "text-field": ['get', 'name'],
-                            'text-size': 30,
-                        }
-                    },
-                    'backgroundImage': '',
-                    active: true,
-                }, {
-                    name: 'fff6',
-                    layer: {
-                        id: 'fff6',
-                        type: 'symbol',
-                        source: {
-                            type: 'geojson',
-                            data: {
-                                type: 'Feature',
-                                geometry: {
-                                    type: 'Point',
-                                    coordinates: [120.6, 31.1]
-                                },
-                                properties: { name: 'fff6' }
+                        'backgroundImage': '',
+                        active: true,
+                    }, {
+                        name: 'fff6',
+                        layer: {
+                            id: 'fff6',
+                            type: 'symbol',
+                            source: {
+                                type: 'geojson',
+                                data: {
+                                    type: 'Feature',
+                                    geometry: {
+                                        type: 'Point',
+                                        coordinates: [120.6, 31.1]
+                                    },
+                                    properties: { name: 'fff6' }
+                                }
+                            },
+                            layout: {
+                                "text-field": ['get', 'name'],
+                                'text-size': 30
                             }
                         },
-                        layout: {
-                            "text-field": ['get', 'name'],
-                            'text-size': 30
-                        }
-                    },
-                    'backgroundImage': '',
-                    active: true,
-                }]
+                        'backgroundImage': '',
+                        active: true,
+                    }]
+                }
             }
         }
     }));

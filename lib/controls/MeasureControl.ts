@@ -4,7 +4,7 @@ import MeasureBase, { MeasureType } from "../features/Meature/MeasureBase";
 import MeasurePoint, { MeasurePointOptions } from "../features/Meature/MeasurePoint";
 import MeasureLineString, { MeasureLineStringOptions } from "../features/Meature/MeasureLineString";
 import MeasurePolygon, { MeasurePolygonOptions } from "../features/Meature/MeasurePolygon";
-import { setDefaultValue, Dict, copyToClipboard } from "../utils";
+import { Dict, copyToClipboard } from "../utils";
 
 export interface MeasureControlOptions {
 
@@ -96,14 +96,16 @@ export default class MeasureControl implements IControl {
     private popup = new Popup({ closeButton: false, className: 'custom-popup' });
 
     constructor(private options: MeasureControlOptions = {}) {
-        setDefaultValue(options, 'horizontal', false);
-        setDefaultValue(options, 'btnBgColor', "#ffffff");
-        setDefaultValue(options, 'btnActiveColor', '#ddd');
-        setDefaultValue(options, 'enableModes', ['Point', 'LineString', 'Polygon']);
-        setDefaultValue(options, 'geometryClick', false);
-        setDefaultValue(options, 'measurePointOptions', {});
-        setDefaultValue(options, 'measureLineStringOptions', {});
-        setDefaultValue(options, 'measurePolygonOptions', {});
+        options.horizontal ??= false;
+
+        options.horizontal ??= false;
+        options.btnBgColor ??= "#ffffff";
+        options.btnActiveColor ??= '#ddd';
+        options.enableModes ??= ['Point', 'LineString', 'Polygon'];
+        options.geometryClick ??= false;
+        options.measurePointOptions ??= {};
+        options.measureLineStringOptions ??= {};
+        options.measurePolygonOptions ??= {};
     }
 
     get isDrawing() {
