@@ -147,12 +147,7 @@ export default class SwitchMapControl implements IControl {
   }
 
   onAdd(map: Map): HTMLElement {
-    const attribElement = document.querySelector('.mapboxgl-ctrl-attrib')
-    if (attribElement) {
-      const attribDiv = attribElement as HTMLDivElement;
-      attribDiv.style.display = 'none';
-    }
-
+    
     map.addLayer({
       id: "mapbox-satellite",
       type: "raster",
