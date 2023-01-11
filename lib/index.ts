@@ -3,7 +3,7 @@ import LayerGroup from './features/LayerGroup'
 import { Dict } from './utils';
 
 import MeasureControl from "./controls/MeasureControl";
-import SwitchMapControl from "./controls/SwitchMapControl";
+import SwitchMapControl, { SwitchMapControlOptions } from "./controls/SwitchMapControl";
 import BackToOriginControl from "./controls/BackToOriginControl";
 import DoodleControl from "./controls/DoodleControl";
 
@@ -12,7 +12,9 @@ export {
     MeasureControl,
     SwitchMapControl,
     BackToOriginControl,
-    DoodleControl
+    DoodleControl,
+
+    SwitchMapControlOptions
 }
 
 declare module "mapbox-gl" {

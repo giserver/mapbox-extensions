@@ -448,10 +448,10 @@ export default class SwitchMapControl implements IControl {
       item.onVisibleChange?.call(undefined, visible);
 
       if (typeof imgDiv === 'string')
-        imgDiv = document.getElementById(imgDiv)!;
+        imgDiv = document.querySelector(`#${map.getContainer().id} #${imgDiv}`)! as HTMLDivElement;
 
       if (typeof textDiv === 'string')
-        textDiv = document.getElementById(textDiv)!;
+        textDiv = document.querySelector(`#${map.getContainer().id} #${textDiv}`)! as HTMLDivElement;
 
       imgDiv.style.border = visible ? `2px solid ${that.options.extra!.layerItemActiveColor!}` : '';
       textDiv.style.color = visible ? that.options.extra!.layerItemActiveColor! : '';
