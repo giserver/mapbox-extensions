@@ -25,7 +25,7 @@ interface SwitchItemOption {
   backgroundImage?: string,
 }
 
-interface LayerItem {
+export interface SwitchLayerItem {
 
   /**
    * 图层显示名称
@@ -65,17 +65,17 @@ interface LayerItem {
   onVisibleChange?: (visible: boolean) => void
 }
 
-interface GroupLayers {
+export interface SwitchGroupLayers {
 
   /**
    * 图层组互斥
    */
   mutex?: boolean,
 
-  layers: Array<LayerItem>
+  layers: Array<SwitchLayerItem>
 }
 
-interface ExtraInfo {
+export interface SwitchMapExtraInfo {
 
   /**
    * 附加信息名字 默认：附加图层
@@ -90,7 +90,7 @@ interface ExtraInfo {
   /**
    * 组容器最大高度
    */
-  groupsContainerMaxHeight? : number,
+  groupsContainerMaxHeight?: number,
 
   /**
    * 图层被激活显示时ui颜色
@@ -106,14 +106,14 @@ interface ExtraInfo {
    * 图层图片Div宽高
    */
   layerItemImgSize?: number,
-  
-  layerGroups?: Record<string, GroupLayers>;
+
+  layerGroups?: Record<string, SwitchGroupLayers>;
 }
 
 export interface SwitchMapControlOptions {
   baseOption?: SwitchItemOption,
   satelliteOption?: SwitchItemOption,
-  extra?: ExtraInfo
+  extra?: SwitchMapExtraInfo
 }
 
 export default class SwitchMapControl implements IControl {
@@ -139,7 +139,7 @@ export default class SwitchMapControl implements IControl {
       options.extra.name ??= '附加图层';
       options.extra.nailActiveColor ??= "#0066FF";
       options.extra.groupsContainerMaxHeight = 300;
-    
+
       options.extra.layerItemActiveColor ??= "#0066FF";
       options.extra.layerItemHoverColor ??= "black";
       options.extra.layerItemImgSize ??= 50;
@@ -147,7 +147,7 @@ export default class SwitchMapControl implements IControl {
   }
 
   onAdd(map: Map): HTMLElement {
-    
+
     map.addLayer({
       id: "mapbox-satellite",
       type: "raster",
@@ -167,7 +167,7 @@ export default class SwitchMapControl implements IControl {
     if (extraLayers && Object.getOwnPropertyNames(extraLayers).length > 0) {
 
       const { containerDiv, groupsDiv } = this.createGroupLayerContainerDiv();
-      const layerIdMap = new Dict<string,LayerItem>();
+      const layerIdMap = new Dict<string, LayerItem>();
 
       for (let groupName in extraLayers) {
         const { layers, mutex } = extraLayers[groupName];
@@ -185,10 +185,10 @@ export default class SwitchMapControl implements IControl {
           }
 
           // 重复id检查
-          if(layerIdMap.has(item.layer.id))
+          if (layerIdMap.has(item.layer.id))
             throw new Error(`same layer id : ${item.layer.id} added !`);
           else
-            layerIdMap.set(item.layer.id,item);
+            layerIdMap.set(item.layer.id, item);
 
           layerDiv.append(this.createGroupLayerItemDiv(map, item, groupName, mutex || item.mutex));
         })
