@@ -167,7 +167,7 @@ export default class SwitchMapControl implements IControl {
     if (extraLayers && Object.getOwnPropertyNames(extraLayers).length > 0) {
 
       const { containerDiv, groupsDiv } = this.createGroupLayerContainerDiv();
-      const layerIdMap = new Dict<string, LayerItem>();
+      const layerIdMap = new Dict<string, SwitchLayerItem>();
 
       for (let groupName in extraLayers) {
         const { layers, mutex } = extraLayers[groupName];
@@ -394,7 +394,7 @@ export default class SwitchMapControl implements IControl {
     return { groupDiv, layerDiv }
   }
 
-  private createGroupLayerItemDiv(map: mapboxgl.Map, layerItem: LayerItem, group: string, mutex?: boolean): HTMLDivElement {
+  private createGroupLayerItemDiv(map: mapboxgl.Map, layerItem: SwitchLayerItem, group: string, mutex?: boolean): HTMLDivElement {
     const layerId = layerItem.layer.id;
     const lclass = 'jas-ctrl-switchmap-layer';
     const imgDivId = `${lclass}-${layerId}`;
@@ -434,7 +434,7 @@ export default class SwitchMapControl implements IControl {
     container.append(textDiv);
 
     const that = this;
-    function setLayerVisibleAndChangeUI(item: LayerItem, imgDiv: HTMLElement | string, textDiv: HTMLElement | string, visible: boolean) {
+    function setLayerVisibleAndChangeUI(item: SwitchLayerItem, imgDiv: HTMLElement | string, textDiv: HTMLElement | string, visible: boolean) {
       if (!map.getLayer(item.layer.id)) {
         map.addLayer(item.layer);
       }
