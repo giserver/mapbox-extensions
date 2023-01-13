@@ -11,6 +11,10 @@ yarn build
 1. 确保mapboxgl已经在项目中安装. 
 2. `npm install` / `yarn add` `mapbox-extensions`. 
 3. add `import 'mapbox-extensions'` at your entry file. 
+
+## 给颗星星吧! :star:
+如果您觉得这个项目还不错，可以在您的项目中使用或者对您有些许启发，请给颗星星吧，谢谢！
+
 ## 功能 
 ### `修改样式`  
 在map对象中的使用setStyle方法会将现有的所有数据源和图层清空，使用changeStyle可以保存这些数据源和图层，但是必须设置要保存的图层id
