@@ -153,7 +153,7 @@ export default class SwitchMapControl implements IControl {
       type: "raster",
       source: {
         type: 'raster',
-        tiles: [`https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?sku=${mapboxgl.accessToken}`],
+        tiles: [`https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=${mapboxgl.accessToken}`],
         tileSize: 256
       },
       layout: {
