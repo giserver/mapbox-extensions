@@ -215,7 +215,6 @@ export default class SwitchMapControl implements IControl {
   /**
    * 基础图层切换
    * @param map 
-   * @param extra 存在其他图层
    * @returns 
    */
   private createBaseLayerDiv(map: Map) {
@@ -388,9 +387,7 @@ export default class SwitchMapControl implements IControl {
     style.justifyItems = 'center';
     style.minWidth = `${this.options.extra!.layerItemImgSize! * 3 + 38 * 2}px`
 
-
     groupDiv.append(layerDiv);
-
     return { groupDiv, layerDiv }
   }
 
@@ -433,27 +430,8 @@ export default class SwitchMapControl implements IControl {
     style.marginTop = '4px';
     container.append(textDiv);
 
-    const that = this;
-    function setLayerVisibleAndChangeUI(item: SwitchLayerItem, imgDiv: HTMLElement | string, textDiv: HTMLElement | string, visible: boolean) {
-      if (!map.getLayer(item.layer.id)) {
-        map.addLayer(item.layer);
-      }
-
-      map.setLayoutProperty(item.layer.id, 'visibility', visible ? 'visible' : 'none');
-      item.onVisibleChange?.call(undefined, visible);
-
-      if (typeof imgDiv === 'string')
-        imgDiv = document.querySelector(`#${map.getContainer().id} #${imgDiv}`)! as HTMLDivElement;
-
-      if (typeof textDiv === 'string')
-        textDiv = document.querySelector(`#${map.getContainer().id} #${textDiv}`)! as HTMLDivElement;
-
-      imgDiv.style.border = visible ? `2px solid ${that.options.extra!.layerItemActiveColor!}` : '';
-      textDiv.style.color = visible ? that.options.extra!.layerItemActiveColor! : '';
-    }
-
     if (layerItem.active) {
-      setLayerVisibleAndChangeUI(layerItem, imgDiv, textDiv, true);
+      this.setLayerVisibleAndChangeUI(map, layerItem, imgDiv, textDiv, true);
     }
 
     container.addEventListener('click', e => {
@@ -461,7 +439,7 @@ export default class SwitchMapControl implements IControl {
       const toVisible = !map.getLayer(layerId) || map.getLayoutProperty(layerId, 'visibility') === 'none';
 
       // 设置layer显示或隐藏
-      setLayerVisibleAndChangeUI(layerItem, imgDiv, textDiv, toVisible);
+      this.setLayerVisibleAndChangeUI(map, layerItem, imgDiv, textDiv, toVisible);
 
       if (toVisible) {
 
@@ -473,12 +451,31 @@ export default class SwitchMapControl implements IControl {
           const otherId = l.layer.id;
 
           if (otherId !== layerId && map.getLayer(otherId) && (mutex || l.mutex)) {
-            setLayerVisibleAndChangeUI(l, `${lclass}-${otherId}`, `${lclass}-${otherId}-text`, false);
+            this.setLayerVisibleAndChangeUI(map, l, `${lclass}-${otherId}`, `${lclass}-${otherId}-text`, false);
           }
         });
       }
     })
 
     return container;
+  }
+
+
+  private setLayerVisibleAndChangeUI(map: mapboxgl.Map, item: SwitchLayerItem, imgDiv: HTMLElement | string, textDiv: HTMLElement | string, visible: boolean) {
+    if (!map.getLayer(item.layer.id)) {
+      map.addLayer(item.layer);
+    }
+
+    map.setLayoutProperty(item.layer.id, 'visibility', visible ? 'visible' : 'none');
+    item.onVisibleChange?.call(undefined, visible);
+
+    if (typeof imgDiv === 'string')
+      imgDiv = document.querySelector(`#${map.getContainer().id} #${imgDiv}`)! as HTMLDivElement;
+
+    if (typeof textDiv === 'string')
+      textDiv = document.querySelector(`#${map.getContainer().id} #${textDiv}`)! as HTMLDivElement;
+
+    imgDiv.style.border = visible ? `2px solid ${this.options.extra!.layerItemActiveColor!}` : '';
+    textDiv.style.color = visible ? this.options.extra!.layerItemActiveColor! : '';
   }
 }
