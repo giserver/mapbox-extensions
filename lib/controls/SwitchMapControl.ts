@@ -190,7 +190,7 @@ export default class SwitchMapControl implements IControl {
           else
             layerIdMap.set(item.layer.id, item);
 
-          layerDiv.append(this.createGroupLayerItemDiv(map, item, groupName, mutex || item.mutex));
+          layerDiv.append(this.createGroupLayerItemDiv(map, item, groupName));
         })
 
         groupsDiv.append(groupDiv);
@@ -391,7 +391,7 @@ export default class SwitchMapControl implements IControl {
     return { groupDiv, layerDiv }
   }
 
-  private createGroupLayerItemDiv(map: mapboxgl.Map, layerItem: SwitchLayerItem, group: string, mutex?: boolean): HTMLDivElement {
+  private createGroupLayerItemDiv(map: mapboxgl.Map, layerItem: SwitchLayerItem, group: string): HTMLDivElement {
     const layerId = layerItem.layer.id;
     const lclass = 'jas-ctrl-switchmap-layer';
     const imgDivId = `${lclass}-${layerId}`;
@@ -447,10 +447,11 @@ export default class SwitchMapControl implements IControl {
           map.easeTo(layerItem.easeToOptions);
 
         // 如果互斥设置同group中的layer隐藏
-        this.options.extra!.layerGroups![group].layers.forEach(l => {
+        const layerGroup = this.options.extra!.layerGroups![group];
+        layerGroup.layers.forEach(l => {
           const otherId = l.layer.id;
 
-          if (otherId !== layerId && map.getLayer(otherId) && (mutex || l.mutex)) {
+          if (otherId !== layerId && map.getLayer(otherId) && (layerGroup.mutex || layerItem.mutex || l.mutex)) {
             this.setLayerVisibleAndChangeUI(map, l, `${lclass}-${otherId}`, `${lclass}-${otherId}-text`, false);
           }
         });
