@@ -6,6 +6,7 @@ import MeasureControl from "./controls/MeasureControl";
 import SwitchMapControl, { SwitchMapExtraInfo, SwitchMapControlOptions, SwitchGroupLayers, SwitchLayerItem } from "./controls/SwitchMapControl";
 import BackToOriginControl from "./controls/BackToOriginControl";
 import DoodleControl from "./controls/DoodleControl";
+import Measure4Mobile from "./features/Measure/Measure4Mobile";
 
 export {
     LayerGroup,
@@ -17,8 +18,9 @@ export {
     SwitchMapControlOptions,
     SwitchMapExtraInfo,
     SwitchGroupLayers,
-    SwitchLayerItem
+    SwitchLayerItem,
 
+    Measure4Mobile
 }
 
 declare module "mapbox-gl" {

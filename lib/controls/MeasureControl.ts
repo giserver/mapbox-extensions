@@ -1,9 +1,9 @@
 import { EventData, IControl, Map, MapLayerEventType, Popup } from "mapbox-gl";
 import * as turf from '@turf/turf';
-import MeasureBase, { MeasureType } from "../features/Meature/MeasureBase";
-import MeasurePoint, { MeasurePointOptions } from "../features/Meature/MeasurePoint";
-import MeasureLineString, { MeasureLineStringOptions } from "../features/Meature/MeasureLineString";
-import MeasurePolygon, { MeasurePolygonOptions } from "../features/Meature/MeasurePolygon";
+import MeasureBase, { MeasureType } from "../features/Measure/MeasureBase";
+import MeasurePoint, { MeasurePointOptions } from "../features/Measure/MeasurePoint";
+import MeasureLineString, { MeasureLineStringOptions } from "../features/Measure/MeasureLineString";
+import MeasurePolygon, { MeasurePolygonOptions } from "../features/Measure/MeasurePolygon";
 import { Dict, copyToClipboard } from "../utils";
 
 export interface MeasureControlOptions {
