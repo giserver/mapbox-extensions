@@ -1,4 +1,5 @@
 import mapboxgl, { AnyLayer, EaseToOptions, IControl, Map } from "mapbox-gl";
+import { SwitchButton } from "../uis";
 import { changeSvgColor, Dict } from "../utils";
 
 //#region img_satellite & img_base
@@ -72,6 +73,8 @@ export interface SwitchGroupLayers {
    */
   mutex?: boolean,
 
+  uiType?: "ImageButton" | "SwitchButton"
+
   layers: Array<SwitchLayerItem>
 }
 
@@ -140,7 +143,7 @@ export default class SwitchMapControl implements IControl {
       options.extra.nailActiveColor ??= "#0066FF";
       options.extra.groupsContainerMaxHeight = 300;
 
-      options.extra.layerItemActiveColor ??= "#0066FF";
+      options.extra.layerItemActiveColor ??= "#1677FF";
       options.extra.layerItemHoverColor ??= "black";
       options.extra.layerItemImgSize ??= 50;
     }
@@ -245,6 +248,8 @@ export default class SwitchMapControl implements IControl {
       border: 2px solid ${this.options.extra?.layerItemHoverColor};
       box-sizing: border-box;
     }
+
+    ${SwitchButton.createStyle(this.options.extra?.layerItemActiveColor)}
     </style>` ;
 
     let style = div.style;
@@ -359,6 +364,7 @@ export default class SwitchMapControl implements IControl {
     style.overflowY = 'auto';
     style.padding = '16px 8px 0 8px';
 
+    containerDiv.append(SwitchButton.create({ checked: true }))
     containerDiv.append(headerDiv);
     containerDiv.append(groupsDiv);
 
