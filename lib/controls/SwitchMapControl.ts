@@ -1,4 +1,5 @@
-import mapboxgl, { AnyLayer, EaseToOptions, IControl, Map } from "mapbox-gl";
+import mapboxgl, { IControl, Map } from "mapbox-gl";
+import { SwitchGroupLayers, SwitchLayerItem } from "../features/SwitchMap/types";
 import { SwitchButton } from "../uis";
 import { changeSvgColor, Dict } from "../utils";
 
@@ -24,58 +25,6 @@ interface SwitchItemOption {
    * 背景图片 
    */
   backgroundImage?: string,
-}
-
-export interface SwitchLayerItem {
-
-  /**
-   * 图层显示名称
-   */
-  name: string,
-
-  /**
-   * 图层
-   */
-  layer: AnyLayer,
-
-  /**
-   * 平移参数，当不为空时，图层被激活显示后将自动移动到设计的位置
-   */
-  easeToOptions?: EaseToOptions,
-
-  /**
-   * 是否与其他的图层互斥
-   */
-  mutex?: boolean,
-
-  /**
-   * 是否初始显示
-   */
-  active?: boolean,
-
-  /**
-   * 背景图片
-   */
-  backgroundImage: string,
-
-  /**
-   * 当图层被激活显示时的回调
-   * @param visible 
-   * @returns 
-   */
-  onVisibleChange?: (visible: boolean) => void
-}
-
-export interface SwitchGroupLayers {
-
-  /**
-   * 图层组互斥
-   */
-  mutex?: boolean,
-
-  uiType?: "ImageButton" | "SwitchButton"
-
-  layers: Array<SwitchLayerItem>
 }
 
 export interface SwitchMapExtraInfo {
@@ -118,6 +67,7 @@ export interface SwitchMapControlOptions {
   satelliteOption?: SwitchItemOption,
   extra?: SwitchMapExtraInfo
 }
+
 
 export default class SwitchMapControl implements IControl {
 
@@ -364,7 +314,7 @@ export default class SwitchMapControl implements IControl {
     style.overflowY = 'auto';
     style.padding = '16px 8px 0 8px';
 
-    containerDiv.append(SwitchButton.create({ checked: true }))
+    containerDiv.append(SwitchButton.create("text", true))
     containerDiv.append(headerDiv);
     containerDiv.append(groupsDiv);
 

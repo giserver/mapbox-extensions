@@ -63,19 +63,111 @@ export namespace SwitchButton {
         `
     }
 
-    export function create(options: {
-        checked?: boolean
-    }): HTMLInputElement {
-        options.checked ??= false;
+    export function create(name: string, checked?: boolean): HTMLDivElement {
+        const switchButton = document.createElement('div');
+        switchButton.style.display = 'flex';
+        switchButton.style.justifyContent = 'space-between';
+        switchButton.style.alignItems = 'center';
 
-        const switchBtn = document.createElement('input');
-        switchBtn.classList.add("jas-switch", "jas-switch-anim");
-        switchBtn.setAttribute("type", "checkbox");
 
-        if (options.checked) {
-            switchBtn.toggleAttribute("checked");
+        const inputEle = document.createElement('input');
+        inputEle.classList.add("jas-switch", "jas-switch-anim");
+        inputEle.setAttribute("type", "checkbox");
+        if (checked) {
+            inputEle.toggleAttribute("checked");
         }
 
-        return switchBtn;
+        const txtEle = document.createElement('div');
+        txtEle.innerText = name;
+
+        switchButton.append(txtEle, inputEle);
+
+        return switchButton;
+    }
+}
+
+export namespace ImgTxtSwitchButton {
+
+    export function createStyle(
+        size: number = 50,
+        checkedTextColor: string = '#1677FF',
+        checkedBorder: string = "2px solid #1677FF",
+        hoverBorder: string = "2px solid black") {
+
+        return `
+        .jas-img-txt-switch-button{
+            cursor: pointer;
+        }
+        
+        .jas-img-txt-switch-button-img{
+            height: ${size} px;
+            width: ${size} px;
+            margin: auto;
+            box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
+            box-sizing: border-box;
+            border-radius: 4px;
+            background-color: white;
+            background-size: ${size - 4} px;
+            background-repeat: no-repeat;
+            background-position-x: center;
+            background-position-y: center;
+        }
+
+        .jas-img-txt-switch-button-img:hover{
+            border: ${hoverBorder};
+            box-sizing: border-box;
+        }
+
+        .jas-img-txt-switch-button-img.checked{
+            border: ${checkedBorder};
+        }
+
+        .jas-img-txt-switch-button-txt{
+            text-align: center;
+            font-size: 12px;
+            line-height: 16px;
+            margin-top: 4px;
+        }
+
+        .jas-img-txt-switch-button-txt.checked{
+            color: ${checkedTextColor};
+        }
+        `;
+    }
+
+    export function create(name: string, backgroundImage: string = "", checked?: boolean): HTMLDivElement {
+        const imgTxtButton = document.createElement('div');
+        imgTxtButton.classList.add("jas-img-txt-switch-button");
+
+        const imgDiv = document.createElement('div');
+        imgDiv.style.backgroundImage = `url('${backgroundImage}')`;
+        imgDiv.classList.add("jas-img-txt-switch-button-img");
+
+        const txtDiv = document.createElement('div');
+        txtDiv.innerText = name;
+        txtDiv.classList.add("jas-img-txt-switch-button-txt");
+
+        const class_name = "checked";
+
+        if (checked) {
+            imgDiv.classList.add(class_name);
+            txtDiv.classList.add(class_name);
+        }
+
+        imgTxtButton.append(imgDiv, txtDiv);
+
+        function toggleChecked(element: HTMLElement) {
+            if (element.classList.contains(class_name))
+                element.classList.remove(class_name);
+            else
+                element.classList.add(class_name);
+        }
+
+        imgTxtButton.addEventListener('click', e => {
+            toggleChecked(imgDiv);
+            toggleChecked(txtDiv);
+        })
+
+        return imgTxtButton;
     }
 }
