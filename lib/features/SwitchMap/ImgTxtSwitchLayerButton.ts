@@ -5,8 +5,8 @@ import { SwitchLayerItem } from "./types";
 
 export default class ImgTxtSwitchLayerButton extends SwitchLayerButtonBase {
 
-    constructor(map: Map, item: SwitchLayerItem) {
-        super(map, item);
+    constructor(map: Map, options: SwitchLayerItem) {
+        super(map, options);
     }
 
     protected check(): void {
@@ -17,6 +17,6 @@ export default class ImgTxtSwitchLayerButton extends SwitchLayerButtonBase {
     }
 
     protected createHtmlElement(): HTMLElement {
-        return ImgTxtSwitchButton.create(this.item.name, this.item.backgroundImage);
+        return ImgTxtSwitchButton.create(this.options.name, this.options.backgroundImage);
     }
 }

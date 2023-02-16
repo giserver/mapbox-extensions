@@ -63,7 +63,7 @@ export namespace SwitchButton {
         `
     }
 
-    export function create(name: string, checked?: boolean): HTMLDivElement {
+    export function create(name: string, checked?: boolean, cb?: (input: HTMLInputElement) => void): HTMLDivElement {
         const switchButton = document.createElement('div');
         switchButton.style.display = 'flex';
         switchButton.style.justifyContent = 'space-between';
@@ -81,6 +81,7 @@ export namespace SwitchButton {
         txtEle.innerText = name;
 
         switchButton.append(txtEle, inputEle);
+        cb?.call(undefined, inputEle);
 
         return switchButton;
     }
@@ -100,14 +101,14 @@ export namespace ImgTxtSwitchButton {
         }
         
         .jas-img-txt-switch-button-img{
-            height: ${size} px;
-            width: ${size} px;
+            height: ${size}px;
+            width: ${size}px;
             margin: auto;
             box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
             box-sizing: border-box;
             border-radius: 4px;
             background-color: white;
-            background-size: ${size - 4} px;
+            background-size: ${size - 4}px;
             background-repeat: no-repeat;
             background-position-x: center;
             background-position-y: center;
@@ -118,7 +119,7 @@ export namespace ImgTxtSwitchButton {
             box-sizing: border-box;
         }
 
-        .jas-img-txt-switch-button-img.checked{
+        .jas-img-txt-switch-button.checked .jas-img-txt-switch-button-img{
             border: ${checkedBorder};
         }
 
@@ -129,7 +130,7 @@ export namespace ImgTxtSwitchButton {
             margin-top: 4px;
         }
 
-        .jas-img-txt-switch-button-txt.checked{
+        .jas-img-txt-switch-button.checked .jas-img-txt-switch-button-txt{
             color: ${checkedTextColor};
         }
         `;
@@ -156,16 +157,11 @@ export namespace ImgTxtSwitchButton {
 
         imgTxtButton.append(imgDiv, txtDiv);
 
-        function toggleChecked(element: HTMLElement) {
-            if (element.classList.contains(class_name))
-                element.classList.remove(class_name);
-            else
-                element.classList.add(class_name);
-        }
-
         imgTxtButton.addEventListener('click', e => {
-            toggleChecked(imgDiv);
-            toggleChecked(txtDiv);
+            if (imgTxtButton.classList.contains(class_name))
+                imgTxtButton.classList.remove(class_name);
+            else
+                imgTxtButton.classList.add(class_name);
         })
 
         return imgTxtButton;

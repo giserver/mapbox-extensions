@@ -1,6 +1,7 @@
 import mapboxgl, { IControl, Map } from "mapbox-gl";
+import SwitchGroupContainer from "../features/SwitchMap/SwitchGroupContainer";
 import { SwitchGroupLayers, SwitchLayerItem } from "../features/SwitchMap/types";
-import { SwitchButton } from "../uis";
+import { ImgTxtSwitchButton, SwitchButton } from "../uis";
 import { changeSvgColor, Dict } from "../utils";
 
 //#region img_satellite & img_base
@@ -124,7 +125,6 @@ export default class SwitchMapControl implements IControl {
 
       for (let groupName in extraLayers) {
         const { layers, mutex } = extraLayers[groupName];
-        const { groupDiv, layerDiv } = this.createGroupLayerDiv(groupName);
 
         let onceLayerActiveMutex = false;
 
@@ -142,11 +142,11 @@ export default class SwitchMapControl implements IControl {
             throw new Error(`same layer id : ${item.layer.id} added !`);
           else
             layerIdMap.set(item.layer.id, item);
-
-          layerDiv.append(this.createGroupLayerItemDiv(map, item, groupName));
         })
 
-        groupsDiv.append(groupDiv);
+        const groupContainer = new SwitchGroupContainer(map, groupName, extraLayers[groupName], this.options.extra?.layerItemImgSize);
+
+        groupsDiv.append(groupContainer.element);
       }
 
       baseDiv.append(containerDiv);
@@ -191,15 +191,16 @@ export default class SwitchMapControl implements IControl {
     .jas-ctrl-switchmap-alert-groups::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
         border-radius: 10px;
         -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-        background: #535353;
-    }
-
-    .jas-ctrl-switchmap-layer:hover{
-      border: 2px solid ${this.options.extra?.layerItemHoverColor};
-      box-sizing: border-box;
+        background: #ccc;
     }
 
     ${SwitchButton.createStyle(this.options.extra?.layerItemActiveColor)}
+
+    ${ImgTxtSwitchButton.createStyle(
+      this.options.extra?.layerItemImgSize,
+      this.options.extra?.layerItemActiveColor,
+      `2px solid ${this.options.extra?.layerItemActiveColor}`,
+      `2px solid ${this.options.extra?.layerItemHoverColor}`)}
     </style>` ;
 
     let style = div.style;
@@ -314,127 +315,9 @@ export default class SwitchMapControl implements IControl {
     style.overflowY = 'auto';
     style.padding = '16px 8px 0 8px';
 
-    containerDiv.append(SwitchButton.create("text", true))
     containerDiv.append(headerDiv);
     containerDiv.append(groupsDiv);
 
     return { containerDiv, groupsDiv };
-  }
-
-  private createGroupLayerDiv(name: string): { groupDiv: HTMLDivElement, layerDiv: HTMLDivElement } {
-    const groupDiv = document.createElement('div');
-    let style = groupDiv.style;
-    style.marginBottom = '24px';
-
-    const header = document.createElement('div');
-    header.innerHTML = `<span>${name}</span>`;
-    style = header.style;
-    style.display = 'flex';
-    style.alignItems = 'flex-end';
-    style.fontWeight = '500';
-    style.fontSize = '14px';
-    style.lineHeight = '20px';
-    style.marginBottom = '16px';
-    groupDiv.append(header);
-
-    const layerDiv = document.createElement('div');
-    style = layerDiv.style;
-    style.display = 'grid';
-    style.gridTemplateColumns = '1fr 1fr 1fr';
-    style.gap = '20px 38px';
-    style.justifyItems = 'center';
-    style.minWidth = `${this.options.extra!.layerItemImgSize! * 3 + 38 * 2}px`
-
-    groupDiv.append(layerDiv);
-    return { groupDiv, layerDiv }
-  }
-
-  private createGroupLayerItemDiv(map: mapboxgl.Map, layerItem: SwitchLayerItem, group: string): HTMLDivElement {
-    const layerId = layerItem.layer.id;
-    const lclass = 'jas-ctrl-switchmap-layer';
-    const imgDivId = `${lclass}-${layerId}`;
-    const textDivId = `${imgDivId}-text`;
-
-    const container = document.createElement('div');
-    let style = container.style;
-    style.cursor = 'pointer'
-
-    const imgDiv = document.createElement('div');
-    imgDiv.className = lclass;
-    imgDiv.id = imgDivId;
-    style = imgDiv.style;
-    style.height = `${this.options.extra?.layerItemImgSize}px`;
-    style.width = `${this.options.extra?.layerItemImgSize}px`;
-    style.boxShadow = '0 0 0 2px rgb(0 0 0 / 10%)';
-    style.boxSizing = 'border-box';
-    style.borderRadius = '4px';
-    style.backgroundColor = 'white';
-    style.backgroundSize = `${this.options.extra!.layerItemImgSize! - 4}px`;
-    style.backgroundImage = `url('${layerItem.backgroundImage}')`;
-    style.backgroundRepeat = 'no-repeat';
-    style.backgroundPositionX = 'center';
-    style.backgroundPositionY = 'center';
-    style.margin = 'auto';
-    container.append(imgDiv);
-
-    const textDiv = document.createElement('div');
-    textDiv.className = `${lclass}-text`;
-    textDiv.id = textDivId;
-    textDiv.innerText = layerItem.name;
-    style = textDiv.style;
-    style.textAlign = 'center';
-    style.fontSize = '12px';
-    style.lineHeight = '16px';
-    style.marginTop = '4px';
-    container.append(textDiv);
-
-    if (layerItem.active) {
-      this.setLayerVisibleAndChangeUI(map, layerItem, imgDiv, textDiv, true);
-    }
-
-    container.addEventListener('click', e => {
-
-      const toVisible = !map.getLayer(layerId) || map.getLayoutProperty(layerId, 'visibility') === 'none';
-
-      // 设置layer显示或隐藏
-      this.setLayerVisibleAndChangeUI(map, layerItem, imgDiv, textDiv, toVisible);
-
-      if (toVisible) {
-
-        if (layerItem.easeToOptions)
-          map.easeTo(layerItem.easeToOptions);
-
-        // 如果互斥设置同group中的layer隐藏
-        const layerGroup = this.options.extra!.layerGroups![group];
-        layerGroup.layers.forEach(l => {
-          const otherId = l.layer.id;
-
-          if (otherId !== layerId && map.getLayer(otherId) && (layerGroup.mutex || layerItem.mutex || l.mutex)) {
-            this.setLayerVisibleAndChangeUI(map, l, `${lclass}-${otherId}`, `${lclass}-${otherId}-text`, false);
-          }
-        });
-      }
-    })
-
-    return container;
-  }
-
-
-  private setLayerVisibleAndChangeUI(map: mapboxgl.Map, item: SwitchLayerItem, imgDiv: HTMLElement | string, textDiv: HTMLElement | string, visible: boolean) {
-    if (!map.getLayer(item.layer.id)) {
-      map.addLayer(item.layer);
-    }
-
-    map.setLayoutProperty(item.layer.id, 'visibility', visible ? 'visible' : 'none');
-    item.onVisibleChange?.call(undefined, visible);
-
-    if (typeof imgDiv === 'string')
-      imgDiv = document.querySelector(`#${map.getContainer().id} #${imgDiv}`)! as HTMLDivElement;
-
-    if (typeof textDiv === 'string')
-      textDiv = document.querySelector(`#${map.getContainer().id} #${textDiv}`)! as HTMLDivElement;
-
-    imgDiv.style.border = visible ? `2px solid ${this.options.extra!.layerItemActiveColor!}` : '';
-    textDiv.style.color = visible ? this.options.extra!.layerItemActiveColor! : '';
   }
 }

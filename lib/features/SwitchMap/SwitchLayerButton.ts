@@ -4,21 +4,25 @@ import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
 import { SwitchLayerItem } from "./types";
 
 export default class SwitchLayerButton extends SwitchLayerButtonBase {
+    private declare inputEle: HTMLInputElement;
 
     /**
      *
      */
-    constructor(map: Map, item: SwitchLayerItem) {
-        super(map, item);
+    constructor(map: Map, options: SwitchLayerItem) {
+        super(map, options);
     }
 
     protected check(): void {
-        this.element.setAttribute(this.token, this.token);
+        this.inputEle.setAttribute(this.token, this.token);
     }
     protected unCheck(): void {
-        this.element.attributes.removeNamedItem(this.token);
+        this.inputEle.removeAttribute(this.token);
+        this.inputEle.checked = false;
     }
     protected createHtmlElement(): HTMLElement {
-        return SwitchButton.create(this.item.name);
+        return SwitchButton.create(this.options.name, this.options.active, inputEle => {
+            this.inputEle = inputEle;
+        });
     }
 }

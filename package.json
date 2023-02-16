@@ -1,6 +1,6 @@
 {
   "name": "mapbox-extensions",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "main": "./dist/index.js",
   "repository": "https://github.com/cocaine-coder/mapbox-extensions.git",
   "author": "cocaine_coder <tracywang1997@outlook.com>",

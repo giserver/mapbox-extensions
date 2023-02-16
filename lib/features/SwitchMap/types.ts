@@ -49,7 +49,13 @@ export interface SwitchGroupLayers {
      */
     mutex?: boolean,
 
+    /**
+     * 切换ui的类型
+     */
     uiType?: SwitchButtonType
 
+    /**
+     * 图层
+     */
     layers: Array<SwitchLayerItem>
 }

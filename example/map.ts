@@ -72,6 +72,7 @@ if (is_mobile) {
             extra: {
                 layerGroups: {
                     '城市规划': {
+                        uiType: 'SwitchBtn',
                         mutex: true, layers: [{
                             name: '房屋管理',
                             layer: {

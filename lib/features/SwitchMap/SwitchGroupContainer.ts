@@ -31,15 +31,18 @@ export default class SwitchGroupContainer {
         const layersDiv = document.createElement('div');
         style = layersDiv.style;
         style.display = 'grid';
-        style.gridTemplateColumns = options.uiType === "ImgTxtBtn" ? '1fr 1fr 1fr' : '1fr';
         style.gap = '20px 38px';
-        style.justifyItems = 'center';
+
+        style.gridTemplateColumns = options.uiType === "SwitchBtn" ? '1fr' : '1fr 1fr 1fr';
+        if (options.uiType === "ImgTxtBtn")
+            style.justifyItems = 'center';
+
         style.minWidth = `${imgSize * 3 + 38 * 2}px`
 
         this.options.layers.forEach(layer => {
-            const btn = options.uiType === "ImgTxtBtn" ?
-                new ImgTxtSwitchLayerButton(map, layer) :
-                new SwitchLayerButton(map, layer);
+            const btn = options.uiType === "SwitchBtn" ?
+                new SwitchLayerButton(map, layer) :
+                new ImgTxtSwitchLayerButton(map, layer);
 
             this.layerBtns.push(btn);
             btn.element.addEventListener('click', e => {
