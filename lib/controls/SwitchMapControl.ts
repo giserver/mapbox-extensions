@@ -1,4 +1,7 @@
-import mapboxgl, { AnyLayer, EaseToOptions, IControl, Map } from "mapbox-gl";
+import mapboxgl, { IControl, Map } from "mapbox-gl";
+import SwitchGroupContainer from "../features/SwitchMap/SwitchGroupContainer";
+import { SwitchGroupLayers, SwitchLayerItem } from "../features/SwitchMap/types";
+import { ImgTxtSwitchButton, SwitchButton } from "../uis";
 import { changeSvgColor, Dict } from "../utils";
 
 //#region img_satellite & img_base
@@ -23,56 +26,6 @@ interface SwitchItemOption {
    * 背景图片 
    */
   backgroundImage?: string,
-}
-
-export interface SwitchLayerItem {
-
-  /**
-   * 图层显示名称
-   */
-  name: string,
-
-  /**
-   * 图层
-   */
-  layer: AnyLayer,
-
-  /**
-   * 平移参数，当不为空时，图层被激活显示后将自动移动到设计的位置
-   */
-  easeToOptions?: EaseToOptions,
-
-  /**
-   * 是否与其他的图层互斥
-   */
-  mutex?: boolean,
-
-  /**
-   * 是否初始显示
-   */
-  active?: boolean,
-
-  /**
-   * 背景图片
-   */
-  backgroundImage: string,
-
-  /**
-   * 当图层被激活显示时的回调
-   * @param visible 
-   * @returns 
-   */
-  onVisibleChange?: (visible: boolean) => void
-}
-
-export interface SwitchGroupLayers {
-
-  /**
-   * 图层组互斥
-   */
-  mutex?: boolean,
-
-  layers: Array<SwitchLayerItem>
 }
 
 export interface SwitchMapExtraInfo {
@@ -116,6 +69,7 @@ export interface SwitchMapControlOptions {
   extra?: SwitchMapExtraInfo
 }
 
+
 export default class SwitchMapControl implements IControl {
 
   private nailImg = `<svg t="1673283468858" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2736" data-darkreader-inline-fill="" width="22" height="22">
@@ -140,7 +94,7 @@ export default class SwitchMapControl implements IControl {
       options.extra.nailActiveColor ??= "#0066FF";
       options.extra.groupsContainerMaxHeight = 300;
 
-      options.extra.layerItemActiveColor ??= "#0066FF";
+      options.extra.layerItemActiveColor ??= "#1677FF";
       options.extra.layerItemHoverColor ??= "black";
       options.extra.layerItemImgSize ??= 50;
     }
@@ -171,7 +125,6 @@ export default class SwitchMapControl implements IControl {
 
       for (let groupName in extraLayers) {
         const { layers, mutex } = extraLayers[groupName];
-        const { groupDiv, layerDiv } = this.createGroupLayerDiv(groupName);
 
         let onceLayerActiveMutex = false;
 
@@ -189,11 +142,11 @@ export default class SwitchMapControl implements IControl {
             throw new Error(`same layer id : ${item.layer.id} added !`);
           else
             layerIdMap.set(item.layer.id, item);
-
-          layerDiv.append(this.createGroupLayerItemDiv(map, item, groupName));
         })
 
-        groupsDiv.append(groupDiv);
+        const groupContainer = new SwitchGroupContainer(map, groupName, extraLayers[groupName], this.options.extra?.layerItemImgSize);
+
+        groupsDiv.append(groupContainer.element);
       }
 
       baseDiv.append(containerDiv);
@@ -238,13 +191,16 @@ export default class SwitchMapControl implements IControl {
     .jas-ctrl-switchmap-alert-groups::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
         border-radius: 10px;
         -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-        background: #535353;
+        background: #ccc;
     }
 
-    .jas-ctrl-switchmap-layer:hover{
-      border: 2px solid ${this.options.extra?.layerItemHoverColor};
-      box-sizing: border-box;
-    }
+    ${SwitchButton.createStyle(this.options.extra?.layerItemActiveColor)}
+
+    ${ImgTxtSwitchButton.createStyle(
+      this.options.extra?.layerItemImgSize,
+      this.options.extra?.layerItemActiveColor,
+      `2px solid ${this.options.extra?.layerItemActiveColor}`,
+      `2px solid ${this.options.extra?.layerItemHoverColor}`)}
     </style>` ;
 
     let style = div.style;
@@ -363,122 +319,5 @@ export default class SwitchMapControl implements IControl {
     containerDiv.append(groupsDiv);
 
     return { containerDiv, groupsDiv };
-  }
-
-  private createGroupLayerDiv(name: string): { groupDiv: HTMLDivElement, layerDiv: HTMLDivElement } {
-    const groupDiv = document.createElement('div');
-    let style = groupDiv.style;
-    style.marginBottom = '24px';
-
-    const header = document.createElement('div');
-    header.innerHTML = `<span>${name}</span>`;
-    style = header.style;
-    style.display = 'flex';
-    style.alignItems = 'flex-end';
-    style.fontWeight = '500';
-    style.fontSize = '14px';
-    style.lineHeight = '20px';
-    style.marginBottom = '16px';
-    groupDiv.append(header);
-
-    const layerDiv = document.createElement('div');
-    style = layerDiv.style;
-    style.display = 'grid';
-    style.gridTemplateColumns = '1fr 1fr 1fr';
-    style.gap = '20px 38px';
-    style.justifyItems = 'center';
-    style.minWidth = `${this.options.extra!.layerItemImgSize! * 3 + 38 * 2}px`
-
-    groupDiv.append(layerDiv);
-    return { groupDiv, layerDiv }
-  }
-
-  private createGroupLayerItemDiv(map: mapboxgl.Map, layerItem: SwitchLayerItem, group: string): HTMLDivElement {
-    const layerId = layerItem.layer.id;
-    const lclass = 'jas-ctrl-switchmap-layer';
-    const imgDivId = `${lclass}-${layerId}`;
-    const textDivId = `${imgDivId}-text`;
-
-    const container = document.createElement('div');
-    let style = container.style;
-    style.cursor = 'pointer'
-
-    const imgDiv = document.createElement('div');
-    imgDiv.className = lclass;
-    imgDiv.id = imgDivId;
-    style = imgDiv.style;
-    style.height = `${this.options.extra?.layerItemImgSize}px`;
-    style.width = `${this.options.extra?.layerItemImgSize}px`;
-    style.boxShadow = '0 0 0 2px rgb(0 0 0 / 10%)';
-    style.boxSizing = 'border-box';
-    style.borderRadius = '4px';
-    style.backgroundColor = 'white';
-    style.backgroundSize = `${this.options.extra!.layerItemImgSize! - 4}px`;
-    style.backgroundImage = `url('${layerItem.backgroundImage}')`;
-    style.backgroundRepeat = 'no-repeat';
-    style.backgroundPositionX = 'center';
-    style.backgroundPositionY = 'center';
-    style.margin = 'auto';
-    container.append(imgDiv);
-
-    const textDiv = document.createElement('div');
-    textDiv.className = `${lclass}-text`;
-    textDiv.id = textDivId;
-    textDiv.innerText = layerItem.name;
-    style = textDiv.style;
-    style.textAlign = 'center';
-    style.fontSize = '12px';
-    style.lineHeight = '16px';
-    style.marginTop = '4px';
-    container.append(textDiv);
-
-    if (layerItem.active) {
-      this.setLayerVisibleAndChangeUI(map, layerItem, imgDiv, textDiv, true);
-    }
-
-    container.addEventListener('click', e => {
-
-      const toVisible = !map.getLayer(layerId) || map.getLayoutProperty(layerId, 'visibility') === 'none';
-
-      // 设置layer显示或隐藏
-      this.setLayerVisibleAndChangeUI(map, layerItem, imgDiv, textDiv, toVisible);
-
-      if (toVisible) {
-
-        if (layerItem.easeToOptions)
-          map.easeTo(layerItem.easeToOptions);
-
-        // 如果互斥设置同group中的layer隐藏
-        const layerGroup = this.options.extra!.layerGroups![group];
-        layerGroup.layers.forEach(l => {
-          const otherId = l.layer.id;
-
-          if (otherId !== layerId && map.getLayer(otherId) && (layerGroup.mutex || layerItem.mutex || l.mutex)) {
-            this.setLayerVisibleAndChangeUI(map, l, `${lclass}-${otherId}`, `${lclass}-${otherId}-text`, false);
-          }
-        });
-      }
-    })
-
-    return container;
-  }
-
-
-  private setLayerVisibleAndChangeUI(map: mapboxgl.Map, item: SwitchLayerItem, imgDiv: HTMLElement | string, textDiv: HTMLElement | string, visible: boolean) {
-    if (!map.getLayer(item.layer.id)) {
-      map.addLayer(item.layer);
-    }
-
-    map.setLayoutProperty(item.layer.id, 'visibility', visible ? 'visible' : 'none');
-    item.onVisibleChange?.call(undefined, visible);
-
-    if (typeof imgDiv === 'string')
-      imgDiv = document.querySelector(`#${map.getContainer().id} #${imgDiv}`)! as HTMLDivElement;
-
-    if (typeof textDiv === 'string')
-      textDiv = document.querySelector(`#${map.getContainer().id} #${textDiv}`)! as HTMLDivElement;
-
-    imgDiv.style.border = visible ? `2px solid ${this.options.extra!.layerItemActiveColor!}` : '';
-    textDiv.style.color = visible ? this.options.extra!.layerItemActiveColor! : '';
   }
 }

@@ -3,10 +3,13 @@ import LayerGroup from './features/LayerGroup'
 import { Dict } from './utils';
 
 import MeasureControl from "./controls/MeasureControl";
-import SwitchMapControl, { SwitchMapExtraInfo, SwitchMapControlOptions, SwitchGroupLayers, SwitchLayerItem } from "./controls/SwitchMapControl";
+import SwitchMapControl, { SwitchMapExtraInfo, SwitchMapControlOptions } from "./controls/SwitchMapControl";
+import { SwitchGroupLayers, SwitchLayerItem } from "./features/SwitchMap/types";
+
 import BackToOriginControl from "./controls/BackToOriginControl";
 import DoodleControl from "./controls/DoodleControl";
 import Measure4Mobile from "./features/Measure/Measure4Mobile";
+
 
 export {
     LayerGroup,

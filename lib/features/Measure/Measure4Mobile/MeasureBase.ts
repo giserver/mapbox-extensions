@@ -59,9 +59,6 @@ export default abstract class MeasureBase {
      * @memberof MeasureBase
      */
     start() {
-        this.map.moveLayer(this.sourceId)
-        this.map.moveLayer(this.pointSourceId)
-        this.map.moveLayer(this.symbolSourceId)
         if (!this.map.getLayer(this.sourceId)) {
             this.map.addSource(this.sourceId, {
                 type: 'geojson',
@@ -73,6 +70,10 @@ export default abstract class MeasureBase {
             })
             this.onInit()
         }
+
+        this.map.moveLayer(this.sourceId)
+        this.map.moveLayer(this.pointSourceId)
+        this.map.moveLayer(this.symbolSourceId)
     }
 
     /**
