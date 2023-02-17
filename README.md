@@ -98,7 +98,7 @@ map.addControl(new SwitchMapControl({
         textColor: 'white',
         //backgroundImage: '/relics.png'
     },
-    extraLayers:{
+    extra:{
       'foo':{
       }
     }
