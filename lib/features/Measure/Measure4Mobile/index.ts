@@ -10,6 +10,7 @@ export interface Measure4MobileOptions {
     measureActiveColor?: string;
     addPointColor?: string;
     addPointActiveColor?: string;
+    defaultType?: MeasureType
 }
 
 interface MeasureConfig {
@@ -70,6 +71,7 @@ export default class Measure4Mobile {
         options.measureActiveColor ??= "rgb(211,211,211)";
         options.addPointColor ??= "rgb(52, 145, 250)";
         options.addPointActiveColor ??= "rgb(52, 122, 250) !important";
+        options.defaultType ??= "LineString";
 
         const parentDiv = this.createUI();
 
@@ -79,10 +81,12 @@ export default class Measure4Mobile {
             })
 
             parentDiv.style.display = value ? '' : 'none';
+
+            if (value)
+                this.changeMeasureType(options.defaultType!);
         }
 
         this.show(options.show);
-        this.changeMeasureType('LineString');
     }
 
     private createUI(): HTMLDivElement {
