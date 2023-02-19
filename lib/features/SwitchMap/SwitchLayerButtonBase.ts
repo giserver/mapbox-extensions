@@ -1,4 +1,4 @@
-import { Map } from "mapbox-gl";
+import { AnyLayer, Map } from "mapbox-gl";
 import { SwitchLayerItem } from "./types";
 
 export default abstract class SwitchLayerButtonBase {
@@ -19,6 +19,12 @@ export default abstract class SwitchLayerButtonBase {
         return this._checked;
     }
 
+    get id() {
+        return this.options.layer instanceof Array<AnyLayer> ?
+            this.options.layer.join('&') :
+            this.options.layer.id;
+    }
+
     changeChecked(checked?: boolean) {
 
         // UI change
@@ -34,9 +40,13 @@ export default abstract class SwitchLayerButtonBase {
         }
 
         // layer visibility change
-        if (!this.map.getLayer(this.options.layer.id))
-            this.map.addLayer(this.options.layer);
-        this.map.setLayoutProperty(this.options.layer.id, 'visibility', this.checked ? 'visible' : 'none');
+        const layers = this.options.layer instanceof Array<AnyLayer> ? this.options.layer : [this.options.layer];
+        layers.forEach(layer => {
+            if (!this.map.getLayer(layer.id))
+                this.map.addLayer(layer);
+            this.map.setLayoutProperty(layer.id, 'visibility', this.checked ? 'visible' : 'none');
+        })
+
         if (this.checked && this.options.easeToOptions)
             this.map.easeTo(this.options.easeToOptions);
 

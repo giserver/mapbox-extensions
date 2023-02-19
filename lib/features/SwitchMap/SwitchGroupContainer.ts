@@ -50,7 +50,7 @@ export default class SwitchGroupContainer {
 
                 if (btn.checked) {
                     this.layerBtns.forEach(oBtn => {
-                        if (oBtn.options.layer.id !== btn.options.layer.id && (this.options.mutex || btn.options.mutex || oBtn.options.mutex))
+                        if (oBtn.id !== btn.id && (this.options.mutex || btn.options.mutex || oBtn.options.mutex))
                             oBtn.changeChecked(false);
                     })
                 }

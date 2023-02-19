@@ -231,6 +231,55 @@ if (is_mobile) {
                             },
                             'backgroundImage': '',
                             active: true,
+                        }, {
+                            name: 'fff7',
+                            layer: [
+                                {
+                                    id: 'fff7',
+                                    type: 'symbol',
+                                    source: {
+                                        type: 'geojson',
+                                        data: {
+                                            type: 'Feature',
+                                            geometry: {
+                                                type: 'Point',
+                                                coordinates: [120.64, 31.2]
+                                            },
+                                            properties: { name: 'fff7' }
+                                        }
+                                    },
+                                    layout: {
+                                        "text-field": ['get', 'name'],
+                                        'text-size': 30
+                                    },
+                                    paint: {
+                                        "text-color": 'red'
+                                    }
+                                }, {
+                                    id: 'fff8',
+                                    type: 'symbol',
+                                    source: {
+                                        type: 'geojson',
+                                        data: {
+                                            type: 'Feature',
+                                            geometry: {
+                                                type: 'Point',
+                                                coordinates: [120.64, 31.1]
+                                            },
+                                            properties: { name: 'fff8' }
+                                        }
+                                    },
+                                    layout: {
+                                        "text-field": ['get', 'name'],
+                                        'text-size': 30
+                                    },
+                                    paint: {
+                                        "text-color": 'red'
+                                    }
+                                }
+                            ],
+                            'backgroundImage': '',
+                            active: true
                         }]
                     }
                 }

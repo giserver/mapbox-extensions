@@ -66,6 +66,7 @@ export interface SwitchMapExtraInfo {
 export interface SwitchMapControlOptions {
   baseOption?: SwitchItemOption,
   satelliteOption?: SwitchItemOption,
+  showSatelliteDefault?: boolean,
   extra?: SwitchMapExtraInfo
 }
 
@@ -89,6 +90,8 @@ export default class SwitchMapControl implements IControl {
     options.satelliteOption.textColor ??= 'black';
     options.satelliteOption.backgroundImage ??= img_satellite;
 
+    options.showSatelliteDefault ??= false;
+
     if (options.extra) {
       options.extra.name ??= '附加图层';
       options.extra.nailActiveColor ??= "#0066FF";
@@ -111,7 +114,7 @@ export default class SwitchMapControl implements IControl {
         tileSize: 256
       },
       layout: {
-        visibility: 'none'
+        visibility: this.options.showSatelliteDefault ? 'visible' : 'none'
       }
     })
 
@@ -138,10 +141,10 @@ export default class SwitchMapControl implements IControl {
           }
 
           // 重复id检查
-          if (layerIdMap.has(item.layer.id))
-            throw new Error(`same layer id : ${item.layer.id} added !`);
-          else
-            layerIdMap.set(item.layer.id, item);
+          // if (layerIdMap.has(item.layer.id))
+          //   throw new Error(`same layer id : ${item.layer.id} added !`);
+          // else
+          //   layerIdMap.set(item.layer.id, item);
         })
 
         const groupContainer = new SwitchGroupContainer(map, groupName, extraLayers[groupName], this.options.extra?.layerItemImgSize);
@@ -240,7 +243,7 @@ export default class SwitchMapControl implements IControl {
     }
 
     // 初始化
-    changeDiv(this.options.satelliteOption!);
+    changeDiv(this.options.showSatelliteDefault ? this.options.baseOption! : this.options.satelliteOption!);
 
     div.addEventListener("click", () => {
       const satelliteVisibled = map.getLayoutProperty('mapbox-satellite', 'visibility') === 'visible';
