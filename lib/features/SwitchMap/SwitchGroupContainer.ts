@@ -46,7 +46,7 @@ export default class SwitchGroupContainer {
 
             this.layerBtns.push(btn);
             btn.element.addEventListener('click', e => {
-                btn.changeChecked();
+                btn.changeChecked(undefined, true);
 
                 if (btn.checked) {
                     this.layerBtns.forEach(oBtn => {

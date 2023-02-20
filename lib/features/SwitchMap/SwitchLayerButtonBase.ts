@@ -10,9 +10,7 @@ export default abstract class SwitchLayerButtonBase {
     constructor(private map: Map, public readonly options: SwitchLayerItem) {
         this.element = this.createHtmlElement();
         this._checked = this.options.active === true;
-
-        if (this._checked)
-            this.changeChecked(this._checked)
+        this.changeChecked(this._checked);
     }
 
     get checked() {
@@ -25,7 +23,7 @@ export default abstract class SwitchLayerButtonBase {
             this.options.layer.id;
     }
 
-    changeChecked(checked?: boolean) {
+    changeChecked(checked?: boolean, ease?: boolean) {
 
         // UI change
         if (checked) {
@@ -47,7 +45,7 @@ export default abstract class SwitchLayerButtonBase {
             this.map.setLayoutProperty(layer.id, 'visibility', this.checked ? 'visible' : 'none');
         })
 
-        if (this.checked && this.options.easeToOptions)
+        if (this.checked && ease && this.options.easeToOptions)
             this.map.easeTo(this.options.easeToOptions);
 
         // invoke callback
