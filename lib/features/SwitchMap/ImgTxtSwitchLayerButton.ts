@@ -1,12 +1,13 @@
 import { Map } from "mapbox-gl";
+import { SwitchMapExtraInfo } from "../../controls/SwitchMapControl";
 import { ImgTxtSwitchButton } from "../../uis";
 import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
 import { SwitchLayerItem } from "./types";
 
 export default class ImgTxtSwitchLayerButton extends SwitchLayerButtonBase {
 
-    constructor(map: Map, options: SwitchLayerItem) {
-        super(map, options);
+    constructor(map: Map, options: SwitchLayerItem, extraInfo: SwitchMapExtraInfo) {
+        super(map, options, extraInfo);
     }
 
     protected check(): void {

@@ -1,4 +1,5 @@
 import { AnyLayer, Map } from "mapbox-gl";
+import { SwitchMapExtraInfo } from "../../controls/SwitchMapControl";
 import { SwitchLayerItem } from "./types";
 
 export default abstract class SwitchLayerButtonBase {
@@ -7,7 +8,7 @@ export default abstract class SwitchLayerButtonBase {
     protected readonly token = "checked";
     readonly element: HTMLElement;
 
-    constructor(private map: Map, public readonly options: SwitchLayerItem) {
+    constructor(private map: Map, public readonly options: SwitchLayerItem, private extraInfo: SwitchMapExtraInfo) {
         this.element = this.createHtmlElement();
         this._checked = this.options.active === true;
         this.changeChecked(this._checked);
@@ -40,13 +41,19 @@ export default abstract class SwitchLayerButtonBase {
         // layer visibility change
         const layers = this.options.layer instanceof Array<AnyLayer> ? this.options.layer : [this.options.layer];
         layers.forEach(layer => {
-            if (!this.map.getLayer(layer.id))
-                this.map.addLayer(layer);
             this.map.setLayoutProperty(layer.id, 'visibility', this.checked ? 'visible' : 'none');
         })
 
-        if (this.checked && ease && this.options.easeToOptions)
-            this.map.easeTo(this.options.easeToOptions);
+        if (this.checked) {
+            if (!this.options.fixed && this.extraInfo.showToTop) {
+                layers.forEach(l => {
+                    this.map.moveLayer(l.id, this.extraInfo.topLayerId)
+                })
+            }
+
+            if (ease && this.options.easeToOptions)
+                this.map.easeTo(this.options.easeToOptions);
+        }
 
         // invoke callback
         this.options.onVisibleChange?.call(undefined, this.checked);

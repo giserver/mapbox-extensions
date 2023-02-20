@@ -15,6 +15,16 @@ export interface SwitchLayerItem {
     layer: AnyLayer | AnyLayer[],
 
     /**
+     * 是否固定 始终不移动
+     */
+    fixed?: boolean;
+
+    /**
+     * 初始图层层级
+     */
+    zoom?: number;
+
+    /**
      * 平移参数，当不为空时，图层被激活显示后将自动移动到设计的位置
      */
     easeToOptions?: EaseToOptions,

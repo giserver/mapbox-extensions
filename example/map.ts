@@ -5,6 +5,7 @@ import SwitchMapControl from '../lib/controls/SwitchMapControl';
 import BackToOriginControl from '../lib/controls/BackToOriginControl';
 import DoodleControl from '../lib/controls/DoodleControl';
 import { Measure4Mobile } from '../lib';
+import { orderBy } from '../lib/utils';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
 const lightStyle = 'mapbox://styles/mapbox/light-v11';
@@ -333,8 +334,6 @@ if (is_mobile) {
     map.addControl(measureControl);
     map.addControl(new BackToOriginControl());
 }
-
-
 
 function getQueryVariable(variable: string) {
     const query = window.location.search.substring(1);

@@ -55,3 +55,18 @@ export function changeSvgColor(svg: SVGElement, color: string) {
             attr.value = color;
     }
 }
+
+export function orderBy<T>(arr: Array<T>, keySelector: (v: T) => number) {
+    for (let i = 0; i < arr.length - 1; i++) {
+        for (let j = 0; j < arr.length - i - 1; j++) {
+            const key1 = keySelector(arr[j]);
+            const key2 = keySelector(arr[j + 1]);
+
+            if (key1 > key2) {
+                const temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}

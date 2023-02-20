@@ -1,4 +1,5 @@
 import { Map } from "mapbox-gl";
+import { SwitchMapExtraInfo } from "../../controls/SwitchMapControl";
 import ImgTxtSwitchLayerButton from "./ImgTxtSwitchLayerButton";
 import SwitchLayerButton from "./SwitchLayerButton";
 import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
@@ -12,7 +13,7 @@ export default class SwitchGroupContainer {
     /**
      *
      */
-    constructor(private map: Map, name: string, private options: SwitchGroupLayers, imgSize: number = 50) {
+    constructor(private map: Map, name: string, private options: SwitchGroupLayers, extraInfo: SwitchMapExtraInfo) {
         this.element = document.createElement('div');
         let style = this.element.style;
         style.marginBottom = '24px';
@@ -37,12 +38,12 @@ export default class SwitchGroupContainer {
         if (options.uiType === "ImgTxtBtn")
             style.justifyItems = 'center';
 
-        style.minWidth = `${imgSize * 3 + 38 * 2}px`
+        style.minWidth = `${extraInfo.layerItemImgSize! * 3 + 38 * 2}px`
 
         this.options.layers.forEach(layer => {
             const btn = options.uiType === "SwitchBtn" ?
-                new SwitchLayerButton(map, layer) :
-                new ImgTxtSwitchLayerButton(map, layer);
+                new SwitchLayerButton(map, layer, extraInfo) :
+                new ImgTxtSwitchLayerButton(map, layer, extraInfo);
 
             this.layerBtns.push(btn);
             btn.element.addEventListener('click', e => {
