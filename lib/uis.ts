@@ -167,3 +167,85 @@ export namespace ImgTxtSwitchButton {
         return imgTxtButton;
     }
 }
+
+class UIElementBase<K extends keyof HTMLElementTagNameMap> {
+    readonly element: HTMLElementTagNameMap[K];
+
+    /**
+     *
+     */
+    constructor(private parent: HTMLElement, tagName: K, className: string, styleAction?: (style: CSSStyleDeclaration) => void, innerText?: string) {
+        this.element = document.createElement(tagName);
+        this.element.className = className;
+
+        if (styleAction) {
+            styleAction(this.element.style);
+        }
+
+        if (innerText)
+            this.element.innerText = innerText;
+
+        parent.append(this.element);
+    }
+
+    remove() {
+        this.parent.removeChild(this.element);
+    }
+}
+
+export namespace Modal {
+
+    export class ModalBase extends UIElementBase<'div'>{
+
+        /**
+         *
+         */
+        constructor(title: string, show: boolean = false) {
+            super(document.body, 'div', "jas-modal-mask", style => {
+                style.backgroundColor = "rgba(0,0,0,0.6)";
+                style.position = 'fixed';
+                style.top = '0';
+                style.bottom = '0';
+                style.right = '0';
+                style.left = '0';
+                style.zIndex = '10000';
+            });
+
+            const container = new UIElementBase(this.element, 'div', "jas-modal-container", style => {
+                style.left = '50%';
+                style.top = '50%';
+                style.transform = 'translate(-50%,-50%)';
+                style.padding = '10px';
+                style.borderRadius = '10px';
+                style.position = 'absolute';
+            });
+
+            const header = new UIElementBase(container.element, 'div', "jas-modal-container-header", style => {
+                style.display = 'flex';
+                style.justifyContent = 'space-between';
+            })
+            const header_title = new UIElementBase(header.element, 'div', 'jas-modal-container-header-title', style => {
+                style.fontSize = '15px';
+                style.fontWeight = '550';
+            }, title)
+            const header_close = new UIElementBase(header.element, 'div', 'jas-modal-container-header-title', style => {
+                style.fontSize = '15px';
+                style.fontWeight = '550';
+            }, "x")
+
+            const content = new UIElementBase(container.element, 'div', "jas-modal-container-content", style => {
+
+            })
+
+            const foot = new UIElementBase(container.element, 'div', "jas-modal-container-foot", style => {
+
+            })
+            const cancleBtn = new UIElementBase(foot.element, 'button', "jas-modal-container-foot-cancle", style => {
+
+            }, "取消");
+            const canfireBtn = new UIElementBase(foot.element, 'button', "jas-modal-container-foot-canfire", style => {
+
+            }, "确认");
+        }
+    }
+}
