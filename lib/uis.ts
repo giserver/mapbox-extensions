@@ -200,7 +200,7 @@ export namespace Modal {
         /**
          *
          */
-        constructor(title: string, show: boolean = false) {
+        constructor(title: string, cancleCallback?: () => void, canfireCallback?: () => void) {
             super(document.body, 'div', "jas-modal-mask", style => {
                 style.backgroundColor = "rgba(0,0,0,0.6)";
                 style.position = 'fixed';
@@ -215,9 +215,15 @@ export namespace Modal {
                 style.left = '50%';
                 style.top = '50%';
                 style.transform = 'translate(-50%,-50%)';
-                style.padding = '10px';
+                style.padding = '16px 24px';
                 style.borderRadius = '10px';
                 style.position = 'absolute';
+                style.background = '#fff';
+                style.minWidth = '200px';
+                style.minHeight = '100px';
+
+                style.display = 'grid';
+                style.gridTemplateRows = 'auto 1fr auto'
             });
 
             const header = new UIElementBase(container.element, 'div', "jas-modal-container-header", style => {
@@ -231,21 +237,48 @@ export namespace Modal {
             const header_close = new UIElementBase(header.element, 'div', 'jas-modal-container-header-title', style => {
                 style.fontSize = '15px';
                 style.fontWeight = '550';
+                style.cursor = 'pointer';
             }, "x")
+            header_close.element.addEventListener('click', () => {
+                this.remove();
+            })
 
             const content = new UIElementBase(container.element, 'div', "jas-modal-container-content", style => {
-
+                style.width = '100%';
+                style.height = '100%';
             })
 
             const foot = new UIElementBase(container.element, 'div', "jas-modal-container-foot", style => {
-
+                style.textAlign = 'right';
             })
             const cancleBtn = new UIElementBase(foot.element, 'button', "jas-modal-container-foot-cancle", style => {
-
+                style.margin = '0 8px 0 0';
+                style.background = '#FFFFFF';
+                style.border = '1px solid rgba(0, 0, 0, 0.15)';
+                style.boxShadow = '0px 2px 0px rgba(0, 0, 0, 0.02)';
+                style.borderRadius = '8px';
+                style.padding = '5px 16px';
+                style.cursor = 'pointer';
             }, "取消");
             const canfireBtn = new UIElementBase(foot.element, 'button', "jas-modal-container-foot-canfire", style => {
-
+                style.color = 'white';
+                style.background = '#1677FF';
+                style.border = '1px solid #1677FF';
+                style.boxShadow = '0px 2px 0px rgba(0, 0, 0, 0.02)';
+                style.borderRadius = '8px';
+                style.padding = '5px 16px';
+                style.cursor = 'pointer';
             }, "确认");
+
+            cancleBtn.element.addEventListener('click', () => {
+                cancleCallback?.call(undefined);
+                this.remove();
+            })
+
+            canfireBtn.element.addEventListener('click', () => {
+                canfireCallback?.call(undefined);
+                this.remove();
+            })
         }
     }
 }
