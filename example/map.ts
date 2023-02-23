@@ -7,6 +7,7 @@ import DoodleControl from '../lib/controls/DoodleControl';
 import { Measure4Mobile } from '../lib';
 import { orderBy } from '../lib/utils';
 import { Modal } from '../lib/uis';
+import MarkerCatalog from '../lib/features/Marker/MarkerCatalog';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
 const lightStyle = 'mapbox://styles/mapbox/light-v11';
@@ -336,7 +337,14 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY29jYWluZWNvZGVyIiwiYSI6ImNrdHA1YjlleDBqYTEzM
 //     map.addControl(new BackToOriginControl());
 // }
 
-new Modal.ModalBase({ title: 'asdf', closeOnMaskClick: true });
+//new Modal.ModalBase({ title: 'asdf', closeOnMaskClick: true });
+
+new MarkerCatalog({
+    parent: document.body, style: {
+        position: 'absolute', top: '50%',
+        left: '50%',
+    }
+});
 
 function getQueryVariable(variable: string) {
     const query = window.location.search.substring(1);

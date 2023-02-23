@@ -168,9 +168,19 @@ export namespace ImgTxtSwitchButton {
     }
 }
 
+type NullAbleCSSStyleDeclaration = Partial<CSSStyleDeclaration>;
+
+interface UIElementOptions {
+    parent: HTMLElement,
+    style?: NullAbleCSSStyleDeclaration,
+    className?: string,
+    innerText?: string,
+}
+
 class UIElementBase<K extends keyof HTMLElementTagNameMap> {
     private _show: boolean = true;
     private _display: string | undefined = undefined;
+    private _parent: HTMLElement;
 
     readonly element: HTMLElementTagNameMap[K];
 
@@ -178,13 +188,15 @@ class UIElementBase<K extends keyof HTMLElementTagNameMap> {
     /**
      *
      */
-    constructor(private parent: HTMLElement, tagName: K, className: string, styleAction?: (style: CSSStyleDeclaration) => void, innerText?: string) {
-        this.element = document.createElement(tagName);
-        this.element.className = className;
+    constructor(tagName: K, options: UIElementOptions) {
+        const { parent, style, className, innerText } = options;
 
-        if (styleAction) {
-            styleAction(this.element.style);
-        }
+        this._parent = parent;
+        this.element = document.createElement(tagName);
+        this.element.className = className || "";
+
+        if (style)
+            this.setStyle(style);
 
         if (innerText)
             this.element.innerText = innerText;
@@ -193,7 +205,7 @@ class UIElementBase<K extends keyof HTMLElementTagNameMap> {
     }
 
     remove() {
-        this.parent.removeChild(this.element);
+        this._parent.removeChild(this.element);
     }
 
     get show() {
@@ -212,6 +224,14 @@ class UIElementBase<K extends keyof HTMLElementTagNameMap> {
         this._show = value;
     }
 
+    setStyle(style: NullAbleCSSStyleDeclaration) {
+        for (let prop in style) {
+            if (style[prop]) {
+                (this.element.style as any)[prop] = style[prop];
+            }
+        };
+    }
+
     private get style() {
         return this.element.style;
     }
@@ -220,11 +240,16 @@ class UIElementBase<K extends keyof HTMLElementTagNameMap> {
 export namespace Button {
     type ButtonType = "default" | "primary" | "success" | "info" | "warning" | "danger";
 
-    const styleConfig = new Map<ButtonType, Partial<CSSStyleDeclaration>>(
+    interface ButtonOptions extends UIElementOptions {
+        type: ButtonType
+        clickEvent?: (event: MouseEvent) => void
+    }
+
+    const styleConfig = new Map<ButtonType, NullAbleCSSStyleDeclaration>(
         [
             ['default', {
                 backgroundColor: '#FFFFFF',
-                border: '1px solid black'
+                border: '1px solid rgba(0, 0, 0, 0.15)'
             }],
             ['primary', {
                 backgroundColor: '#1677FF',
@@ -251,26 +276,84 @@ export namespace Button {
 
     export class ButtonBase extends UIElementBase<'button'>{
 
-        constructor(parent: HTMLElement, className: string, type: ButtonType = 'default', value: string = "", clickEvent?: (event: MouseEvent) => void, styleAction?: (style: CSSStyleDeclaration) => void) {
-            super(parent, 'button', className, style => {
-                style.boxShadow = '0px 2px 0px rgba(0, 0, 0, 0.02)';
-                style.borderRadius = '8px';
-                style.padding = '5px 16px';
-                style.cursor = 'pointer';
+        constructor(options: ButtonOptions) {
+            options.style = {
+                boxShadow: '0px 2px 0px rgba(0, 0, 0, 0.02)',
+                borderRadius: '8px',
+                padding: '5px 16px',
+                cursor: 'pointer',
+                ...options.style,
+                ...styleConfig.get(options.type)!
+            }
+            super('button', options);
 
-                const config = styleConfig.get(type)!;
-                for (let prop in config) {
-                    if (config[prop]) {
-                        (style as any)[prop] = config[prop];
-                    }
+            if (options.clickEvent)
+                this.element.addEventListener('click', options.clickEvent);
+        }
+    }
+}
+
+export namespace Card {
+    export interface CardOptions extends UIElementOptions {
+
+    }
+
+    export class CardBase extends UIElementBase<'div'> {
+        /**
+         *
+         */
+        constructor(options: CardOptions) {
+            options.style = {
+                padding: '16px 24px',
+                borderRadius: '10px',
+                background: '#fff',
+                boxShadow: " 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19)",
+                ...options.style
+            }
+            super('div', options);
+        }
+
+    }
+
+    export class HCFCard extends CardBase {
+        readonly header: UIElementBase<'div'>;
+        readonly content: UIElementBase<'div'>;
+        readonly footer: UIElementBase<'div'>;
+
+        /**
+         *
+         */
+        constructor(options: CardOptions) {
+            super(options);
+
+            this.setStyle({
+                display: 'grid',
+                gridTemplateRows: 'auto 1fr auto'
+            });
+
+            this.element.addEventListener('click', e => {
+                e.stopPropagation();
+            })
+
+            this.header = new UIElementBase('div', {
+                parent: this.element,
+                style: {
+                    fontSize: '17px',
+                    fontWeight: '550',
                 }
-            }, value);
+            });
 
-            if (styleAction)
-                styleAction(this.element.style);
+            this.content = new UIElementBase('div', {
+                parent: this.element,
+                style: {
+                    width: '100%',
+                    height: '100%'
+                }
+            });
 
-            if (clickEvent)
-                this.element.addEventListener('click', clickEvent);
+            this.footer = new UIElementBase('div', {
+                parent: this.element
+            })
         }
     }
 }
@@ -300,14 +383,16 @@ export namespace Modal {
             options.cancleText ??= "取消";
             options.canfireText ??= "确认";
 
-            super(document.body, 'div', "jas-modal-mask", style => {
-                style.backgroundColor = "rgba(0,0,0,0.6)";
-                style.position = 'fixed';
-                style.top = '0';
-                style.bottom = '0';
-                style.right = '0';
-                style.left = '0';
-                style.zIndex = '10000';
+            super('div', {
+                parent: document.body, className: "jas-modal-mask", style: {
+                    backgroundColor: 'rgba(0,0,0,0.6)',
+                    position: 'fixed',
+                    top: '0',
+                    bottom: '0',
+                    right: '0',
+                    left: '0',
+                    zIndex: '10000'
+                }
             });
 
             if (options.closeOnMaskClick)
@@ -316,64 +401,71 @@ export namespace Modal {
                     this.remove();
                 })
 
-            const container = new UIElementBase(this.element, 'div', "jas-modal-container", style => {
-                style.left = '50%';
-                style.top = '50%';
-                style.transform = 'translate(-50%,-50%)';
-                style.padding = '16px 24px';
-                style.borderRadius = '10px';
-                style.position = 'absolute';
-                style.background = '#fff';
-                style.minWidth = '400px';
-                style.minHeight = '200px';
-
-                style.display = 'grid';
-                style.gridTemplateRows = 'auto 1fr auto'
+            const container = new Card.HCFCard({
+                parent: this.element, className: 'jas-modal-container', style: {
+                    position: 'absolute',
+                    left: '50%',
+                    top: '50%',
+                    transform: 'translate(-50%,-50%)',
+                    minWidth: '400px',
+                    minHeight: '200px'
+                }
             });
 
-            container.element.addEventListener('click', e => {
-                e.stopPropagation()
+            container.header.setStyle({
+                display: 'flex',
+                justifyContent: 'space-between',
             })
 
-            const header = new UIElementBase(container.element, 'div', "jas-modal-container-header", style => {
-                style.display = 'flex';
-                style.justifyContent = 'space-between';
-                style.fontSize = '17px';
-            })
-            const header_title = new UIElementBase(header.element, 'div', 'jas-modal-container-header-title', style => {
-                style.fontWeight = '550';
-            }, options.title)
-            const header_close = new UIElementBase(header.element, 'div', 'jas-modal-container-header-title', style => {
-                style.fontWeight = '550';
-                style.cursor = 'pointer';
-            }, "X")
+            const header_title = new UIElementBase('div', {
+                parent: container.header.element,
+                className: 'jas-modal-container-header-title',
+                innerText: options.title
+            });
+            const header_close = new UIElementBase('div', {
+                parent: container.header.element,
+                style: {
+                    cursor: 'pointer'
+                },
+                innerText: "X"
+            });
+
+            this.content = container.content;
+
             header_close.element.addEventListener('click', () => {
                 options.cancleCallback?.call(undefined);
                 this.remove();
-            })
+            });
 
-            this.content = new UIElementBase(container.element, 'div', "jas-modal-container-content", style => {
-                style.width = '100%';
-                style.height = '100%';
-            })
+            container.footer.setStyle({ textAlign: 'right' });
 
-            const foot = new UIElementBase(container.element, 'div', "jas-modal-container-foot", style => {
-                style.textAlign = 'right';
-            })
+            const cancleBtn = new Button.ButtonBase({
+                parent: container.footer.element,
+                className: 'jas-modal-container-foot-cancle',
+                type: 'default',
+                innerText: options.cancleText,
+                clickEvent: e => {
+                    options.cancleCallback?.call(undefined);
+                    this.remove();
+                },
+                style: {
+                    marginRight: '8px'
+                }
+            });
 
-            const cancleBtn = new Button.ButtonBase(foot.element, 'jas-modal-container-foot-cancle', 'default', options.cancleText, e => {
-                options.cancleCallback?.call(undefined);
-                this.remove();
-            }, style => {
-                style.marginRight = '8px';
-            })
-
-            const canfireBtn = new Button.ButtonBase(foot.element, 'jas-modal-container-foot-canfire', 'primary', options.canfireText, e => {
-                options.canfireCallback?.call(undefined);
-                this.remove();
-            }, style => {
-                style.color = 'white';
-            })
+            const canfireBtn = new Button.ButtonBase({
+                parent: container.footer.element,
+                className: 'jas-modal-container-foot-canfire',
+                type: 'primary',
+                innerText: options.canfireText,
+                clickEvent: e => {
+                    options.canfireCallback?.call(undefined);
+                    this.remove();
+                },
+                style: {
+                    color: 'white'
+                }
+            });
         }
     }
 }
