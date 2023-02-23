@@ -336,7 +336,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY29jYWluZWNvZGVyIiwiYSI6ImNrdHA1YjlleDBqYTEzM
 //     map.addControl(new BackToOriginControl());
 // }
 
-new Modal.ModalBase("提醒");
+new Modal.ModalBase({ title: 'asdf', closeOnMaskClick: true });
 
 function getQueryVariable(variable: string) {
     const query = window.location.search.substring(1);
