@@ -168,7 +168,7 @@ export namespace ImgTxtSwitchButton {
     }
 }
 
-type NullAbleCSSStyleDeclaration = Partial<CSSStyleDeclaration>;
+export type NullAbleCSSStyleDeclaration = Partial<CSSStyleDeclaration>;
 
 interface UIElementOptions {
     parent: HTMLElement,
@@ -177,18 +177,18 @@ interface UIElementOptions {
     innerText?: string,
 }
 
-class UIElementBase<K extends keyof HTMLElementTagNameMap> {
+export class UIElementBase {
     private _show: boolean = true;
     private _display: string | undefined = undefined;
     private _parent: HTMLElement;
 
-    readonly element: HTMLElementTagNameMap[K];
+    readonly element: HTMLElement;
 
 
     /**
      *
      */
-    constructor(tagName: K, options: UIElementOptions) {
+    constructor(tagName: keyof HTMLElementTagNameMap, options: UIElementOptions) {
         const { parent, style, className, innerText } = options;
 
         this._parent = parent;
@@ -274,7 +274,7 @@ export namespace Button {
         ]
     )
 
-    export class ButtonBase extends UIElementBase<'button'>{
+    export class ButtonBase extends UIElementBase {
 
         constructor(options: ButtonOptions) {
             options.style = {
@@ -298,7 +298,7 @@ export namespace Card {
 
     }
 
-    export class CardBase extends UIElementBase<'div'> {
+    export class CardBase extends UIElementBase {
         /**
          *
          */
@@ -316,9 +316,9 @@ export namespace Card {
     }
 
     export class HCFCard extends CardBase {
-        readonly header: UIElementBase<'div'>;
-        readonly content: UIElementBase<'div'>;
-        readonly footer: UIElementBase<'div'>;
+        readonly header: UIElementBase;
+        readonly content: UIElementBase;
+        readonly footer: UIElementBase;
 
         /**
          *
@@ -371,9 +371,9 @@ export namespace Modal {
         canfireCallback?: () => void
     }
 
-    export class ModalBase extends UIElementBase<'div'>{
+    export class ModalBase extends UIElementBase {
 
-        protected content: UIElementBase<'div'>;
+        protected content: UIElementBase;
 
         /**
          *

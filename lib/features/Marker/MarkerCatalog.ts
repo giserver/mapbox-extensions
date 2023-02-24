@@ -1,7 +1,7 @@
 
 
 import { Geometry, Feature, BBox } from "geojson";
-import { Card } from "../../uis";
+import { Button, Card, NullAbleCSSStyleDeclaration, UIElementBase } from "../../uis";
 
 export interface GeometryProperties {
     type: 'Point' | 'Line' | 'Polygon',
@@ -52,7 +52,6 @@ export class MarkerProject {
         name: string,
         readonly createDate: Date = new Date(),
         readonly markers: MarkerInfo[] = new Array<MarkerInfo>()) {
-
     }
 }
 
@@ -66,6 +65,74 @@ export class MarkerContext {
     }
 }
 
-export default class MarkerCatalog extends Card.CardBase {
+export default class MarkerCatalogManager extends UIElementBase {
+    private readonly project_list = "project-list";
+    private readonly project_markers = "project-markers";
 
+    private pages = new Map<string, UIElementBase>();
+    private currentPage: UIElementBase;
+
+    /**
+     *
+     */
+    constructor(parent: HTMLElement, style: NullAbleCSSStyleDeclaration) {
+
+        super('div', { parent, style });
+
+        const page_list = new Card.HCFCard({ parent: this.element });
+        const page_markers = new Card.HCFCard({ parent: this.element });
+
+        this.pages.set(this.project_list, page_list);
+        this.pages.set(this.project_markers, page_markers);
+
+        page_markers.show = false;
+
+        const title = new UIElementBase("div", {
+            parent: page_list.header.element,
+            innerText: '标记'
+        })
+
+        const btn1 = new Button.ButtonBase({
+            parent: page_list.header.element, type: 'primary', innerText: '添加项目', style: {
+                color: 'white'
+            }, clickEvent: e => {
+                this.pushUri(this.project_markers);
+            }
+        });
+
+        const close = new UIElementBase("div", {
+            parent: page_list.header.element,
+            innerText: 'X',
+            style: {
+                marginLeft: '5px'
+            }
+        })
+
+        page_list.header.setStyle({
+            display: 'grid',
+            gridTemplateColumns: '1fr auto auto',
+            alignItems: 'center',
+            marginBottom: '10px'
+        })
+
+        const content = new Card.CardBase({
+            parent: page_list.content.element,
+            innerText: '这里添加标记项目'
+        })
+
+        const btn2 = new Button.ButtonBase({
+            parent: page_markers.element, type: 'primary', innerText: '回去', clickEvent: e => {
+                this.pushUri(this.project_list);
+            }
+        })
+
+        this.currentPage = this.pages.get(this.project_list)!;
+    }
+
+    pushUri(uri: string) {
+        this.currentPage.show = false;
+        const showPage = this.pages.get(uri)!;
+        showPage.show = true;
+        this.currentPage = showPage;
+    }
 }
