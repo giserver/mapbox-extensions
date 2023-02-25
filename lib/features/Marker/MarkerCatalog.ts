@@ -1,114 +1,102 @@
-
-
-import { Geometry, Feature, BBox } from "geojson";
 import { Button, Card, NullAbleCSSStyleDeclaration, UIElementBase } from "../../uis";
 
-export interface GeometryProperties {
-    type: 'Point' | 'Line' | 'Polygon',
-    title: string,
-    remark?: string
-}
-export interface PointProperties extends GeometryProperties {
-    type: 'Point',
-}
+type MarkerCatalogPage = "project-list" | "project-markers"
 
-export interface LineProperties extends GeometryProperties {
-    type: 'Line',
-    'line-width': number,
-    'line-color': string,
-}
+class PageManager<T extends string> {
 
-export interface PolygonProperties extends GeometryProperties {
-    type: 'Polygon',
-    'fill-color': string,
-    'fill-opacity': number,
-    'out-line-color': string,
-    'out-line-width': number,
-}
-
-export type AnyProperties = PointProperties | LineProperties | PolygonProperties
-
-export class MarkerInfo implements Feature<Geometry, AnyProperties> {
-    type: "Feature" = "Feature";
-    id?: string | number | undefined;
-    bbox?: BBox | undefined;
+    private pages = new Map<T, UIElementBase>();
+    private declare currentPage: UIElementBase;
+    private params?: Record<string, any>;
 
     /**
      *
      */
-    constructor(public geometry: Geometry, public properties: AnyProperties) {
+    constructor(pages: Record<T, UIElementBase>) {
+        let first = true;
+        for (let page_uri in pages) {
+            const page = pages[page_uri];
+            page.show = false;
+            if (first) {
+                this.currentPage = page;
+                page.show = true;
+                first = false;
+            }
 
+            this.pages.set(page_uri, pages[page_uri])
+        }
+
+        if (this.pages.size === 0)
+            throw new Error("pages can not empty!");
     }
-}
 
+    to(uri: T, params?: Record<string, any>) {
+        const page = this.pages.get(uri)!;
+        this.currentPage.show = false;
+        this.currentPage = page;
+        this.currentPage.show = true;
 
-export class MarkerProject {
-
-    /**
-     *
-     */
-    constructor(
-        readonly id: string,
-        name: string,
-        readonly createDate: Date = new Date(),
-        readonly markers: MarkerInfo[] = new Array<MarkerInfo>()) {
+        this.params = params;
     }
-}
 
-export class MarkerContext {
+    getParam(key: string) {
+        return this.params ? this.params[key] : undefined;
+    }
 
-    /**
-     *
-     */
-    constructor(private map: mapboxgl.Map, private projects: Array<MarkerProject>) {
+    getPage<R extends UIElementBase>(uri: T): R {
+        return this.pages.get(uri)! as R;
+    }
 
+    show(value: boolean = true) {
+        this.currentPage.show = value;
     }
 }
 
 export default class MarkerCatalogManager extends UIElementBase {
-    private readonly project_list = "project-list";
-    private readonly project_markers = "project-markers";
 
-    private pages = new Map<string, UIElementBase>();
-    private currentPage: UIElementBase;
+    private pageManager: PageManager<MarkerCatalogPage>;
 
     /**
      *
      */
     constructor(parent: HTMLElement, style: NullAbleCSSStyleDeclaration) {
 
-        super('div', { parent, style });
+        super('div', {
+            parent, style: {
+                width: '300px',
+                ...style
+            }
+        });
 
-        const page_list = new Card.HCFCard({ parent: this.element });
-        const page_markers = new Card.HCFCard({ parent: this.element });
+        const projectListPage = new Card.HCFCard({ parent: this, style: { minHeight: '400px' } });
+        const projectMarkersPage = new Card.HCFCard({ parent: this, style: { minHeight: '400px' } });
 
-        this.pages.set(this.project_list, page_list);
-        this.pages.set(this.project_markers, page_markers);
-
-        page_markers.show = false;
+        this.pageManager = new PageManager<MarkerCatalogPage>({
+            'project-list': projectListPage,
+            'project-markers': projectMarkersPage
+        })
 
         const title = new UIElementBase("div", {
-            parent: page_list.header.element,
+            parent: projectListPage.header,
             innerText: '标记'
         })
 
         const btn1 = new Button.ButtonBase({
-            parent: page_list.header.element, type: 'primary', innerText: '添加项目', style: {
+            parent: projectListPage.header, type: 'primary', innerText: '添加项目', style: {
                 color: 'white'
             }, clickEvent: e => {
-                this.pushUri(this.project_markers);
+                this.pageManager.to('project-markers');
             }
         });
 
-        const close = new UIElementBase("div", {
-            parent: page_list.header.element,
-            innerText: 'X',
+        const close = new Button.Close({
+            parent: projectListPage.header,
             style: {
-                marginLeft: '5px'
-            }
+                marginLeft: '20px'
+            },
+            size: 15
         })
 
-        page_list.header.setStyle({
+        projectListPage.header.setStyle({
             display: 'grid',
             gridTemplateColumns: '1fr auto auto',
             alignItems: 'center',
@@ -116,23 +104,14 @@ export default class MarkerCatalogManager extends UIElementBase {
         })
 
         const content = new Card.CardBase({
-            parent: page_list.content.element,
+            parent: projectListPage.content.element,
             innerText: '这里添加标记项目'
         })
 
         const btn2 = new Button.ButtonBase({
-            parent: page_markers.element, type: 'primary', innerText: '回去', clickEvent: e => {
-                this.pushUri(this.project_list);
+            parent: projectMarkersPage.header, type: 'primary', innerText: '回去', clickEvent: e => {
+                this.pageManager.to('project-list');
             }
         })
-
-        this.currentPage = this.pages.get(this.project_list)!;
-    }
-
-    pushUri(uri: string) {
-        this.currentPage.show = false;
-        const showPage = this.pages.get(uri)!;
-        showPage.show = true;
-        this.currentPage = showPage;
     }
 }

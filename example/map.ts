@@ -340,8 +340,10 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY29jYWluZWNvZGVyIiwiYSI6ImNrdHA1YjlleDBqYTEzM
 //new Modal.ModalBase({ title: 'asdf', closeOnMaskClick: true });
 
 new MarkerCatalog(document.body, {
-    position: 'absolute', top: '50%',
+    position: 'absolute',
+    top: '50%',
     left: '50%',
+    transform: 'translate(-50%,-50%)',
 });
 
 function getQueryVariable(variable: string) {
