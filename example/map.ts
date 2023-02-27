@@ -6,7 +6,7 @@ import BackToOriginControl from '../lib/controls/BackToOriginControl';
 import DoodleControl from '../lib/controls/DoodleControl';
 import { Measure4Mobile } from '../lib';
 import { orderBy } from '../lib/utils';
-import { Modal } from '../lib/uis';
+import { Button, Icon, Modal } from '../lib/uis';
 import MarkerCatalog from '../lib/features/Marker/MarkerCatalog';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";

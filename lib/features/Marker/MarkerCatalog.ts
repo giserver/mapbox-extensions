@@ -1,4 +1,4 @@
-import { Button, Card, NullAbleCSSStyleDeclaration, UIElementBase } from "../../uis";
+import { Button, Card, Icon, NullAbleCSSStyleDeclaration, UIElementBase } from "../../uis";
 
 type MarkerCatalogPage = "project-list" | "project-markers"
 
@@ -88,13 +88,16 @@ export default class MarkerCatalogManager extends UIElementBase {
             }
         });
 
-        const close = new Button.Close({
-            parent: projectListPage.header,
-            style: {
+        // const close = new Button.Icon(Icon.IconClose, {
+        //     parent: projectListPage.header, iconSize: 15, style: {
+        //         marginLeft: '20px'
+        //     }
+        // })
+        const close = Button.createIcon(Icon.IconClose, {
+            parent: projectListPage.header, height: 15, width: 15, style: {
                 marginLeft: '20px'
-            },
-            size: 15
-        })
+            }
+        });
 
         projectListPage.header.setStyle({
             display: 'grid',
