@@ -6,6 +6,8 @@ import BackToOriginControl from '../lib/controls/BackToOriginControl';
 import DoodleControl from '../lib/controls/DoodleControl';
 import { Measure4Mobile, SetStyleProxy } from '../lib';
 import { orderBy } from '../lib/utils';
+import { Button, Icon, Modal } from '../lib/uis';
+import MarkerCatalog from '../lib/features/Marker/MarkerCatalog';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
 const lightStyle = 'mapbox://styles/mapbox/light-v11';
@@ -18,10 +20,8 @@ const map = new mapboxgl.Map({
     zoom: 10,
     center: [120.5, 31],
     pitch: 0,
-    style: currentStyle
+    style: lightStyle
 });
-
-const setStyleProxy = new SetStyleProxy(map);
 
 const is_mobile = getQueryVariable("mobile");
 
