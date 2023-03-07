@@ -20,8 +20,10 @@ const map = new mapboxgl.Map({
     zoom: 10,
     center: [120.5, 31],
     pitch: 0,
-    style: lightStyle
+    style: currentStyle
 });
+
+const setStyleProxy = new SetStyleProxy(map);
 
 const is_mobile = getQueryVariable("mobile");
 
@@ -332,6 +334,17 @@ if (is_mobile) {
         //map.addControl(new mapboxgl.NavigationControl())
 
         map.addControl(doodleControl);
+
+        new Button.ButtonBase({
+            parent: document.body,
+            type: 'primary',
+            style: { position: 'absolute', top: '0', zIndex: '10' },
+            innerText: "set style",
+            clickEvent: () => {
+                currentStyle = currentStyle === lightStyle ? darkStyle : lightStyle;
+                setStyleProxy.setStyle(currentStyle);
+            }
+        })
     })
 
     map.addControl(measureControl);
