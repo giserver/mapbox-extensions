@@ -11,7 +11,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "webpack serve --config ./webpack.config.dev.js",
-    "build": "webpack"
+    "build": "tsc"
   },
   "dependencies": {
     "@turf/turf": "^6.5.0",

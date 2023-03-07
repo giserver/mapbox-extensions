@@ -4,11 +4,12 @@ import MeasureControl from '../lib/controls/MeasureControl';
 import SwitchMapControl from '../lib/controls/SwitchMapControl';
 import BackToOriginControl from '../lib/controls/BackToOriginControl';
 import DoodleControl from '../lib/controls/DoodleControl';
-import { Measure4Mobile } from '../lib';
+import { Measure4Mobile, SetStyleProxy } from '../lib';
 import { orderBy } from '../lib/utils';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
 const lightStyle = 'mapbox://styles/mapbox/light-v11';
+let currentStyle = lightStyle;
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiY29jYWluZWNvZGVyIiwiYSI6ImNrdHA1YjlleDBqYTEzMm85bTBrOWE0aXMifQ.J8k3R1QBqh3pyoZi_5Yx9w';
 
@@ -17,8 +18,10 @@ const map = new mapboxgl.Map({
     zoom: 10,
     center: [120.5, 31],
     pitch: 0,
-    style: lightStyle
+    style: currentStyle
 });
+
+const setStyleProxy = new SetStyleProxy(map);
 
 const is_mobile = getQueryVariable("mobile");
 

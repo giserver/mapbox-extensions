@@ -10,6 +10,8 @@ import BackToOriginControl from "./controls/BackToOriginControl";
 import DoodleControl from "./controls/DoodleControl";
 import Measure4Mobile from "./features/Measure/Measure4Mobile";
 
+import SetStyleProxy from "./features/SetStyleProxy";
+
 
 export {
     LayerGroup,
@@ -23,7 +25,8 @@ export {
     SwitchGroupLayers,
     SwitchLayerItem,
 
-    Measure4Mobile
+    Measure4Mobile,
+    SetStyleProxy
 }
 
 declare module "mapbox-gl" {
@@ -57,7 +60,10 @@ declare module "mapbox-gl" {
         removeLayerGroup(id: string): void
 
         /**
+         * 
          * 替代setStyle，解决自动删除数据源和图层的问题
+         * 
+         * @deprecated 建议使用 {@link SetStyleProxy}
          * @param style mapbox 样式如：mapbox://styles/mapbox/dark-v10
          * @param preserveLayerIds 保留下来的layer
          * @param options 
