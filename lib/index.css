@@ -46,3 +46,33 @@
 }
 
 /* #endregion */
+
+/* #region 测量 */
+
+.jas-ctrl-measure {
+    display: flex;
+    overflow: hidden;
+}
+
+.jas-ctrl-measure.hor {
+    flex-direction: row;
+}
+
+.jas-ctrl-measure.ver {
+    flex-direction: column;
+    width: 29px;
+}
+
+
+.jas-ctrl-measure-item {
+    cursor: pointer;
+    height: 29px;
+    width: 29px;
+    float: right;
+}
+
+.jas-ctrl-measure-item:hover {
+    background-color: #ddd !important;
+}
+
+/* #endregion */

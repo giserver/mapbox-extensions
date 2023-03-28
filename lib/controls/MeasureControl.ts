@@ -4,7 +4,7 @@ import MeasureBase, { MeasureType } from "../features/Measure/MeasureBase";
 import MeasurePoint, { MeasurePointOptions } from "../features/Measure/MeasurePoint";
 import MeasureLineString, { MeasureLineStringOptions } from "../features/Measure/MeasureLineString";
 import MeasurePolygon, { MeasurePolygonOptions } from "../features/Measure/MeasurePolygon";
-import { Dict, copyToClipboard } from "../utils";
+import { Dict, copyToClipboard, createHtmlElement } from "../utils";
 
 export interface MeasureControlOptions {
 
@@ -63,6 +63,7 @@ export interface MeasureControlOptions {
 
 export default class MeasureControl implements IControl {
 
+    //#region svg icons
     private polygon = `<svg t="1659591707587" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1188" width="20" height="20">
     <g fill="none" stroke="black">
         <path stroke-width="18" d="M898.56 284.672c15.36 0 27.648-12.288 27.648-27.136V126.976c0-15.36-12.288-27.648-27.648-27.648H768c-15.36 0-27.648 12.288-27.648 27.648v29.696H286.208v-29.696c0-15.36-12.288-27.648-27.648-27.648H128c-15.36 0-27.648 12.288-27.648 27.648v130.048c0 15.36 12.288 27.648 27.648 27.648h31.744v452.096H128c-15.36 0-27.648 12.288-27.648 27.648v130.56c0 15.36 12.288 27.648 27.648 27.648h130.56c14.848 0 27.136-12.288 27.648-27.648v-33.28h454.144v33.28c0 15.36 12.288 27.648 27.648 27.648h130.56c15.36 0 27.648-12.288 27.648-27.648v-130.56c0-15.36-12.288-27.648-27.648-27.648H865.28V284.672h33.28zM155.648 229.376V154.112h75.264v75.264H155.648z m75.264 637.952H155.648v-75.264h75.264v75.264z m509.44-102.912v33.28H286.208v-33.28c0-15.36-12.288-27.648-27.648-27.648h-34.816V284.672h34.816c14.848 0 27.136-12.288 27.648-27.136v-36.864h454.144v36.352c0 15.36 12.288 27.648 27.648 27.648h33.28v452.096H768c-15.36 0-27.648 12.288-27.648 27.648z m130.56 27.648v75.264h-75.264v-75.264h75.264zM795.648 229.376V154.112h75.264v75.264h-75.264z" fill="#333333" p-id="1189"></path>
@@ -90,6 +91,8 @@ export default class MeasureControl implements IControl {
     <path stroke-width="40" d="M1023.978511 265.895883l0 572.652382c0 11.307533-9.15859 20.466124-20.466124 20.466124l-307.86167 0c-11.2973 0-20.466124-9.15859-20.466124-20.466124 0-11.2973 9.168824-20.466124 20.466124-20.466124l287.395546 0L983.046263 286.362007l-224.953402 0c-11.307533 0-20.466124-9.168824-20.466124-20.466124L737.626737 40.932248l-306.756499 0 0 75.693959c0 11.307533-9.168824 20.466124-20.466124 20.466124-11.307533 0-20.466124-9.15859-20.466124-20.466124L389.93799 20.466124c0-11.2973 9.15859-20.466124 20.466124-20.466124l347.688747 0c11.2973 0 20.466124 9.168824 20.466124 20.466124l0 224.963635 175.548178 0-128.680754-128.680754c-7.992021-7.992021-7.992021-20.947078 0-28.949332 7.992021-7.992021 20.947078-7.992021 28.939099 0l163.616428 163.626661C1021.819334 255.263731 1023.978511 260.462127 1023.978511 265.895883z" fill="#333333" p-id="2226"></path>
     </g>
     </svg>`;
+
+    //#endregion
 
     private measures = new Dict<MeasureType, { measure: MeasureBase, svg: string, controlElement?: HTMLElement | undefined }>();
     private currentMeasure: MeasureBase | undefined;
@@ -130,20 +133,7 @@ export default class MeasureControl implements IControl {
                 this.measures.delete(k);
         })
 
-        const div = document.createElement('div');
-        div.className = "jas-ctrl-measure mapboxgl-ctrl mapboxgl-ctrl-group"
-        const style = div.style;
-        style.display = 'flex';
-        style.overflow = 'hidden';
-        style.flexDirection = this.options.horizontal ? 'row' : 'column';
-        if (!this.options.horizontal)
-            style.width = '29px';
-
-        div.innerHTML = `<style>
-            .jas-ctrl:hover{
-                background-color : ${this.options.btnActiveColor} !important;
-            }
-        </style>`;
+        const div = createHtmlElement('div', "jas-ctrl-measure", "mapboxgl-ctrl", "mapboxgl-ctrl-group", this.options.horizontal ? "hor" : "ver");
 
         this.measures.forEach((value, key) => {
             const btn = this.createButton(value.svg, this.createClickMeasureButtonHandler(map, key));
@@ -154,10 +144,12 @@ export default class MeasureControl implements IControl {
         div.append(this.createButton(this.clean, () => {
             this.measures.forEach(m => m.measure.clear());
         }));
+
         return div;
     }
 
     onRemove(map: Map): void {
+        this.stop();
         this.measures.forEach(m => m.measure.destroy());
     }
 
@@ -202,23 +194,10 @@ export default class MeasureControl implements IControl {
         }
     }
 
-    private createButton(svg: string, onclick: () => (boolean | void)) {
-        const div = document.createElement('div');
-        div.className = 'jas-ctrl';
-        const style = div.style;
-        style.display = 'flex';
-        style.justifyContent = 'center';
-        style.alignItems = 'center';
-        style.background = this.options.btnBgColor!;
-        style.cursor = 'pointer';
-        style.height = '29px';
-        style.width = '29px';
-        style.float = 'right';
+    private createButton(svg: string, onclick: () => void) {
+        const div = createHtmlElement('div', 'jas-btn-hover', 'jas-flex-center', 'jas-ctrl-measure-item');
         div.innerHTML += svg;
-        div.onclick = (e) => {
-            onclick();
-        }
-
+        div.onclick = onclick;
         return div;
     }
 
