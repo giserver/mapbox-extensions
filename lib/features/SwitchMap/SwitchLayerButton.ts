@@ -1,6 +1,5 @@
 import { Map } from "mapbox-gl";
 import { SwitchMapExtraInfo } from "../../controls/SwitchMapControl";
-import { SwitchButton } from "../../uis";
 import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
 import { SwitchLayerItem } from "./types";
 
@@ -22,8 +21,22 @@ export default class SwitchLayerButton extends SwitchLayerButtonBase {
         this.inputEle.checked = false;
     }
     protected createHtmlElement(): HTMLElement {
-        return SwitchButton.create(this.options.name, this.options.active, inputEle => {
-            this.inputEle = inputEle;
-        });
+        const switchButton = document.createElement('div');
+        switchButton.style.display = 'flex';
+        switchButton.style.justifyContent = 'space-between';
+        switchButton.style.alignItems = 'center';
+
+
+        const inputEle = document.createElement('input');
+        inputEle.classList.add("jas-switch", "jas-switch-anim");
+        inputEle.setAttribute("type", "checkbox");
+
+        const txtEle = document.createElement('div');
+        txtEle.innerText = this.options.name;
+
+        switchButton.append(txtEle, inputEle);
+
+        this.inputEle = inputEle;
+        return switchButton;
     }
 }
