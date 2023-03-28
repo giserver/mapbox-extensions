@@ -45,6 +45,11 @@ export interface SwitchLayerItem {
     backgroundImage?: string,
 
     /**
+     * 激活时的图片
+     */
+    backgroundImageActive?: string,
+
+    /**
      * 当图层被激活显示时的回调
      * @param visible 
      * @returns 

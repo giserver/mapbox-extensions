@@ -31,7 +31,7 @@ export default abstract class SwitchLayerButtonBase {
             this.check();
             this._checked = true;
         } else if (checked === undefined) {
-            this.checked ? this.unCheck : this.check();
+            this.checked ? this.unCheck() : this.check();
             this._checked = !this.checked;
         } else {
             this.unCheck();

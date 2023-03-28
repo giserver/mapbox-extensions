@@ -189,7 +189,8 @@ if (is_mobile) {
                                     "text-field": ['get', 'name']
                                 }
                             },
-                            'backgroundImage': '',
+                            'backgroundImage': '/house-user.png',
+                            'backgroundImageActive': '/building.png',
                             mutex: true
                         }, {
                             name: 'fff5',
@@ -212,7 +213,8 @@ if (is_mobile) {
                                     'text-size': 30,
                                 }
                             },
-                            'backgroundImage': '',
+                            'backgroundImage': '/house-user.png',
+                            'backgroundImageActive': '/building.png',
                             active: true,
                         }, {
                             name: 'fff6',

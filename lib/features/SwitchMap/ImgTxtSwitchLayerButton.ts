@@ -12,9 +12,17 @@ export default class ImgTxtSwitchLayerButton extends SwitchLayerButtonBase {
 
     protected check(): void {
         this.element.classList.add(this.token);
+        if (this.options.backgroundImageActive) {
+            const imgDiv = this.element.firstChild as HTMLDivElement;
+            imgDiv.style.backgroundImage = `url('${this.options.backgroundImageActive}')`;
+        }
     }
     protected unCheck(): void {
         this.element.classList.remove(this.token);
+        if (this.options.backgroundImage && this.options.backgroundImageActive) {
+            const imgDiv = this.element.firstChild as HTMLDivElement;
+            imgDiv.style.backgroundImage = `url('${this.options.backgroundImage}')`;
+        }
     }
 
     protected createHtmlElement(): HTMLElement {
