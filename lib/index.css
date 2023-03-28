@@ -1,13 +1,48 @@
-.jas-ctrl-backtoorigin {
-    line-height: 0;
+.jas-flex-center {
     display: flex;
-    height: 29px;
-    width: 29px;
-    cursor: pointer;
     justify-content: center;
     align-items: center;
 }
 
-.jas-ctrl-backtoorigin:hover {
+.jas-btn-hover:hover {
     background-color: #ddd;
 }
+
+/* #region 回到初始位置style */
+
+.jas-ctrl-backtoorigin {
+    line-height: 0;
+    height: 29px;
+    width: 29px;
+    cursor: pointer;
+}
+
+/* #endregion */
+
+
+
+/* #region 涂鸦 */
+
+.jas-ctrl-doodle {
+    display: flex;
+}
+
+.jas-ctrl-doodle>div {
+    pointer-events: auto;
+    cursor: pointer;
+    height: 29px;
+    padding: 0 5px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.jas-ctrl-doodle-switch {
+
+    margin-left: 10px;
+}
+
+.jas-ctrl-doodle-switch-svg {
+    height: 20px;
+}
+
+/* #endregion */

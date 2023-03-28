@@ -33,7 +33,7 @@ export default class BackToOriginControl implements IControl {
             bearing: map.getBearing()
         };
 
-        const div = createHtmlElement('div', "jas-ctrl-backtoorigin", "mapboxgl-ctrl", "mapboxgl-ctrl-group")
+        const div = createHtmlElement('div', "jas-btn-hover", "jas-flex-center", "jas-ctrl-backtoorigin", "mapboxgl-ctrl", "mapboxgl-ctrl-group")
         div.innerHTML = this.img;
 
         div.addEventListener('click', e => {
