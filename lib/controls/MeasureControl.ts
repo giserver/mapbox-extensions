@@ -96,7 +96,7 @@ export default class MeasureControl implements IControl {
 
     private measures = new Dict<MeasureType, { measure: MeasureBase, svg: string, controlElement?: HTMLElement | undefined }>();
     private currentMeasure: MeasureBase | undefined;
-    private popup = new Popup({ closeButton: false, className: 'custom-popup' });
+    private popup = new Popup({ closeButton: false, className: 'jas-mapbox-popup' });
 
     constructor(private options: MeasureControlOptions = {}) {
         options.horizontal ??= false;
@@ -229,47 +229,40 @@ export default class MeasureControl implements IControl {
 
     private geometryClickHandler = (ev: MapLayerEventType['click'] & EventData) => {
         const feature = ev.features?.at(0);
-        if (feature) {
-            try {
-                this.measures.forEach(mp => {
-                    const pf = mp.measure.getFeatrue(feature.properties!['id'].toString());
-                    if (pf) {
-                        const center = turf.center(pf.geometry as turf.AllGeoJSON).geometry.coordinates;
-                        this.popup.setHTML(`<div style="display:flex;align-items:center;">
+        if (!feature) return;
+
+        try {
+            this.measures.forEach(mp => {
+                const pf = mp.measure.getFeatrue(feature.properties!['id'].toString());
+                if (pf) {
+                    const center = turf.center(pf.geometry as turf.AllGeoJSON).geometry.coordinates;
+                    this.popup.setHTML(`<div style="display:flex;align-items:center;">
                                                 <div id="popup-btn-copy" class='jas-ctrl' style="margin:0 5px 0 0;cursor:pointer;">${this.copy}</div>
                                                 <div id="popup-btn-clean" class='jas-ctrl' style="cursor:pointer;">${this.clean}</div>
                                             </div>`).setLngLat(ev.lngLat).addTo(ev.target);
 
-                        this.popup.getElement().childNodes.forEach(child => {
-                            const c = child as HTMLElement;
-                            if (c.classList.contains("mapboxgl-popup-content")) {
-                                c.style.padding = "10px 10px 5px";
-                            }
-                        });
+                    const copyBtn = document.getElementById("popup-btn-copy")!;
+                    const cleanBtn = document.getElementById("popup-btn-clean")!;
 
-                        const copyBtn = document.getElementById("popup-btn-copy")!;
-                        const cleanBtn = document.getElementById("popup-btn-clean")!;
+                    copyBtn.addEventListener('click', e => {
+                        const geometry = JSON.stringify(pf.geometry);
+                        this.options.onGeometryCopy?.call(this, geometry);
+                        copyToClipboard(geometry);
+                    });
 
-                        copyBtn.addEventListener('click', e => {
-                            const geometry = JSON.stringify(pf.geometry);
-                            this.options.onGeometryCopy?.call(this, geometry);
-                            copyToClipboard(geometry);
-                        });
+                    cleanBtn.addEventListener('click', e => {
+                        const id = pf.id!.toString();
+                        mp.measure.deleteFeature(id);
+                        this.popup.remove();
+                        this.options.onFeatureDelete?.call(this, id);
+                    });
 
-                        cleanBtn.addEventListener('click', e => {
-                            const id = pf.id!.toString();
-                            mp.measure.deleteFeature(id);
-                            this.popup.remove();
-                            this.options.onFeatureDelete?.call(this, id);
-                        });
+                    ev.target.flyTo({ center: [center[0], center[1]] });
+                    throw new Error("break");
+                }
+            });
+        } catch (error) {
 
-                        ev.target.flyTo({ center: [center[0], center[1]] });
-                        throw new Error("break");
-                    }
-                });
-            } catch (error) {
-
-            }
         }
     }
 }

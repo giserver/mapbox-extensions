@@ -8,6 +8,10 @@
     background-color: #ddd;
 }
 
+.jas-mapbox-popup>.mapboxgl-popup-content {
+    padding: 10px 10px 5px;
+}
+
 /* #region 回到初始位置style */
 
 .jas-ctrl-backtoorigin {
