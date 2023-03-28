@@ -1,4 +1,5 @@
 import { EaseToOptions, IControl, Map } from "mapbox-gl";
+import { createHtmlElement } from "../utils";
 
 export interface BackToOriginControlOptions {
     easeToOptions?: EaseToOptions
@@ -32,22 +33,8 @@ export default class BackToOriginControl implements IControl {
             bearing: map.getBearing()
         };
 
-        const div = document.createElement('div');
-        div.className = 'jas-ctrl jas-ctrl-backtoorigin mapboxgl-ctrl mapboxgl-ctrl-group'
-        const style = div.style;
+        const div = createHtmlElement('div', "jas-ctrl-backtoorigin", "mapboxgl-ctrl", "mapboxgl-ctrl-group")
         div.innerHTML = this.img;
-        style.cursor = 'pointer';
-        style.display = 'flex';
-        style.justifyContent = 'center';
-        style.alignItems = 'center';
-        style.height = '29px';
-        style.width = '29px';
-
-        div.innerHTML += `<style>
-            .jas-ctrl:hover{
-                background-color : #ddd !important;
-            }
-        </style>`;
 
         div.addEventListener('click', e => {
             map.easeTo(this.options.easeToOptions!)
@@ -55,6 +42,7 @@ export default class BackToOriginControl implements IControl {
 
         return div;
     }
+
     onRemove(map: Map): void {
 
     }

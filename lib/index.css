@@ -1,0 +1,13 @@
+.jas-ctrl-backtoorigin {
+    line-height: 0;
+    display: flex;
+    height: 29px;
+    width: 29px;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+}
+
+.jas-ctrl-backtoorigin:hover {
+    background-color: #ddd;
+}

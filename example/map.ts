@@ -5,9 +5,9 @@ import SwitchMapControl from '../lib/controls/SwitchMapControl';
 import BackToOriginControl from '../lib/controls/BackToOriginControl';
 import DoodleControl from '../lib/controls/DoodleControl';
 import { Measure4Mobile, SetStyleProxy } from '../lib';
-import { orderBy } from '../lib/utils';
-import { Button, Icon, Modal } from '../lib/uis';
-import MarkerCatalog from '../lib/features/Marker/MarkerCatalog';
+import { Button } from '../lib/uis';
+
+import '../lib/index.css';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
 const lightStyle = 'mapbox://styles/mapbox/light-v11';
