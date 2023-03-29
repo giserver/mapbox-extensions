@@ -41,13 +41,13 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
-.jas-switch:checked {
+.jas-switch.checked {
     border-color: #1677FF;
     box-shadow: #1677FF 0 0 0 16px inset;
     background-color: #1677FF;
 }
 
-.jas-switch:checked:before {
+.jas-switch.checked:before {
     left: 22px;
 }
 
@@ -59,13 +59,13 @@
     transition: left 0.3s;
 }
 
-.jas-switch.jas-switch-anim:checked {
+.jas-switch.jas-switch-anim.checked {
     box-shadow: #1677FF 0 0 0 16px inset;
     background-color: #1677FF;
     transition: border ease 0.4s, box-shadow ease 0.4s, background-color ease 1.2s;
 }
 
-.jas-switch.jas-switch-anim:checked:before {
+.jas-switch.jas-switch-anim.checked:before {
     transition: left 0.3s;
 }
 

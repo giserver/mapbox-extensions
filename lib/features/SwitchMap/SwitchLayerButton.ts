@@ -14,18 +14,16 @@ export default class SwitchLayerButton extends SwitchLayerButtonBase {
     }
 
     protected check(): void {
-        this.inputEle.setAttribute(this.token, this.token);
+        this.inputEle.classList.add(this.token);
     }
     protected unCheck(): void {
-        this.inputEle.removeAttribute(this.token);
-        this.inputEle.checked = false;
+        this.inputEle.classList.remove(this.token);
     }
     protected createHtmlElement() {
         const switchButton = document.createElement('div');
         switchButton.style.display = 'flex';
         switchButton.style.justifyContent = 'space-between';
         switchButton.style.alignItems = 'center';
-
 
         const inputEle = document.createElement('input');
         inputEle.classList.add("jas-switch", "jas-switch-anim");

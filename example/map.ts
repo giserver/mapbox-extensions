@@ -288,6 +288,7 @@ if (is_mobile) {
                             active: true
                         }]
                     }, '可清除可全选': {
+                        uiType: 'SwitchBtn',
                         layers: [{
                             name: "xxx",
                             layer: {
