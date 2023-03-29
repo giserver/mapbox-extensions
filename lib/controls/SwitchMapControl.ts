@@ -39,17 +39,32 @@ export interface SwitchMapExtraInfo {
    */
   nailActiveColor?: string,
 
-  layerGroups?: Record<string, SwitchGroupLayers>;
-
   /**
-   * 点击图层后该图层置顶
-   */
+ * 点击图层后该图层置顶
+ */
   showToTop?: boolean;
 
   /**
    * {@link showToTop}联用时，调整图层顺序的最前面的图层id
    */
   topLayerId?: string;
+
+  /**
+   * 是否使用全选和清除，默认: true
+   */
+  selectAndClearAll?: boolean;
+
+  /**
+   * 全选名字，默认: 全选
+   */
+  selectAllLabel?: string;
+
+  /**
+   * 清空名字，默认: 清空
+   */
+  clearAllLabel?: string;
+
+  layerGroups?: Record<string, SwitchGroupLayers>;
 }
 
 export interface SwitchMapControlOptions {
@@ -84,6 +99,10 @@ export default class SwitchMapControl implements IControl {
     if (options.extra) {
       options.extra.name ??= '附加图层';
       options.extra.nailActiveColor ??= "#0066FF";
+
+      options.extra.selectAndClearAll ??= true;
+      options.extra.selectAllLabel ??= "全选";
+      options.extra.clearAllLabel ??= "清空";
     }
   }
 
@@ -128,8 +147,10 @@ export default class SwitchMapControl implements IControl {
 
       orderBy(allLayers, l => l.zoom!);
       allLayers.forEach(l => {
-        const layers = l.layer instanceof Array<AnyLayer> ? l.layer : [l.layer];
-        layers.forEach(l => map.addLayer(l));
+        if (l.layer instanceof Array<AnyLayer>)
+          l.layer.forEach(x => map.addLayer(x));
+        else
+          map.addLayer(l.layer);
       })
 
       for (let groupName in extraLayers) {

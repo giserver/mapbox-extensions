@@ -28,13 +28,13 @@ export default abstract class SwitchLayerButtonBase {
             this.options.layer.id;
     }
 
-    changeChecked(checked?: boolean, ease?: boolean) {
+    changeChecked(value?: boolean, ease?: boolean) {
 
         // UI change
-        if (checked) {
+        if (value) {
             this.check();
             this._checked = true;
-        } else if (checked === undefined) {
+        } else if (value === undefined) {
             this.checked ? this.unCheck() : this.check();
             this._checked = !this.checked;
         } else {

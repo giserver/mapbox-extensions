@@ -6,6 +6,8 @@ import SwitchGroupContainer from "./SwitchGroupContainer";
 
 export default class ImgTxtSwitchLayerButton extends SwitchLayerButtonBase {
 
+    private declare imgDiv: HTMLDivElement;
+
     constructor(map: Map, options: SwitchLayerItem, container: SwitchGroupContainer) {
         super(map, options, container);
     }
@@ -13,15 +15,13 @@ export default class ImgTxtSwitchLayerButton extends SwitchLayerButtonBase {
     protected check(): void {
         this.element.classList.add(this.token);
         if (this.options.backgroundImageActive) {
-            const imgDiv = this.element.firstChild as HTMLDivElement;
-            imgDiv.style.backgroundImage = `url('${this.options.backgroundImageActive}')`;
+            this.imgDiv.style.backgroundImage = `url('${this.options.backgroundImageActive}')`;
         }
     }
     protected unCheck(): void {
         this.element.classList.remove(this.token);
         if (this.options.backgroundImage && this.options.backgroundImageActive) {
-            const imgDiv = this.element.firstChild as HTMLDivElement;
-            imgDiv.style.backgroundImage = `url('${this.options.backgroundImage}')`;
+            this.imgDiv.style.backgroundImage = `url('${this.options.backgroundImage}')`;
         }
     }
 
@@ -31,8 +31,13 @@ export default class ImgTxtSwitchLayerButton extends SwitchLayerButtonBase {
         const txtDiv = createHtmlElement('div', "jas-img-txt-switch-button-txt");
         txtDiv.innerText = this.options.name;
 
+        if (this.options.backgroundImage) {
+            imgDiv.style.backgroundImage = `url('${this.options.backgroundImage}')`;
+        }
+
         imgTxtButton.append(imgDiv, txtDiv);
 
+        this.imgDiv = imgDiv;
         return { container: imgTxtButton, button: imgTxtButton };
     }
 }

@@ -189,7 +189,6 @@ if (is_mobile) {
                                 }
                             },
                             'backgroundImage': '/house-user.png',
-                            'backgroundImageActive': '/building.png',
                             mutex: true
                         }, {
                             name: 'fff5',
@@ -212,8 +211,8 @@ if (is_mobile) {
                                     'text-size': 30,
                                 }
                             },
-                            'backgroundImage': '/house-user.png',
-                            'backgroundImageActive': '/building.png',
+                            'backgroundImage': '/building.png',
+                            'backgroundImageActive': '/building-active.png',
                             active: true,
                         }, {
                             name: 'fff6',
@@ -287,6 +286,48 @@ if (is_mobile) {
                             ],
                             'backgroundImage': '',
                             active: true
+                        }]
+                    }, '可清除可全选': {
+                        layers: [{
+                            name: "xxx",
+                            layer: {
+                                id: 'kqc_1',
+                                type: 'symbol',
+                                source: {
+                                    type: 'geojson',
+                                    data: {
+                                        type: 'Feature',
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: [120.54, 30.9]
+                                        },
+                                        properties: { name: '可清除' }
+                                    }
+                                },
+                                layout: {
+                                    "text-field": ['get', 'name']
+                                }
+                            }
+                        }, {
+                            name: "xxx1",
+                            layer: {
+                                id: 'kqc_2',
+                                type: 'symbol',
+                                source: {
+                                    type: 'geojson',
+                                    data: {
+                                        type: 'Feature',
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: [120.65, 30.9]
+                                        },
+                                        properties: { name: '可清除12' }
+                                    }
+                                },
+                                layout: {
+                                    "text-field": ['get', 'name']
+                                }
+                            }
                         }]
                     }
                 }
