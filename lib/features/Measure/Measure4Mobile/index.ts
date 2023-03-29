@@ -205,6 +205,7 @@ export default class Measure4Mobile {
             .jas-measure-mobile-switch-item{
                 font-size : 0;
                 padding : 8px;
+                line-height : 0;
             }
         </style>`
 
@@ -256,6 +257,7 @@ export default class Measure4Mobile {
         style.top = '50%';
         style.transform = 'translate(-50%,-50%)';
         style.fontSize = '0';
+        style.lineHeight = '0';
 
         return div;
     }

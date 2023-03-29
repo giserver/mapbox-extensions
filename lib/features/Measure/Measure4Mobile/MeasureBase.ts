@@ -50,7 +50,7 @@ export default abstract class MeasureBase {
     };
 
     protected get currentFeature() {
-        return this.isDrawing ? this.geojson.features.at(-1) : undefined;
+        return this.isDrawing ? this.geojson.features[this.geojson.features.length - 1] : undefined;
     }
 
     /**
