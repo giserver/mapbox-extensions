@@ -244,6 +244,14 @@
     border-bottom: 1px solid #ccc;
 }
 
+.jas-ctrl-switchmap-alert-header-nail {
+    cursor: pointer;
+}
+
+.jas-ctrl-switchmap-alert-header-nail.active {
+    transform: rotate(-45deg);
+}
+
 .jas-ctrl-switchmap-alert-container {
     max-height: 300px;
     overflow-y: auto;

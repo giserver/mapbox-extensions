@@ -66,7 +66,7 @@ export default class SwitchMapControl implements IControl {
   <path d="M912.9 380.2L643.5 110.9c-12.1-12.1-29.6-15.8-45.6-9.8s-26.6 20.5-27.6 37.6l-4.9 83.7-299.1 199.4-112.6-5.4c-17.8-0.7-34 9.2-41.3 25.5s-3.7 35 8.9 47.7L314.7 683 102.5 895.2c-7.2 7.2-7.2 18.8 0 26 3.6 3.6 8.3 5.4 13 5.4s9.4-1.8 13-5.4L340.7 709l193.4 193.4c8.3 8.3 19.1 12.6 30.2 12.6 5.9 0 11.8-1.2 17.4-3.7 16.3-7.2 26.3-23.4 25.5-41.3l-5.4-112.6 199.5-299.2 83.7-4.9c17.1-1 31.5-11.6 37.6-27.6s2.4-33.4-9.7-45.5z m-24.6 32.5c-0.5 1.4-1.9 3.7-5.4 3.9l-85.2 5-135.3-135.3c-7.2-7.2-18.8-7.2-26 0s-7.2 18.8 0 26l130.9 130.9-187.5 281.2-223.7-223.7c-7.2-7.2-18.8-7.2-26 0s-7.2 18.8 0 26l225.1 225.1c2.8 2.8 6.3 4.5 9.9 5.1l5.5 114.9c0.2 3.5-1.9 5.1-3.6 5.9-1.7 0.8-4.4 1.2-6.8-1.3L147.3 463.6c-2.5-2.5-2-5.1-1.3-6.8 0.8-1.7 2.5-4 5.9-3.6l118.6 5.6c3.9 0.2 7.8-0.9 11.1-3.1l311.9-207.9c4.8-3.2 7.8-8.5 8.2-14.2l5.5-92.8c0.2-3.5 2.6-4.8 3.9-5.4 1.4-0.5 4.1-1 6.5 1.4l269.3 269.3c2.4 2.5 1.9 5.2 1.4 6.6z" fill="#2D3742" p-id="2737" data-darkreader-inline-fill="" style="--darkreader-inline-fill:#0d1722;">
   </path></svg>`;
 
-  private layerContainerDivShowAlways = false;
+  private alertDivShowAlways = false;
 
   constructor(private options: SwitchMapControlOptions = {}) {
     options.baseOption ??= {};
@@ -187,7 +187,7 @@ export default class SwitchMapControl implements IControl {
     })
 
     div.addEventListener('mouseout', () => {
-      if (div.classList.contains('alert-is-shown') && !this.layerContainerDivShowAlways)
+      if (div.classList.contains('alert-is-shown') && !this.alertDivShowAlways)
         div.classList.remove('alert-is-shown');
     })
 
@@ -202,20 +202,20 @@ export default class SwitchMapControl implements IControl {
     })
 
     alertDiv.addEventListener('mouseout', e => {
-      if (!this.layerContainerDivShowAlways)
+      if (!this.alertDivShowAlways)
         alertDiv.style.pointerEvents = 'none';
     })
 
     const headerDiv = createHtmlElement('div', "jas-ctrl-switchmap-alert-header");
-    const nailDiv = createHtmlElement('div');
-    nailDiv.innerHTML = this.nailImg;
-    nailDiv.style.cursor = 'pointer';
     headerDiv.innerHTML = `<div>${this.options.extra?.name}</div>`;
+    const nailDiv = createHtmlElement('div', 'jas-ctrl-switchmap-alert-header-nail');
+    nailDiv.innerHTML = this.nailImg;
     headerDiv.append(nailDiv);
 
     nailDiv.addEventListener('click', () => {
-      this.layerContainerDivShowAlways = !this.layerContainerDivShowAlways;
-      changeSvgColor(nailDiv.children[0] as SVGAElement, this.layerContainerDivShowAlways ? this.options.extra!.nailActiveColor! : '#2D3742');
+      this.alertDivShowAlways = !this.alertDivShowAlways;
+      nailDiv.classList.toggle('active');
+      changeSvgColor(nailDiv.children[0] as SVGAElement, this.alertDivShowAlways ? this.options.extra!.nailActiveColor! : '#2D3742');
     });
 
     const groupsDiv = createHtmlElement('div', "jas-ctrl-switchmap-alert-container");

@@ -11,7 +11,8 @@ yarn build
 1. make sure mapbox installed. 
 2. `npm install` / `yarn add` `mapbox-extensions`. 
 3. add `import 'mapbox-extensions'` at your entry file. 
-4. enjoy extensions.
+4. add css : `import 'mapbox-extensions/dist/index.css'`
+5. enjoy extensions.
 
 ## Give a Star! :star:
 If you like or are using this project to learn or start your solution, please give it a star. Thanks!

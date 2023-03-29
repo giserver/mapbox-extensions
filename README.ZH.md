@@ -10,7 +10,8 @@ yarn build
 ## 使用    
 1. 确保mapboxgl已经在项目中安装. 
 2. `npm install` / `yarn add` `mapbox-extensions`. 
-3. add `import 'mapbox-extensions'` at your entry file. 
+3. 导包 `import 'mapbox-extensions'` at your entry file. 
+4. 导入css `import 'mapbox-extensions/dist/index.css'`
 
 ## 给颗星星吧! :star:
 如果您觉得这个项目还不错，可以在您的项目中使用或者对您有些许启发，请给颗星星吧，谢谢！
