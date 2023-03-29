@@ -1,0 +1,372 @@
+.jas-flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.jas-btn-hover:hover {
+    background-color: #ddd;
+}
+
+.jas-mapbox-popup>.mapboxgl-popup-content {
+    padding: 10px 10px 5px;
+}
+
+/* #region switch 控件 */
+.jas-switch {
+    width: 44px;
+    height: 22px;
+    position: relative;
+    border: 1px solid #dfdfdf;
+    background-color: #fdfdfd;
+    box-shadow: #dfdfdf 0 0 0 0 inset;
+    border-radius: 20px;
+    background-clip: content-box;
+    display: inline-block;
+    -webkit-appearance: none;
+    user-select: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.jas-switch:before {
+    content: '';
+    width: 21px;
+    height: 21px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 20px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.jas-switch:checked {
+    border-color: #1677FF;
+    box-shadow: #1677FF 0 0 0 16px inset;
+    background-color: #1677FF;
+}
+
+.jas-switch:checked:before {
+    left: 22px;
+}
+
+.jas-switch.jas-switch-anim {
+    transition: border cubic-bezier(0, 0, 0, 1) 0.4s, box-shadow cubic-bezier(0, 0, 0, 1) 0.4s;
+}
+
+.jas-switch.jas-switch-anim:before {
+    transition: left 0.3s;
+}
+
+.jas-switch.jas-switch-anim:checked {
+    box-shadow: #1677FF 0 0 0 16px inset;
+    background-color: #1677FF;
+    transition: border ease 0.4s, box-shadow ease 0.4s, background-color ease 1.2s;
+}
+
+.jas-switch.jas-switch-anim:checked:before {
+    transition: left 0.3s;
+}
+
+/* #endregion */
+
+/* #region image-text-switch 自定义的图片文字开关 */
+
+.jas-img-txt-switch-button {
+    cursor: pointer;
+}
+
+.jas-img-txt-switch-button-img {
+    height: 50px;
+    width: 50px;
+    margin: auto;
+    box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
+    box-sizing: border-box;
+    border-radius: 4px;
+    background-color: white;
+    background-size: 46px;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+}
+
+.jas-img-txt-switch-button-img:hover {
+    border: 2px solid black;
+    box-sizing: border-box;
+}
+
+.jas-img-txt-switch-button.checked .jas-img-txt-switch-button-img {
+    border: 2px solid #1677FF;
+}
+
+.jas-img-txt-switch-button-txt {
+    text-align: center;
+    font-size: 12px;
+    line-height: 16px;
+    margin-top: 4px;
+}
+
+.jas-img-txt-switch-button.checked .jas-img-txt-switch-button-txt {
+    color: #1677FF;
+}
+
+/* #endregion */
+
+/* #region 回到初始位置style */
+
+.jas-ctrl-backtoorigin {
+    line-height: 0;
+    height: 29px;
+    width: 29px;
+    cursor: pointer;
+}
+
+/* #endregion */
+
+
+/* #region 涂鸦 */
+
+.jas-ctrl-doodle {
+    display: flex;
+}
+
+.jas-ctrl-doodle>div {
+    pointer-events: auto;
+    cursor: pointer;
+    height: 29px;
+    padding: 0 5px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.jas-ctrl-doodle-switch {
+
+    margin-left: 10px;
+}
+
+.jas-ctrl-doodle-switch-svg {
+    height: 20px;
+}
+
+/* #endregion */
+
+
+/* #region 测量 */
+
+.jas-ctrl-measure {
+    display: flex;
+    overflow: hidden;
+}
+
+.jas-ctrl-measure.hor {
+    flex-direction: row;
+}
+
+.jas-ctrl-measure.ver {
+    flex-direction: column;
+    width: 29px;
+}
+
+
+.jas-ctrl-measure-item {
+    cursor: pointer;
+    height: 29px;
+    width: 29px;
+    float: right;
+}
+
+.jas-ctrl-measure-item:hover {
+    background-color: #ddd !important;
+}
+
+/* #endregion */
+
+/* #region 切换图层*/
+
+.jas-ctrl-switchmap {
+    height: 89px;
+    width: 89px;
+    margin: 0 10px 10px 0;
+    border-radius: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    float: right;
+
+    cursor: pointer;
+    pointer-events: auto;
+
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position-x: center;
+}
+
+.jas-ctrl-switchmap-text {
+    position: absolute;
+    font-weight: 500;
+    letter-spacing: 2px;
+    pointer-events: none;
+    margin-bottom: 10px;
+}
+
+.jas-ctrl-switchmap-alert {
+    cursor: auto;
+    right: 100px;
+    background-color: #fff;
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+    padding: 16px 24px;
+}
+
+.jas-ctrl-switchmap .jas-ctrl-switchmap-alert {
+    transition: 0.25s;
+    opacity: 0;
+}
+
+.jas-ctrl-switchmap.alert-is-shown .jas-ctrl-switchmap-alert {
+    transition: 0.25s;
+    opacity: 1;
+}
+
+.jas-ctrl-switchmap-alert-header {
+    height: 30px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-size: 16px;
+    font-weight: 500;
+
+    border-bottom: 1px solid #ccc;
+}
+
+.jas-ctrl-switchmap-alert-container {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 16px 8px 0 8px;
+}
+
+.jas-ctrl-switchmap-alert-container::-webkit-scrollbar {
+    width: 5px;
+}
+
+.jas-ctrl-switchmap-alert-container::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    background: #ccc;
+}
+
+.jas-ctrl-switchmap-alert-container-group {
+    margin-bottom: 24px;
+}
+
+.jas-ctrl-switchmap-alert-container-group-header {
+    display: flex;
+    align-items: flex-end;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    line-height: 20px;
+    margin-bottom: 16px;
+}
+
+.jas-ctrl-switchmap-alert-container-group-container {
+    display: grid;
+    gap: 20px 38px;
+    min-width: 226px;
+}
+
+.jas-ctrl-switchmap-alert-container-group>.mul-col {
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-items: center;
+}
+
+.jas-ctrl-switchmap-alert-container-group>.one-col {
+    grid-template-columns: 1fr;
+}
+
+/* #endregion*/
+
+/* #region 测量 移动版本 */
+.jas-ctrl-measure-mobile-operation {
+    width: 70%;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0px 11px 30px rgba(0, 0, 0, 0.25);
+
+    position: absolute;
+    z-index: 99;
+    margin: auto;
+    padding: 15px 0;
+    bottom: 30px;
+    right: 0px;
+    left: 0px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.jas-ctrl-measure-mobile-operation-item {
+    border-radius: 16px;
+    height: 56px;
+    font-size: 13px;
+}
+
+.jas-ctrl-measure-mobile-operation-btn {
+    background-color: #f2f4f7;
+    margin: 0 15px;
+    padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.jas-ctrl-measure-mobile-operation-btn:active {
+    background-color: #fefefe;
+}
+
+.jas-ctrl-measure-mobile-operation-add-point {
+    color: #fff;
+    background-color: rgb(52, 145, 250);
+    flex: 1;
+}
+
+.jas-ctrl-measure-mobile-operation-add-point:active {
+    background-color: rgb(52, 122, 250) !important
+}
+
+.jas-ctrl-measure-mobile-switch {
+    background-color: #fff;
+    position: absolute;
+    right: 10px;
+    top: 120px;
+    z-index: 99;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.jas-ctrl-measure-mobile-switch-item {
+    font-size: 0;
+    padding: 8px;
+    line-height: 0;
+}
+
+.jas-ctrl-measure-mobile-crosshair {
+    position: absolute;
+    z-index: 99;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0;
+    line-height: 0;
+}
+
+/* #endregion */

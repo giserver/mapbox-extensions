@@ -4,7 +4,7 @@ import MeasureBase, { MeasureType } from "../features/Measure/MeasureBase";
 import MeasurePoint, { MeasurePointOptions } from "../features/Measure/MeasurePoint";
 import MeasureLineString, { MeasureLineStringOptions } from "../features/Measure/MeasureLineString";
 import MeasurePolygon, { MeasurePolygonOptions } from "../features/Measure/MeasurePolygon";
-import { Dict, copyToClipboard } from "../utils";
+import { Dict, copyToClipboard, createHtmlElement } from "../utils";
 
 export interface MeasureControlOptions {
 
@@ -63,6 +63,7 @@ export interface MeasureControlOptions {
 
 export default class MeasureControl implements IControl {
 
+    //#region svg icons
     private polygon = `<svg t="1659591707587" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1188" width="20" height="20">
     <g fill="none" stroke="black">
         <path stroke-width="18" d="M898.56 284.672c15.36 0 27.648-12.288 27.648-27.136V126.976c0-15.36-12.288-27.648-27.648-27.648H768c-15.36 0-27.648 12.288-27.648 27.648v29.696H286.208v-29.696c0-15.36-12.288-27.648-27.648-27.648H128c-15.36 0-27.648 12.288-27.648 27.648v130.048c0 15.36 12.288 27.648 27.648 27.648h31.744v452.096H128c-15.36 0-27.648 12.288-27.648 27.648v130.56c0 15.36 12.288 27.648 27.648 27.648h130.56c14.848 0 27.136-12.288 27.648-27.648v-33.28h454.144v33.28c0 15.36 12.288 27.648 27.648 27.648h130.56c15.36 0 27.648-12.288 27.648-27.648v-130.56c0-15.36-12.288-27.648-27.648-27.648H865.28V284.672h33.28zM155.648 229.376V154.112h75.264v75.264H155.648z m75.264 637.952H155.648v-75.264h75.264v75.264z m509.44-102.912v33.28H286.208v-33.28c0-15.36-12.288-27.648-27.648-27.648h-34.816V284.672h34.816c14.848 0 27.136-12.288 27.648-27.136v-36.864h454.144v36.352c0 15.36 12.288 27.648 27.648 27.648h33.28v452.096H768c-15.36 0-27.648 12.288-27.648 27.648z m130.56 27.648v75.264h-75.264v-75.264h75.264zM795.648 229.376V154.112h75.264v75.264h-75.264z" fill="#333333" p-id="1189"></path>
@@ -91,9 +92,11 @@ export default class MeasureControl implements IControl {
     </g>
     </svg>`;
 
+    //#endregion
+
     private measures = new Dict<MeasureType, { measure: MeasureBase, svg: string, controlElement?: HTMLElement | undefined }>();
     private currentMeasure: MeasureBase | undefined;
-    private popup = new Popup({ closeButton: false, className: 'custom-popup' });
+    private popup = new Popup({ closeButton: false, className: 'jas-mapbox-popup' });
 
     constructor(private options: MeasureControlOptions = {}) {
         options.horizontal ??= false;
@@ -130,20 +133,7 @@ export default class MeasureControl implements IControl {
                 this.measures.delete(k);
         })
 
-        const div = document.createElement('div');
-        div.className = "jas-ctrl-measure mapboxgl-ctrl mapboxgl-ctrl-group"
-        const style = div.style;
-        style.display = 'flex';
-        style.overflow = 'hidden';
-        style.flexDirection = this.options.horizontal ? 'row' : 'column';
-        if (!this.options.horizontal)
-            style.width = '29px';
-
-        div.innerHTML = `<style>
-            .jas-ctrl:hover{
-                background-color : ${this.options.btnActiveColor} !important;
-            }
-        </style>`;
+        const div = createHtmlElement('div', "jas-ctrl-measure", "mapboxgl-ctrl", "mapboxgl-ctrl-group", this.options.horizontal ? "hor" : "ver");
 
         this.measures.forEach((value, key) => {
             const btn = this.createButton(value.svg, this.createClickMeasureButtonHandler(map, key));
@@ -154,10 +144,12 @@ export default class MeasureControl implements IControl {
         div.append(this.createButton(this.clean, () => {
             this.measures.forEach(m => m.measure.clear());
         }));
+
         return div;
     }
 
     onRemove(map: Map): void {
+        this.stop();
         this.measures.forEach(m => m.measure.destroy());
     }
 
@@ -202,23 +194,10 @@ export default class MeasureControl implements IControl {
         }
     }
 
-    private createButton(svg: string, onclick: () => (boolean | void)) {
-        const div = document.createElement('div');
-        div.className = 'jas-ctrl';
-        const style = div.style;
-        style.display = 'flex';
-        style.justifyContent = 'center';
-        style.alignItems = 'center';
-        style.background = this.options.btnBgColor!;
-        style.cursor = 'pointer';
-        style.height = '29px';
-        style.width = '29px';
-        style.float = 'right';
+    private createButton(svg: string, onclick: () => void) {
+        const div = createHtmlElement('div', 'jas-btn-hover', 'jas-flex-center', 'jas-ctrl-measure-item');
         div.innerHTML += svg;
-        div.onclick = (e) => {
-            onclick();
-        }
-
+        div.onclick = onclick;
         return div;
     }
 
@@ -250,47 +229,40 @@ export default class MeasureControl implements IControl {
 
     private geometryClickHandler = (ev: MapLayerEventType['click'] & EventData) => {
         const feature = ev.features?.at(0);
-        if (feature) {
-            try {
-                this.measures.forEach(mp => {
-                    const pf = mp.measure.getFeatrue(feature.properties!['id'].toString());
-                    if (pf) {
-                        const center = turf.center(pf.geometry as turf.AllGeoJSON).geometry.coordinates;
-                        this.popup.setHTML(`<div style="display:flex;align-items:center;">
+        if (!feature) return;
+
+        try {
+            this.measures.forEach(mp => {
+                const pf = mp.measure.getFeatrue(feature.properties!['id'].toString());
+                if (pf) {
+                    const center = turf.center(pf.geometry as turf.AllGeoJSON).geometry.coordinates;
+                    this.popup.setHTML(`<div style="display:flex;align-items:center;">
                                                 <div id="popup-btn-copy" class='jas-ctrl' style="margin:0 5px 0 0;cursor:pointer;">${this.copy}</div>
                                                 <div id="popup-btn-clean" class='jas-ctrl' style="cursor:pointer;">${this.clean}</div>
                                             </div>`).setLngLat(ev.lngLat).addTo(ev.target);
 
-                        this.popup.getElement().childNodes.forEach(child => {
-                            const c = child as HTMLElement;
-                            if (c.classList.contains("mapboxgl-popup-content")) {
-                                c.style.padding = "10px 10px 5px";
-                            }
-                        });
+                    const copyBtn = document.getElementById("popup-btn-copy")!;
+                    const cleanBtn = document.getElementById("popup-btn-clean")!;
 
-                        const copyBtn = document.getElementById("popup-btn-copy")!;
-                        const cleanBtn = document.getElementById("popup-btn-clean")!;
+                    copyBtn.addEventListener('click', e => {
+                        const geometry = JSON.stringify(pf.geometry);
+                        this.options.onGeometryCopy?.call(this, geometry);
+                        copyToClipboard(geometry);
+                    });
 
-                        copyBtn.addEventListener('click', e => {
-                            const geometry = JSON.stringify(pf.geometry);
-                            this.options.onGeometryCopy?.call(this, geometry);
-                            copyToClipboard(geometry);
-                        });
+                    cleanBtn.addEventListener('click', e => {
+                        const id = pf.id!.toString();
+                        mp.measure.deleteFeature(id);
+                        this.popup.remove();
+                        this.options.onFeatureDelete?.call(this, id);
+                    });
 
-                        cleanBtn.addEventListener('click', e => {
-                            const id = pf.id!.toString();
-                            mp.measure.deleteFeature(id);
-                            this.popup.remove();
-                            this.options.onFeatureDelete?.call(this, id);
-                        });
+                    ev.target.flyTo({ center: [center[0], center[1]] });
+                    throw new Error("break");
+                }
+            });
+        } catch (error) {
 
-                        ev.target.flyTo({ center: [center[0], center[1]] });
-                        throw new Error("break");
-                    }
-                });
-            } catch (error) {
-
-            }
         }
     }
 }

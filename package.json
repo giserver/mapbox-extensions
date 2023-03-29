@@ -10,7 +10,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "webpack serve --config ./webpack.config.dev.js",
-    "build": "tsc"
+    "build": "tsc && copy lib\\index.css dist"
   },
   "dependencies": {
     "@turf/turf": "^6.5.0",
@@ -22,8 +22,10 @@
     "babel-loader": "^8.2.5",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.7.3",
     "html-webpack-plugin": "^5.5.0",
     "mapbox-gl": "^2.9.2",
+    "style-loader": "^3.3.2",
     "ts-loader": "^9.3.1",
     "tsconfig-paths-webpack-plugin": "^4.0.0",
     "typescript": "^4.7.4",

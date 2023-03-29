@@ -70,3 +70,10 @@ export function orderBy<T>(arr: Array<T>, keySelector: (v: T) => number) {
         }
     }
 }
+
+
+export function createHtmlElement<K extends keyof HTMLElementTagNameMap>(target: K, ...classNames: string[]): HTMLElementTagNameMap[K] {
+    const element = document.createElement(target);
+    element.classList.add(...classNames);
+    return element;
+}

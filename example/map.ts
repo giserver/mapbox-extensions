@@ -5,9 +5,8 @@ import SwitchMapControl from '../lib/controls/SwitchMapControl';
 import BackToOriginControl from '../lib/controls/BackToOriginControl';
 import DoodleControl from '../lib/controls/DoodleControl';
 import { Measure4Mobile, SetStyleProxy } from '../lib';
-import { orderBy } from '../lib/utils';
-import { Button, Icon, Modal } from '../lib/uis';
-import MarkerCatalog from '../lib/features/Marker/MarkerCatalog';
+
+import '../lib/index.css';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
 const lightStyle = 'mapbox://styles/mapbox/light-v11';
@@ -336,17 +335,6 @@ if (is_mobile) {
         //map.addControl(new mapboxgl.NavigationControl())
 
         map.addControl(doodleControl);
-
-        new Button.ButtonBase({
-            parent: document.body,
-            type: 'primary',
-            style: { position: 'absolute', top: '0', zIndex: '10' },
-            innerText: "set style",
-            clickEvent: () => {
-                currentStyle = currentStyle === lightStyle ? darkStyle : lightStyle;
-                setStyleProxy.setStyle(currentStyle);
-            }
-        })
     })
 
     map.addControl(measureControl);
