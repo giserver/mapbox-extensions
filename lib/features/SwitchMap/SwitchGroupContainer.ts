@@ -8,13 +8,13 @@ import { SwitchGroupLayers } from "./types";
 
 export default class SwitchGroupContainer {
 
-    private layerBtns: Array<SwitchLayerButtonBase> = [];
+    readonly layerBtns: Array<SwitchLayerButtonBase> = [];
     readonly element: HTMLElement;
 
     /**
      *
      */
-    constructor(private map: Map, name: string, private options: SwitchGroupLayers, extraInfo: SwitchMapExtraInfo) {
+    constructor(private map: Map, name: string, readonly options: SwitchGroupLayers, readonly extraInfo: SwitchMapExtraInfo) {
         this.element = createHtmlElement('div', 'jas-ctrl-switchmap-alert-container-group');
         const header = createHtmlElement('div', 'jas-ctrl-switchmap-alert-container-group-header');
         header.innerHTML = `<span>${name}</span>`;
@@ -24,21 +24,10 @@ export default class SwitchGroupContainer {
 
         this.options.layers.forEach(layer => {
             const btn = options.uiType === "SwitchBtn" ?
-                new SwitchLayerButton(map, layer, extraInfo) :
-                new ImgTxtSwitchLayerButton(map, layer, extraInfo);
+                new SwitchLayerButton(map, layer, this) :
+                new ImgTxtSwitchLayerButton(map, layer, this);
 
             this.layerBtns.push(btn);
-            btn.element.addEventListener('click', e => {
-                btn.changeChecked(undefined, true);
-
-                if (btn.checked) {
-                    this.layerBtns.forEach(oBtn => {
-                        if (oBtn.id !== btn.id && (this.options.mutex || btn.options.mutex || oBtn.options.mutex))
-                            oBtn.changeChecked(false);
-                    })
-                }
-            });
-
             container.append(btn.element);
         });
 

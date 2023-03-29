@@ -1,5 +1,5 @@
 import { AnyLayer, Map } from "mapbox-gl";
-import { SwitchMapExtraInfo } from "../../controls/SwitchMapControl";
+import SwitchGroupContainer from "./SwitchGroupContainer";
 import { SwitchLayerItem } from "./types";
 
 export default abstract class SwitchLayerButtonBase {
@@ -8,8 +8,12 @@ export default abstract class SwitchLayerButtonBase {
     protected readonly token = "checked";
     readonly element: HTMLElement;
 
-    constructor(private map: Map, public readonly options: SwitchLayerItem, private extraInfo: SwitchMapExtraInfo) {
-        this.element = this.createHtmlElement();
+    constructor(private map: Map, public readonly options: SwitchLayerItem, private container: SwitchGroupContainer) {
+        const { container: c, button: b } = this.createHtmlElement();
+        this.element = c;
+
+        this.addClickEvent(b);
+
         this._checked = this.options.active === true;
         this.changeChecked(this._checked);
     }
@@ -45,9 +49,9 @@ export default abstract class SwitchLayerButtonBase {
         })
 
         if (this.checked) {
-            if (!this.options.fixed && this.extraInfo.showToTop) {
+            if (!this.options.fixed && this.container.extraInfo.showToTop) {
                 layers.forEach(l => {
-                    this.map.moveLayer(l.id, this.extraInfo.topLayerId)
+                    this.map.moveLayer(l.id, this.container.extraInfo.topLayerId)
                 })
             }
 
@@ -59,7 +63,20 @@ export default abstract class SwitchLayerButtonBase {
         this.options.onVisibleChange?.call(undefined, this.checked);
     }
 
-    protected abstract createHtmlElement(): HTMLElement;
+    protected addClickEvent(element: HTMLElement) {
+        element.addEventListener('click', () => {
+            this.changeChecked(undefined, true);
+
+            if (this.checked) {
+                this.container.layerBtns.forEach(oBtn => {
+                    if (oBtn.id !== this.id && (this.container.options.mutex || this.options.mutex || oBtn.options.mutex))
+                        oBtn.changeChecked(false);
+                })
+            }
+        });
+    }
+
+    protected abstract createHtmlElement(): { container: HTMLElement, button: HTMLElement };
 
     protected abstract check(): void;
 

@@ -1,5 +1,5 @@
 import { Map } from "mapbox-gl";
-import { SwitchMapExtraInfo } from "../../controls/SwitchMapControl";
+import SwitchGroupContainer from "./SwitchGroupContainer";
 import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
 import { SwitchLayerItem } from "./types";
 
@@ -9,8 +9,8 @@ export default class SwitchLayerButton extends SwitchLayerButtonBase {
     /**
      *
      */
-    constructor(map: Map, options: SwitchLayerItem, extraInfo: SwitchMapExtraInfo) {
-        super(map, options, extraInfo);
+    constructor(map: Map, options: SwitchLayerItem, container: SwitchGroupContainer) {
+        super(map, options, container);
     }
 
     protected check(): void {
@@ -20,7 +20,7 @@ export default class SwitchLayerButton extends SwitchLayerButtonBase {
         this.inputEle.removeAttribute(this.token);
         this.inputEle.checked = false;
     }
-    protected createHtmlElement(): HTMLElement {
+    protected createHtmlElement() {
         const switchButton = document.createElement('div');
         switchButton.style.display = 'flex';
         switchButton.style.justifyContent = 'space-between';
@@ -37,6 +37,6 @@ export default class SwitchLayerButton extends SwitchLayerButtonBase {
         switchButton.append(txtEle, inputEle);
 
         this.inputEle = inputEle;
-        return switchButton;
+        return { container: switchButton, button: inputEle };
     }
 }

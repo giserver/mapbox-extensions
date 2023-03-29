@@ -1,13 +1,13 @@
 import { Map } from "mapbox-gl";
 import { createHtmlElement } from '../../utils';
-import { SwitchMapExtraInfo } from "../../controls/SwitchMapControl";
 import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
 import { SwitchLayerItem } from "./types";
+import SwitchGroupContainer from "./SwitchGroupContainer";
 
 export default class ImgTxtSwitchLayerButton extends SwitchLayerButtonBase {
 
-    constructor(map: Map, options: SwitchLayerItem, extraInfo: SwitchMapExtraInfo) {
-        super(map, options, extraInfo);
+    constructor(map: Map, options: SwitchLayerItem, container: SwitchGroupContainer) {
+        super(map, options, container);
     }
 
     protected check(): void {
@@ -25,7 +25,7 @@ export default class ImgTxtSwitchLayerButton extends SwitchLayerButtonBase {
         }
     }
 
-    protected createHtmlElement(): HTMLElement {
+    protected createHtmlElement() {
         const imgTxtButton = createHtmlElement('div', "jas-img-txt-switch-button");
         const imgDiv = createHtmlElement('div', "jas-img-txt-switch-button-img");
         const txtDiv = createHtmlElement('div', "jas-img-txt-switch-button-txt");
@@ -33,6 +33,6 @@ export default class ImgTxtSwitchLayerButton extends SwitchLayerButtonBase {
 
         imgTxtButton.append(imgDiv, txtDiv);
 
-        return imgTxtButton;
+        return { container: imgTxtButton, button: imgTxtButton };
     }
 }
