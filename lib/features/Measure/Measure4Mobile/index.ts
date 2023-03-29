@@ -1,4 +1,5 @@
 import mapboxgl from 'mapbox-gl'
+import { createHtmlElement } from '../../../utils';
 import MeasureBase from './MeasureBase';
 import MeasureLineString from './MeasureLineString';
 import MeasurePolygon from './MeasurePolygon';
@@ -8,8 +9,6 @@ export type MeasureType = 'LineString' | 'Polygon';
 export interface Measure4MobileOptions {
     show?: boolean;
     measureActiveColor?: string;
-    addPointColor?: string;
-    addPointActiveColor?: string;
     defaultType?: MeasureType
 }
 
@@ -19,6 +18,9 @@ interface MeasureConfig {
 }
 
 export default class Measure4Mobile {
+
+    //#region svg icons
+
     private readonly img_revoke = `<svg t="1675136064753" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2701" width="20" height="20">
     <path d="M135.168 276.48h462.848c176.128 0 317.44 141.312 317.44 317.44s-141.312 317.44-317.44 317.44H389.12c-12.288 0-20.48 8.192-20.48 20.48s8.192 20.48 20.48 20.48h208.896c198.656 0 358.4-159.744 358.4-358.4s-159.744-358.4-358.4-358.4h-462.848l139.264-139.264c8.192-8.192 8.192-20.48 0-28.672-8.192-8.192-20.48-8.192-28.672 0l-174.08 174.08c-8.192 8.192-8.192 20.48 0 28.672l174.08 174.08c8.192 8.192 20.48 8.192 28.672 0 8.192-8.192 8.192-20.48 0-28.672l-139.264-139.264z" fill="#32373B" p-id="2702"></path></svg>`;
     private readonly img_finish = `<svg t="1675136091082" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3612" width="20" height="20">
@@ -55,6 +57,8 @@ export default class Measure4Mobile {
     <path stroke-width="40" d="M391.52 383.79h43V773.5h-43zM578 383.79h43V773.5h-43z" p-id="1017"></path>
     </g></svg>`;
 
+    //#endregion
+
     private declare currentMeasure: MeasureBase;
     private measuresMap = new Map<MeasureType, MeasureConfig>();
 
@@ -69,8 +73,6 @@ export default class Measure4Mobile {
     constructor(private map: mapboxgl.Map, private container: string | HTMLElement, private options: Measure4MobileOptions = {}) {
         options.show ??= false;
         options.measureActiveColor ??= "rgb(211,211,211)";
-        options.addPointColor ??= "rgb(52, 145, 250)";
-        options.addPointActiveColor ??= "rgb(52, 122, 250) !important";
         options.defaultType ??= "LineString";
 
         const parentDiv = this.createUI();
@@ -105,79 +107,24 @@ export default class Measure4Mobile {
     }
 
     private createOperationUI() {
-        const operationDiv = document.createElement('div');
-        operationDiv.className = "jas-measure-mobile-operation";
-        let style = operationDiv.style;
-        style.width = '80%';
-        style.width = '330px';
-        style.backgroundColor = "#ffffff";
-        style.borderRadius = '16px';
-        style.boxShadow = '0px 11px 30px rgba(0, 0, 0, 0.25)';
-        style.position = 'absolute';
-        style.zIndex = '99';
-        style.margin = 'auto';
-        style.padding = '15px 0';
-        style.bottom = '30px';
-        style.left = '0';
-        style.right = '0';
-        style.display = 'flex';
-        style.alignItems = 'center';
-        style.justifyContent = 'space-evenly';
+        const operationDiv = createHtmlElement('div', 'jas-ctrl-measure-mobile-operation');
 
-        operationDiv.innerHTML = `<style>
-            .jas-measure-mobile-operation-items{
-                border-radius : 16px;
-                height : 56px;
-                font-size : 13px;
-            }
-
-            .jas-measure-mobile-operation-btn{
-                background-color : #f2f4f7;
-                margin : 0 15px;
-                padding : 0 15px;
-                display : flex;
-                flex-direction : column;
-                align-items : center;
-                justify-content : center;
-            }
-
-            .jas-measure-mobile-operation-btn:active{
-                background-color : #fefefe;
-            }
-
-            .jas-measure-mobile-operation-add-point:active{
-                background-color : ${this.options.addPointActiveColor!};
-            }
-        </style>`
-
-        const revokeDiv = document.createElement('div');
-        revokeDiv.className = "jas-measure-mobile-operation-items jas-measure-mobile-operation-revoke jas-measure-mobile-operation-btn";
+        const revokeDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-btn");
         revokeDiv.innerHTML = this.img_revoke;
         revokeDiv.innerHTML += `<div>撤销</div>`;
-        style = revokeDiv.style;
         revokeDiv.addEventListener('click', () => {
             this.currentMeasure.revokePoint();
         });
 
-        const finishDiv = document.createElement('div');
-        finishDiv.className = "jas-measure-mobile-operation-items jas-measure-mobile-operation-finish jas-measure-mobile-operation-btn";
+        const finishDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-btn");
         finishDiv.innerHTML = this.img_finish;
         finishDiv.innerHTML += `<div>完成</div>`;
-        style = finishDiv.style;
         finishDiv.addEventListener('click', () => {
             this.currentMeasure.finish();
         })
 
-        const addPointDiv = document.createElement('div');
-        addPointDiv.className = "jas-measure-mobile-operation-items jas-measure-mobile-operation-add-point";
+        const addPointDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-add-point", "jas-flex-center");
         addPointDiv.innerHTML = "<div>定点</div>"
-        style = addPointDiv.style;
-        style.display = 'flex';
-        style.color = '#ffffff';
-        style.justifyContent = 'center';
-        style.alignItems = 'center';
-        style.backgroundColor = this.options.addPointColor!;
-        style.flex = '1';
         addPointDiv.addEventListener('click', () => {
             this.currentMeasure.addPoint();
         })
@@ -190,28 +137,10 @@ export default class Measure4Mobile {
     }
 
     private createMeasureSwitchUI() {
-        const measureSwitchDiv = document.createElement('div');
-        measureSwitchDiv.className = "jas-measure-mobile-switch";
-        let style = measureSwitchDiv.style;
-        style.backgroundColor = '#ffffff';
-        style.position = 'absolute';
-        style.right = '10px';
-        style.top = '120px';
-        style.zIndex = '99';
-        style.borderRadius = '8px';
-        style.overflow = 'hidden';
+        const measureSwitchDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-switch");
 
-        measureSwitchDiv.innerHTML = `<style>
-            .jas-measure-mobile-switch-item{
-                font-size : 0;
-                padding : 8px;
-                line-height : 0;
-            }
-        </style>`
-
-        const measureLineStringDiv = document.createElement('div');
+        const measureLineStringDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-switch-item");
         measureLineStringDiv.innerHTML = this.img_line;
-        measureLineStringDiv.className = "jas-measure-mobile-switch-item jas-measure-mobile-switch-type";
         measureLineStringDiv.addEventListener('click', () => {
             this.changeMeasureType('LineString');
         });
@@ -220,9 +149,8 @@ export default class Measure4Mobile {
             measureDiv: measureLineStringDiv
         });
 
-        const measurePolygonDiv = document.createElement('div');
+        const measurePolygonDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-switch-item");
         measurePolygonDiv.innerHTML = this.img_polygon;
-        measurePolygonDiv.className = "jas-measure-mobile-switch-item jas-measure-mobile-switch-type";
         measurePolygonDiv.addEventListener('click', () => {
             this.changeMeasureType('Polygon');
         });
@@ -231,9 +159,8 @@ export default class Measure4Mobile {
             measureDiv: measurePolygonDiv
         });
 
-        const clearDiv = document.createElement('div');
+        const clearDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-switch-item");
         clearDiv.innerHTML = this.img_clean;
-        clearDiv.className = "jas-measure-mobile-switch-item";
         clearDiv.addEventListener('click', () => {
             this.measuresMap.forEach(v => {
                 v.measure.clear();
@@ -248,17 +175,8 @@ export default class Measure4Mobile {
     }
 
     private createCrosshairUI() {
-        const div = document.createElement('div');
+        const div = createHtmlElement('div', "jas-ctrl-measure-mobile-crosshair");
         div.innerHTML = this.img_crosshair;
-        const style = div.style;
-        style.position = 'absolute';
-        style.zIndex = '99';
-        style.left = '50%';
-        style.top = '50%';
-        style.transform = 'translate(-50%,-50%)';
-        style.fontSize = '0';
-        style.lineHeight = '0';
-
         return div;
     }
 

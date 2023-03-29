@@ -292,3 +292,81 @@
 }
 
 /* #endregion*/
+
+/* #region 测量 移动版本 */
+.jas-ctrl-measure-mobile-operation {
+    width: 70%;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0px 11px 30px rgba(0, 0, 0, 0.25);
+
+    position: absolute;
+    z-index: 99;
+    margin: auto;
+    padding: 15px 0;
+    bottom: 30px;
+    right: 0px;
+    left: 0px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.jas-ctrl-measure-mobile-operation-item {
+    border-radius: 16px;
+    height: 56px;
+    font-size: 13px;
+}
+
+.jas-ctrl-measure-mobile-operation-btn {
+    background-color: #f2f4f7;
+    margin: 0 15px;
+    padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.jas-ctrl-measure-mobile-operation-btn:active {
+    background-color: #fefefe;
+}
+
+.jas-ctrl-measure-mobile-operation-add-point {
+    color: #fff;
+    background-color: rgb(52, 145, 250);
+    flex: 1;
+}
+
+.jas-ctrl-measure-mobile-operation-add-point:active {
+    background-color: rgb(52, 122, 250) !important
+}
+
+.jas-ctrl-measure-mobile-switch {
+    background-color: #fff;
+    position: absolute;
+    right: 10px;
+    top: 120px;
+    z-index: 99;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.jas-ctrl-measure-mobile-switch-item {
+    font-size: 0;
+    padding: 8px;
+    line-height: 0;
+}
+
+.jas-ctrl-measure-mobile-crosshair {
+    position: absolute;
+    z-index: 99;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0;
+    line-height: 0;
+}
+
+/* #endregion */
