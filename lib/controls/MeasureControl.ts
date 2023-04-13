@@ -44,6 +44,7 @@ export interface MeasureControlOptions {
     onGeometryCopy?: (geometry: string) => void;
 
     onStart?: () => void;
+    onStop?: () => void;
 
     /** 
      * 测量点选项
@@ -173,14 +174,14 @@ export default class MeasureControl implements IControl {
     private createClickMeasureButtonHandler(map: Map, measureType: MeasureType) {
         return () => {
 
-            this.options.onStart?.call(this);
-
             // 停止测量 如果当前测量类型按钮再次点击 则取消测量
             if (this.stop() === measureType) {
                 this.changeGeometryEvent(map, true);
+                this.options.onStop?.call(this);
                 return;
             }
 
+            this.options.onStart?.call(this);
             this.changeGeometryEvent(map, false);
 
             // 根据类型获取测量模式

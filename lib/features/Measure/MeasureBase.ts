@@ -61,7 +61,8 @@ export default abstract class MeasureBase {
     constructor(protected map: Map) {
         this.id = createUUID();
         this.layerGroup = new LayerGroup(this.id, map);
-        this.map.on('load', () => {
+
+        const init = () => {
             this.map.addSource(this.id, {
                 type: 'geojson',
                 data: this.geojson
@@ -73,7 +74,13 @@ export default abstract class MeasureBase {
             })
 
             this.onInit();
-        })
+        }
+
+        if (this.map.loaded()) {
+            init();
+        } else {
+            this.map.on('load', init)
+        }
     }
 
     /**

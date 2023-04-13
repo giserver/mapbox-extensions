@@ -56,6 +56,7 @@ if (is_mobile) {
         onGeometryCopy: (geom: string) => { alert(`复制成功 : ${geom}`) },
         onFeatureDelete: (id: string) => { alert(`删除成功 : ${id}`) },
         onStart: () => { doodleControl.stop() },
+        onStop: () => { console.log("measure stop") },
         measurePolygonOptions: {
             onDrawed: (id, geometry) => { console.log(id, JSON.stringify(geometry)) }
         }
