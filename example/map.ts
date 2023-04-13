@@ -376,12 +376,12 @@ if (is_mobile) {
         });
 
         //map.addControl(new mapboxgl.NavigationControl())
-
+        map.addControl(measureControl);
+        map.addControl(new BackToOriginControl());
         map.addControl(doodleControl);
     })
 
-    map.addControl(measureControl);
-    map.addControl(new BackToOriginControl());
+
 }
 
 function getQueryVariable(variable: string) {

@@ -76,11 +76,12 @@ export default abstract class MeasureBase {
             this.onInit();
         }
 
-        if (this.map.loaded()) {
-            init();
-        } else {
-            this.map.on('load', init)
-        }
+        let t = setInterval(() => {
+            if (this.map.isStyleLoaded()) {
+                init();
+                clearInterval(t);
+            }
+        }, 50);
     }
 
     /**
