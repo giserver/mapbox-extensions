@@ -69,7 +69,11 @@ export default abstract class SwitchLayerButtonBase {
 
             if (this.checked) {
                 this.container.layerBtns.forEach(oBtn => {
-                    if (oBtn.id !== this.id && (this.container.options.mutex || this.options.mutex || oBtn.options.mutex))
+                    if (oBtn.id !== this.id &&
+                        (this.container.options.mutex ||
+                            this.options.mutex ||
+                            oBtn.options.mutex ||
+                            (this.options.mutexIdentity && this.options.mutexIdentity === oBtn.options.mutexIdentity)))
                         oBtn.changeChecked(false);
                 })
             }

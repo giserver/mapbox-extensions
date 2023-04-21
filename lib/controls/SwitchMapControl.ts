@@ -82,6 +82,7 @@ export default class SwitchMapControl implements IControl {
   </path></svg>`;
 
   private alertDivShowAlways = false;
+  private allLayers: Array<SwitchLayerItem> = [];
 
   constructor(private options: SwitchMapControlOptions = {}) {
     options.baseOption ??= {};
@@ -126,7 +127,6 @@ export default class SwitchMapControl implements IControl {
     const extraLayers = this.options.extra?.layerGroups;
     if (extraLayers && Object.getOwnPropertyNames(extraLayers).length > 0) {
       const { alertDiv, groupsDiv } = this.createGroupLayerAlertDiv();
-      const allLayers: Array<SwitchLayerItem> = [];
 
       for (let groupName in extraLayers) {
         const { layers, mutex } = extraLayers[groupName];
@@ -141,12 +141,12 @@ export default class SwitchMapControl implements IControl {
 
           // 初始化默认值
           item.zoom ??= 0;
-          allLayers.push(item);
+          this.allLayers.push(item);
         })
       }
 
-      orderBy(allLayers, l => l.zoom!);
-      allLayers.forEach(l => {
+      orderBy(this.allLayers, l => l.zoom!);
+      this.allLayers.forEach(l => {
         if (l.layer instanceof Array<AnyLayer>)
           l.layer.forEach(x => map.addLayer(x));
         else
@@ -168,8 +168,15 @@ export default class SwitchMapControl implements IControl {
   }
 
   onRemove(map: Map): void {
-
+    this.allLayers.forEach(x => {
+      if (x.layer instanceof Array) {
+        x.layer.forEach(l => map.removeLayer(l.id));
+      } else {
+        map.removeLayer(x.layer.id);
+      }
+    });
   }
+
   getDefaultPosition() {
     return 'bottom-right'
   }

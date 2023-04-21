@@ -35,6 +35,11 @@ export interface SwitchLayerItem {
     mutex?: boolean,
 
     /**
+     * 设置互斥标记，如果存在相同此项(非空 非null 非undefined)则与此图层互斥
+     */
+    mutexIdentity?: string,
+
+    /**
      * 是否初始显示
      */
     active?: boolean,
