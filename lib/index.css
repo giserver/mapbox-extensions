@@ -12,6 +12,20 @@
     padding: 10px 10px 5px;
 }
 
+.jas-collapse-arrow {
+    width: 0;
+    height: 0;
+    border-left: 8px solid #1677FF;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+
+    cursor: pointer;
+}
+
+.jas-collapse-active {
+    transform: rotate(90deg);
+}
+
 /* #region switch 控件 */
 .jas-switch {
     width: 44px;
@@ -219,6 +233,7 @@
     z-index: 10;
     pointer-events: none;
     padding: 16px 24px;
+    min-width: 247px;
 }
 
 .jas-ctrl-switchmap .jas-ctrl-switchmap-alert {
@@ -283,6 +298,10 @@
 
     line-height: 20px;
     margin-bottom: 16px;
+}
+
+.jas-ctrl-switchmap-alert-container-group-header-title-collapse {
+    margin-right: 8px;
 }
 
 .jas-ctrl-switchmap-alert-container-group-header-controls {

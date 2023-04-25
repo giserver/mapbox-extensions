@@ -11,12 +11,14 @@ export default class SwitchGroupContainer {
     readonly layerBtns: Array<SwitchLayerButtonBase> = [];
     readonly element: HTMLElement;
 
+    private collapsed: boolean = false;
+    private containerDefaultDisplay: string;
+
     /**
      *
      */
     constructor(private map: Map, name: string, readonly options: SwitchGroupLayers, readonly extraInfo: SwitchMapExtraInfo) {
         this.element = createHtmlElement('div', 'jas-ctrl-switchmap-alert-container-group');
-        this.element.append(this.createHeader(name));
 
         const container = createHtmlElement('div', 'jas-ctrl-switchmap-alert-container-group-container', options.uiType === "SwitchBtn" ? 'one-col' : 'mul-col');
 
@@ -29,13 +31,20 @@ export default class SwitchGroupContainer {
             container.append(btn.element);
         });
 
+        this.containerDefaultDisplay = container.style.display;
+
+        this.element.append(this.createHeader(name, container));
         this.element.append(container);
     }
 
-    private createHeader(name: string) {
+    private createHeader(name: string, container: HTMLElement) {
         const header = createHtmlElement('div', 'jas-ctrl-switchmap-alert-container-group-header');
-        const title = createHtmlElement('div');
-        title.innerText = name;
+        const title = createHtmlElement('div', 'jas-ctrl-switchmap-alert-container-group-header-title', 'jas-flex-center');
+        const label = createHtmlElement('div');
+        label.innerText = name;
+        if (this.options.collapse)
+            title.append(this.createCollapseController(container));
+        title.append(label)
         header.append(title);
 
         if (this.options.mutex || !this.extraInfo.selectAndClearAll)
@@ -71,5 +80,17 @@ export default class SwitchGroupContainer {
 
         header.append(controls);
         return header;
+    }
+
+    private createCollapseController(container: HTMLElement) {
+        const element = createHtmlElement('div', "jas-collapse-arrow", "jas-collapse-active", "jas-ctrl-switchmap-alert-container-group-header-title-collapse");
+
+        element.addEventListener('click', e => {
+            container.style.display = this.collapsed ? this.containerDefaultDisplay : 'none';
+            this.collapsed = !this.collapsed;
+            element.classList.toggle("jas-collapse-active");
+        });
+
+        return element;
     }
 }

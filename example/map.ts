@@ -169,7 +169,9 @@ if (is_mobile) {
                             }
                         }]
                     }, '乡村建设': {
-                        mutex: false, layers: [{
+                        collapse: true,
+                        mutex: false,
+                        layers: [{
                             name: 'fff4',
                             layer: {
                                 id: 'fff4',

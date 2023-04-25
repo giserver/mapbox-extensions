@@ -70,6 +70,11 @@ export interface SwitchGroupLayers {
     mutex?: boolean,
 
     /**
+     * 是否为折叠面板
+     */
+    collapse?: boolean,
+
+    /**
      * 切换ui的类型
      */
     uiType?: SwitchButtonType
