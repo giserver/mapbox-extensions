@@ -121,14 +121,11 @@ export default abstract class MeasureBase {
     }
 
     deleteFeature(...ids: Array<string>) {
-        const source1 = this.map.getSource(this.id) as GeoJSONSource;
-        const source2 = this.map.getSource(this.pointSourceId) as GeoJSONSource;
-
         this.geojson.features = this.geojson.features.filter(f => !ids.some(id => id === f.id));
         this.geojsonPoint.features = this.geojsonPoint.features.filter(f => !ids.some(id => id === f.id));
 
-        source1.setData(this.geojson);
-        source2.setData(this.geojsonPoint);
+        this.updateGeometryDataSource();
+        this.updatePointDataSource();
     }
 
     /**
