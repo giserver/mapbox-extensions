@@ -24,7 +24,7 @@ export default abstract class SwitchLayerButtonBase {
 
     get id() {
         return this.options.layer instanceof Array<AnyLayer> ?
-            this.options.layer.join('&') :
+            this.options.layer.map(x => x.id).join('&') :
             this.options.layer.id;
     }
 
@@ -73,8 +73,9 @@ export default abstract class SwitchLayerButtonBase {
                         (this.container.options.mutex ||
                             this.options.mutex ||
                             oBtn.options.mutex ||
-                            (this.options.mutexIdentity && this.options.mutexIdentity === oBtn.options.mutexIdentity)))
+                            (this.options.mutexIdentity && this.options.mutexIdentity === oBtn.options.mutexIdentity))) {
                         oBtn.changeChecked(false);
+                    }
                 })
             }
         });

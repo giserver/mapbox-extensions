@@ -79,9 +79,10 @@ if (is_mobile) {
                 layerGroups: {
                     '城市规划': {
                         uiType: 'SwitchBtn',
-                        mutex: true, layers: [{
+                        mutex: true,
+                        layers: [{
                             name: '房屋管理',
-                            layer: {
+                            layer: [{
                                 id: 'fff',
                                 type: 'symbol',
                                 source: {
@@ -98,12 +99,12 @@ if (is_mobile) {
                                 layout: {
                                     'text-field': ['get', 'name']
                                 }
-                            },
+                            }],
                             'backgroundImage': '/house-user.png',
                             active: true
                         }, {
                             name: '建筑群',
-                            layer: {
+                            layer: [{
                                 id: 'fff1',
                                 type: 'symbol',
                                 source: {
@@ -120,7 +121,7 @@ if (is_mobile) {
                                 layout: {
                                     "text-field": ['get', 'name']
                                 }
-                            },
+                            }],
                             'backgroundImage': '/building.png',
                         }, {
                             name: '水路规划',
