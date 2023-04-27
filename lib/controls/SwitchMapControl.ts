@@ -1,6 +1,6 @@
 import mapboxgl, { AnyLayer, IControl, Map } from "mapbox-gl";
 import SwitchGroupContainer from "../features/SwitchMap/SwitchGroupContainer";
-import { SwitchGroupLayers, SwitchLayerItem } from "../features/SwitchMap/types";
+import { SelectAndClearAllOptions, ShowToTopOptions, SwitchGroupLayers, SwitchLayerItem } from "../features/SwitchMap/types";
 import { changeSvgColor, createHtmlElement, orderBy } from "../utils";
 
 //#region img_satellite & img_base
@@ -9,6 +9,8 @@ const img_satellite = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFkAAABMCAM
 const img_base = `data:image/png;base64,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`;
 
 //#endregion
+
+export type LayerGroupsType = Record<string, SwitchGroupLayers>;
 
 interface SwitchItemOption {
   /**
@@ -27,7 +29,7 @@ interface SwitchItemOption {
   backgroundImage?: string,
 }
 
-export interface SwitchMapExtraInfo {
+export interface SwitchMapExtraInfo extends SelectAndClearAllOptions, ShowToTopOptions {
 
   /**
    * 附加信息名字 默认：附加图层
@@ -39,32 +41,7 @@ export interface SwitchMapExtraInfo {
    */
   nailActiveColor?: string,
 
-  /**
- * 点击图层后该图层置顶
- */
-  showToTop?: boolean;
-
-  /**
-   * {@link showToTop}联用时，调整图层顺序的最前面的图层id
-   */
-  topLayerId?: string;
-
-  /**
-   * 是否使用全选和清除，默认: true
-   */
-  selectAndClearAll?: boolean;
-
-  /**
-   * 全选名字，默认: 全选
-   */
-  selectAllLabel?: string;
-
-  /**
-   * 清空名字，默认: 清空
-   */
-  clearAllLabel?: string;
-
-  layerGroups?: Record<string, SwitchGroupLayers>;
+  layerGroups?: LayerGroupsType;
 }
 
 export interface SwitchMapControlOptions {
@@ -74,6 +51,47 @@ export interface SwitchMapControlOptions {
   extra?: SwitchMapExtraInfo
 }
 
+
+export function appendLayerGroups(
+  map: mapboxgl.Map,
+  container: HTMLElement,
+  layerGroups: LayerGroupsType,
+  options: SelectAndClearAllOptions & ShowToTopOptions = {}) {
+
+  const allLayers = new Array<SwitchLayerItem>();
+
+  for (let groupName in layerGroups) {
+    const { layers, mutex } = layerGroups[groupName];
+    let onceLayerActiveMutex = false;
+
+    layers.forEach(item => {
+      // 检查互斥active
+      if (item.active && onceLayerActiveMutex)
+        throw new Error("exsit mutex layer active at same time!");
+      if ((item.mutex || mutex) && item.active)
+        onceLayerActiveMutex = true;
+
+      // 初始化默认值
+      item.zoom ??= 0;
+      allLayers.push(item);
+    })
+  }
+
+  orderBy(allLayers, l => l.zoom!);
+  allLayers.forEach(l => {
+    if (l.layer instanceof Array<AnyLayer>)
+      l.layer.forEach(x => map.addLayer(x));
+    else
+      map.addLayer(l.layer);
+  })
+
+  for (let groupName in layerGroups) {
+    const groupContainer = new SwitchGroupContainer(map, groupName, layerGroups[groupName], options);
+    container.append(groupContainer.element);
+  }
+
+  return allLayers;
+}
 
 export default class SwitchMapControl implements IControl {
 
@@ -124,39 +142,11 @@ export default class SwitchMapControl implements IControl {
 
     const baseDiv = this.createBaseLayerDiv(map);
 
-    const extraLayers = this.options.extra?.layerGroups;
-    if (extraLayers && Object.getOwnPropertyNames(extraLayers).length > 0) {
+    const layerGroups = this.options.extra?.layerGroups;
+    if (layerGroups && Object.getOwnPropertyNames(layerGroups).length > 0) {
       const { alertDiv, groupsDiv } = this.createGroupLayerAlertDiv();
 
-      for (let groupName in extraLayers) {
-        const { layers, mutex } = extraLayers[groupName];
-        let onceLayerActiveMutex = false;
-
-        layers.forEach(item => {
-          // 检查互斥active
-          if (item.active && onceLayerActiveMutex)
-            throw new Error("exsit mutex layer active at same time!");
-          if ((item.mutex || mutex) && item.active)
-            onceLayerActiveMutex = true;
-
-          // 初始化默认值
-          item.zoom ??= 0;
-          this.allLayers.push(item);
-        })
-      }
-
-      orderBy(this.allLayers, l => l.zoom!);
-      this.allLayers.forEach(l => {
-        if (l.layer instanceof Array<AnyLayer>)
-          l.layer.forEach(x => map.addLayer(x));
-        else
-          map.addLayer(l.layer);
-      })
-
-      for (let groupName in extraLayers) {
-        const groupContainer = new SwitchGroupContainer(map, groupName, extraLayers[groupName], this.options.extra!);
-        groupsDiv.append(groupContainer.element);
-      }
+      this.allLayers = appendLayerGroups(map, groupsDiv, layerGroups, this.options.extra);
 
       baseDiv.append(alertDiv);
       baseDiv.addEventListener('mouseover', e => {
@@ -253,4 +243,65 @@ export default class SwitchMapControl implements IControl {
 
     return { alertDiv, groupsDiv };
   }
+}
+
+
+interface SwitchMap4MobileOptions extends SelectAndClearAllOptions, ShowToTopOptions {
+  /**
+   * 名称 ：默认'图层'
+   */
+  name?: string,
+  layerGroups: LayerGroupsType
+}
+
+export class SwitchMap4MobileControl implements mapboxgl.IControl {
+
+  private readonly img = `<svg t="1682610567805" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4548" data-darkreader-inline-fill="" width="32" height="32">
+  <path d="M852.6 462.9l12.1 7.6c24.8 15.6 32.3 48.3 16.7 73.2-4.2 6.7-9.9 12.4-16.7 16.7L540.4 764.1c-17.3 10.8-39.2 10.8-56.4 0L159.3 560c-24.8-15.6-32.3-48.3-16.7-73.2 4.2-6.7 9.9-12.4 16.7-16.7l12.1-7.6L483.9 659c17.3 10.8 39.2 10.8 56.4 0l312.2-196 0.1-0.1z m0 156.1l12.1 7.6c24.8 15.6 32.3 48.3 16.7 73.2-4.2 6.7-9.9 12.4-16.7 16.7L540.4 920.2c-17.3 10.8-39.2 10.8-56.4 0L159.3 716.1c-24.8-15.6-32.3-48.3-16.7-73.2 4.2-6.7 9.9-12.4 16.7-16.7l12.1-7.6L483.9 815c17.3 10.8 39.2 10.8 56.4 0l312.2-196h0.1zM540 106.4l324.6 204.1c24.8 15.6 32.3 48.3 16.7 73.2-4.2 6.7-9.9 12.4-16.7 16.7L540.4 604c-17.3 10.8-39.2 10.8-56.4 0L159.3 399.8c-24.8-15.6-32.3-48.3-16.7-73.2 4.2-6.7 9.9-12.4 16.7-16.7l324.4-203.7c17.3-10.8 39.2-10.8 56.4 0l-0.1 0.2z" p-id="4549">
+  </path></svg>`
+
+  private readonly img_close = `<svg t="1682614044837" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6553" data-darkreader-inline-fill="" width="24" height="24">
+  <path d="M753.365333 843.861333a64 64 0 0 0 90.496-90.496L602.496 512l241.365333-241.365333a64 64 0 0 0-90.496-90.496L512 421.504 270.634667 180.138667a64 64 0 1 0-90.496 90.496L421.504 512l-241.365333 241.365333a64 64 0 0 0 90.496 90.496L512 602.496l241.365333 241.365333z" fill="#000000" p-id="6554" data-darkreader-inline-fill="" style="--darkreader-inline-fill:#000000;">
+  </path></svg>`
+
+  /**
+   *
+   */
+  constructor(private options: SwitchMap4MobileOptions) {
+    options.name ??= "图层";
+  }
+
+  onAdd(map: mapboxgl.Map): HTMLElement {
+    const div = createHtmlElement('div', "jas-btn-active", "jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group");
+    div.innerHTML = this.img;
+    div.addEventListener('click', () => {
+      container.classList.toggle("jas-ctrl-switchmap4mobile-container-active");
+    });
+
+    const container = createHtmlElement('div', "jas-ctrl-switchmap4mobile-container");
+    const header = createHtmlElement('div', "jas-ctrl-switchmap4mobile-container-header");
+    const label = createHtmlElement('div', "jas-ctrl-switchmap4mobile-container-header-label");
+    label.innerText = this.options.name!;
+    const close = createHtmlElement('div', "jas-ctrl-switchmap4mobile-container-header-close");
+    close.innerHTML = this.img_close;
+    header.append(label, close);
+    close.addEventListener('click', () => {
+      container.classList.toggle("jas-ctrl-switchmap4mobile-container-active");
+    });
+
+    const groups = createHtmlElement('div', 'jas-ctrl-switchmap4mobile-container-groups');
+
+    container.append(header);
+    container.append(groups);
+    appendLayerGroups(map, groups, this.options.layerGroups, this.options);
+    map.getContainer().append(container);
+
+    return div;
+  }
+
+  onRemove(map: mapboxgl.Map): void {
+  }
+
+  getDefaultPosition?: (() => string) | undefined;
+
 }

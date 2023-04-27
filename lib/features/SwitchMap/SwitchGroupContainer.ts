@@ -1,10 +1,9 @@
 import { Map } from "mapbox-gl";
-import { SwitchMapExtraInfo } from "../../controls/SwitchMapControl";
 import { createHtmlElement } from "../../utils";
 import ImgTxtSwitchLayerButton from "./ImgTxtSwitchLayerButton";
 import SwitchLayerButton from "./SwitchLayerButton";
 import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
-import { SwitchGroupLayers } from "./types";
+import { SelectAndClearAllOptions, ShowToTopOptions, SwitchGroupLayers } from "./types";
 
 export default class SwitchGroupContainer {
 
@@ -17,7 +16,7 @@ export default class SwitchGroupContainer {
     /**
      *
      */
-    constructor(private map: Map, name: string, readonly options: SwitchGroupLayers, readonly extraInfo: SwitchMapExtraInfo) {
+    constructor(private map: Map, name: string, readonly options: SwitchGroupLayers, readonly extraOptions: SelectAndClearAllOptions & ShowToTopOptions) {
         this.element = createHtmlElement('div', 'jas-ctrl-switchmap-alert-container-group');
 
         const container = createHtmlElement('div', 'jas-ctrl-switchmap-alert-container-group-container', options.uiType === "SwitchBtn" ? 'one-col' : 'mul-col');
@@ -47,7 +46,7 @@ export default class SwitchGroupContainer {
         title.append(label)
         header.append(title);
 
-        if (this.options.mutex || !this.extraInfo.selectAndClearAll)
+        if (this.options.mutex || !this.extraOptions.selectAndClearAll)
             return header;
 
         const controls = createHtmlElement('div', "jas-ctrl-switchmap-alert-container-group-header-controls");
@@ -55,7 +54,7 @@ export default class SwitchGroupContainer {
         // 当没有互斥时可以添加全选控件
         if (this.options.layers.every(x => !x.mutex)) {
             const selectAll = createHtmlElement('div', "jas-ctrl-switchmap-alert-container-group-header-controls-item");
-            selectAll.innerText = this.extraInfo.selectAllLabel!;
+            selectAll.innerText = this.extraOptions.selectAllLabel!;
             selectAll.addEventListener('click', () => {
                 this.layerBtns.forEach(btn => {
                     if (!btn.checked)
@@ -69,7 +68,7 @@ export default class SwitchGroupContainer {
         }
 
         const clearAll = createHtmlElement('div', "jas-ctrl-switchmap-alert-container-group-header-controls-item");
-        clearAll.innerText = this.extraInfo.clearAllLabel!;
+        clearAll.innerText = this.extraOptions.clearAllLabel!;
         clearAll.addEventListener('click', () => {
             this.layerBtns.forEach(btn => {
                 if (btn.checked)

@@ -84,3 +84,32 @@ export interface SwitchGroupLayers {
      */
     layers: Array<SwitchLayerItem>
 }
+
+export interface SelectAndClearAllOptions {
+    /**
+      * 是否使用全选和清除，默认: true
+      */
+    selectAndClearAll?: boolean;
+
+    /**
+     * 全选名字，默认: 全选
+     */
+    selectAllLabel?: string;
+
+    /**
+     * 清空名字，默认: 清空
+     */
+    clearAllLabel?: string;
+}
+
+export interface ShowToTopOptions {
+    /**
+ * 点击图层后该图层置顶
+ */
+    showToTop?: boolean;
+
+    /**
+     * {@link showToTop}联用时，调整图层顺序的最前面的图层id
+     */
+    topLayerId?: string;
+}

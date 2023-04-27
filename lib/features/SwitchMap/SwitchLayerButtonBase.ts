@@ -49,9 +49,9 @@ export default abstract class SwitchLayerButtonBase {
         })
 
         if (this.checked) {
-            if (!this.options.fixed && this.container.extraInfo.showToTop) {
+            if (!this.options.fixed && this.container.extraOptions.showToTop) {
                 layers.forEach(l => {
-                    this.map.moveLayer(l.id, this.container.extraInfo.topLayerId)
+                    this.map.moveLayer(l.id, this.container.extraOptions.topLayerId)
                 })
             }
 

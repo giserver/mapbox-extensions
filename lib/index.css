@@ -8,6 +8,10 @@
     background-color: #ddd;
 }
 
+.jas-btn-active:active {
+    background-color: #ddd;
+}
+
 .jas-mapbox-popup>.mapboxgl-popup-content {
     padding: 10px 10px 5px;
 }
@@ -24,6 +28,13 @@
 
 .jas-collapse-active {
     transform: rotate(90deg);
+}
+
+.jas-one-button-mapbox {
+    line-height: 0;
+    height: 29px;
+    width: 29px;
+    cursor: pointer;
 }
 
 /* #region switch 控件 */
@@ -127,17 +138,6 @@
 
 /* #endregion */
 
-/* #region 回到初始位置style */
-
-.jas-ctrl-backtoorigin {
-    line-height: 0;
-    height: 29px;
-    width: 29px;
-    cursor: pointer;
-}
-
-/* #endregion */
-
 
 /* #region 涂鸦 */
 
@@ -192,6 +192,85 @@
 
 .jas-ctrl-measure-item:hover {
     background-color: #ddd !important;
+}
+
+/* #endregion */
+
+/* #region 测量 移动版本 */
+
+.jas-ctrl-measure-mobile-operation {
+    width: 70%;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0px 11px 30px rgba(0, 0, 0, 0.25);
+
+    position: absolute;
+    z-index: 99;
+    margin: auto;
+    padding: 15px 0;
+    bottom: 30px;
+    right: 0px;
+    left: 0px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.jas-ctrl-measure-mobile-operation-item {
+    border-radius: 16px;
+    height: 56px;
+    font-size: 13px;
+}
+
+.jas-ctrl-measure-mobile-operation-btn {
+    background-color: #f2f4f7;
+    margin: 0 15px;
+    padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.jas-ctrl-measure-mobile-operation-btn:active {
+    background-color: #fefefe;
+}
+
+.jas-ctrl-measure-mobile-operation-add-point {
+    color: #fff;
+    background-color: rgb(52, 145, 250);
+    flex: 1;
+}
+
+.jas-ctrl-measure-mobile-operation-add-point:active {
+    background-color: rgb(52, 122, 250) !important
+}
+
+.jas-ctrl-measure-mobile-switch {
+    background-color: #fff;
+    position: absolute;
+    right: 10px;
+    top: 120px;
+    z-index: 99;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.jas-ctrl-measure-mobile-switch-item {
+    font-size: 0;
+    padding: 8px;
+    line-height: 0;
+}
+
+.jas-ctrl-measure-mobile-crosshair {
+    position: absolute;
+    z-index: 99;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0;
+    line-height: 0;
 }
 
 /* #endregion */
@@ -342,80 +421,40 @@
 
 /* #endregion*/
 
-/* #region 测量 移动版本 */
-.jas-ctrl-measure-mobile-operation {
-    width: 70%;
-    background-color: #fff;
+/* #region 切换图层 移动版本 */
+.jas-ctrl-switchmap4mobile-container {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    padding: 16px 24px;
     border-radius: 16px;
-    box-shadow: 0px 11px 30px rgba(0, 0, 0, 0.25);
+    background-color: #ffffff;
 
-    position: absolute;
-    z-index: 99;
-    margin: auto;
-    padding: 15px 0;
-    bottom: 30px;
-    right: 0px;
-    left: 0px;
+    z-index: 10;
+    transform: translateY(100%);
+    transition: transform 0.4s ease-out, transform 0.2s ease-in;
+}
 
+.jas-ctrl-switchmap4mobile-container-active {
+    transform: translateY(0);
+}
+
+.jas-ctrl-switchmap4mobile-container-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: space-evenly;
 }
 
-.jas-ctrl-measure-mobile-operation-item {
-    border-radius: 16px;
-    height: 56px;
-    font-size: 13px;
+.jas-ctrl-switchmap4mobile-container-header-label {
+    font-size: 20px;
+    font-weight: 500;
 }
 
-.jas-ctrl-measure-mobile-operation-btn {
-    background-color: #f2f4f7;
-    margin: 0 15px;
-    padding: 0 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.jas-ctrl-measure-mobile-operation-btn:active {
-    background-color: #fefefe;
-}
-
-.jas-ctrl-measure-mobile-operation-add-point {
-    color: #fff;
-    background-color: rgb(52, 145, 250);
-    flex: 1;
-}
-
-.jas-ctrl-measure-mobile-operation-add-point:active {
-    background-color: rgb(52, 122, 250) !important
-}
-
-.jas-ctrl-measure-mobile-switch {
-    background-color: #fff;
-    position: absolute;
-    right: 10px;
-    top: 120px;
-    z-index: 99;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.jas-ctrl-measure-mobile-switch-item {
-    font-size: 0;
-    padding: 8px;
-    line-height: 0;
-}
-
-.jas-ctrl-measure-mobile-crosshair {
-    position: absolute;
-    z-index: 99;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 0;
-    line-height: 0;
+.jas-ctrl-switchmap4mobile-container-groups {
+    height: 300px;
+    overflow-y: auto;
+    padding: 16px 4px 0 4px;
 }
 
 /* #endregion */
