@@ -108,7 +108,7 @@
     margin: auto;
     box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
     box-sizing: border-box;
-    border-radius: 10px;
+    border-radius: 8px;
     background-color: #f2f2f2;
     background-size: 36px;
     background-repeat: no-repeat;
@@ -408,6 +408,10 @@
     gap: 20px 38px;
     min-width: 226px;
     padding: 0 4px;
+}
+
+.jas-ctrl-switchmap-alert-container-group-container-hidden {
+    display: none;
 }
 
 .jas-ctrl-switchmap-alert-container-group>.mul-col {

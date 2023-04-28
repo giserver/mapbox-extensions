@@ -10,9 +10,6 @@ export default class SwitchGroupContainer {
     readonly layerBtns: Array<SwitchLayerButtonBase> = [];
     readonly element: HTMLElement;
 
-    private collapsed: boolean = false;
-    private containerDefaultDisplay: string;
-
     /**
      *
      */
@@ -29,8 +26,6 @@ export default class SwitchGroupContainer {
             this.layerBtns.push(btn);
             container.append(btn.element);
         });
-
-        this.containerDefaultDisplay = container.style.display;
 
         this.element.append(this.createHeader(name, container));
         this.element.append(container);
@@ -85,8 +80,7 @@ export default class SwitchGroupContainer {
         const element = createHtmlElement('div', "jas-collapse-arrow", "jas-collapse-active", "jas-ctrl-switchmap-alert-container-group-header-title-collapse");
 
         element.addEventListener('click', e => {
-            container.style.display = this.collapsed ? this.containerDefaultDisplay : 'none';
-            this.collapsed = !this.collapsed;
+            container.classList.toggle("jas-ctrl-switchmap-alert-container-group-container-hidden");
             element.classList.toggle("jas-collapse-active");
         });
 
