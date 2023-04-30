@@ -1,33 +1,12 @@
-import { Map, EventData, MapMouseEvent } from "mapbox-gl";
+import mapboxgl, { Map, EventData, MapMouseEvent, CirclePaint, SymbolPaint, SymbolLayout } from "mapbox-gl";
 import { createUUID } from "../../utils";
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
 export interface MeasurePointOptions extends MeasureOptions<GeoJSON.Point> {
 
-    /**
-     * 经纬度文字的大小
-     */
-    textSize?: number,
-
-    /**
-     * 
-     */
-    pointSize?: number,
-
-    /**
-    * 文字颜色
-    */
-    textColor?: string,
-
-    /**
-     * 文字在众方向上的偏移 
-     */
-    textOffsetY?: number,
-
-    /**
-     * 点颜色
-     */
-    pointColor?: string,
+    circlePaintBuilder?: (paint: CirclePaint) => void;
+    symbolLayoutBuilder?: (layout: SymbolLayout) => void;
+    symbolPaintBuilder?: (paint: SymbolPaint) => void;
 
     /**
      * 文字创建
@@ -42,39 +21,45 @@ export default class MeasurePoint extends MeasureBase {
      *
      */
     constructor(map: Map, private options: MeasurePointOptions = {}) {
-        options.textSize ??= 12;
-        options.pointSize ??= 5;
-        options.textColor ??= "#000000";
-        options.textOffsetY ??= -1.2;
-        options.pointColor ??= "#000000";
         options.createText ??= (lng: number, lat: number) => `${lng.toFixed(4)} , ${lat.toFixed(4)}`;
         super(map);
     }
 
     protected onInit(): void {
+        const circlePaint: mapboxgl.CirclePaint = {
+            'circle-color': "#000000",
+            'circle-radius': 5
+        };
+        this.options.circlePaintBuilder?.call(undefined, circlePaint);
+
         this.layerGroup.add({
             id: this.id,
             type: 'circle',
             source: this.id,
             layout: {},
-            paint: {
-                'circle-color': this.options.pointColor,
-                'circle-radius': this.options.pointSize
-            }
+            paint: circlePaint
         });
+
+        const symbolLayout: mapboxgl.SymbolLayout = {
+            "text-field": ['get', 'coord'],
+            'text-offset': [0, -1.2],
+            'text-size': 12
+        };
+        const symbolPaint: mapboxgl.SymbolPaint = {
+            'text-color': "#000000",
+            'text-halo-color': '#ffffff',
+            'text-halo-width': 1
+        }
+
+        this.options.symbolLayoutBuilder?.call(undefined, symbolLayout);
+        this.options.symbolPaintBuilder?.call(undefined, symbolPaint)
 
         this.layerGroup.add({
             id: this.id + "_font",
             type: 'symbol',
             source: this.id,
-            layout: {
-                "text-field": ['get', 'coord'],
-                'text-offset': [0, this.options.textOffsetY!],
-                'text-size': this.options.textSize,
-            },
-            paint: {
-                'text-color': this.options.textColor
-            }
+            layout: symbolLayout,
+            paint: symbolPaint
         })
     }
 
