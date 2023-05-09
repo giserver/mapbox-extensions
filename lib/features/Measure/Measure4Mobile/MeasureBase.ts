@@ -1,5 +1,6 @@
 import * as turf from '@turf/turf'
 import { createUUID } from '../../../utils';
+import mapboxgl from 'mapbox-gl';
 
 
 /**
@@ -30,7 +31,7 @@ export default abstract class MeasureBase {
     protected abstract onFinish(): void;
     protected abstract getCoordinates(): turf.helpers.Position[] | undefined;
 
-    constructor(protected map: mapboxgl.Map) {
+    constructor(protected map: mapboxgl.Map, protected getCrossLngLat: () => mapboxgl.LngLat) {
 
         this.sourceId = createUUID()
         this.pointSourceId = createUUID()

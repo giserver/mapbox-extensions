@@ -294,7 +294,7 @@ if (is_mobile) {
         const measureMobile = new Measure4Mobile(map, document.body, { show });
 
         const changeMeasureShowBtn = document.createElement('button');
-        changeMeasureShowBtn.innerText = "change"
+        changeMeasureShowBtn.innerText = "测量"
         const style = changeMeasureShowBtn.style;
         style.position = "absolute";
         style.zIndex = "99";

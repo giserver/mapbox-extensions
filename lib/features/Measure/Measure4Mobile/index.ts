@@ -97,7 +97,8 @@ export default class Measure4Mobile {
             throw new Error("element 'container' not found");
 
         const parentDiv = document.createElement('div');
-        [this.createOperationUI(), this.createMeasureSwitchUI(), this.createCrosshairUI()].forEach(div => {
+        const crosshairDiv = this.createCrosshairUI();
+        [this.createOperationUI(), this.createMeasureSwitchUI(crosshairDiv), crosshairDiv].forEach(div => {
             parentDiv.appendChild(div);
         });
 
@@ -136,7 +137,14 @@ export default class Measure4Mobile {
         return operationDiv;
     }
 
-    private createMeasureSwitchUI() {
+    private createMeasureSwitchUI(crosshairDiv: HTMLDivElement) {
+        const getCrossLngLat = () => {
+            const x = crosshairDiv.getBoundingClientRect().left + crosshairDiv.clientWidth / 2;
+            const y = crosshairDiv.getBoundingClientRect().top + crosshairDiv.clientHeight / 2;
+
+            return this.map.unproject([x, y])
+        }
+
         const measureSwitchDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-switch");
 
         const measureLineStringDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-switch-item");
@@ -145,7 +153,7 @@ export default class Measure4Mobile {
             this.changeMeasureType('LineString');
         });
         this.measuresMap.set('LineString', {
-            measure: new MeasureLineString(this.map),
+            measure: new MeasureLineString(this.map, getCrossLngLat),
             measureDiv: measureLineStringDiv
         });
 
@@ -155,7 +163,7 @@ export default class Measure4Mobile {
             this.changeMeasureType('Polygon');
         });
         this.measuresMap.set('Polygon', {
-            measure: new MeasurePolygon(this.map),
+            measure: new MeasurePolygon(this.map, getCrossLngLat),
             measureDiv: measurePolygonDiv
         });
 
@@ -177,6 +185,7 @@ export default class Measure4Mobile {
     private createCrosshairUI() {
         const div = createHtmlElement('div', "jas-ctrl-measure-mobile-crosshair");
         div.innerHTML = this.img_crosshair;
+
         return div;
     }
 

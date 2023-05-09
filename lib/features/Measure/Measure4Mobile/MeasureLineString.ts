@@ -48,7 +48,7 @@ export default class MeasureLineString extends MeasureBase {
     }
 
     protected onAddPoint(): void {
-        let pos = this.map.getCenter()
+        let pos = this.getCrossLngLat();
         let point = [pos.lng, pos.lat]
         let distance = '0';
         //第一次定点 或者中间清空->获取不到currentFeature

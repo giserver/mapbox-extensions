@@ -269,6 +269,10 @@ export class SwitchMap4MobileControl implements mapboxgl.IControl {
    */
   constructor(private options: SwitchMap4MobileOptions) {
     options.name ??= "图层";
+
+    options.selectAndClearAll ??= true;
+    options.clearAllLabel ??= "清空";
+    options.selectAllLabel ??= "全选";
   }
 
   onAdd(map: mapboxgl.Map): HTMLElement {
