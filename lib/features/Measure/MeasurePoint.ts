@@ -27,11 +27,10 @@ export default class MeasurePoint extends MeasureBase {
 
     protected onInit(): void {
         const circlePaint: mapboxgl.CirclePaint = {
-            'circle-color': "#000000",
+            'circle-color': "#fbb03b",
             'circle-radius': 5
         };
         this.options.circlePaintBuilder?.call(undefined, circlePaint);
-
         this.layerGroup.add({
             id: this.id,
             type: 'circle',
@@ -43,19 +42,19 @@ export default class MeasurePoint extends MeasureBase {
         const symbolLayout: mapboxgl.SymbolLayout = {
             "text-field": ['get', 'coord'],
             'text-offset': [0, -1.2],
-            'text-size': 12
+            'text-size': 16
         };
         const symbolPaint: mapboxgl.SymbolPaint = {
             'text-color': "#000000",
             'text-halo-color': '#ffffff',
-            'text-halo-width': 1
+            'text-halo-width': 2
         }
 
         this.options.symbolLayoutBuilder?.call(undefined, symbolLayout);
         this.options.symbolPaintBuilder?.call(undefined, symbolPaint)
 
         this.layerGroup.add({
-            id: this.id + "_font",
+            id: this.id + "_label",
             type: 'symbol',
             source: this.id,
             layout: symbolLayout,

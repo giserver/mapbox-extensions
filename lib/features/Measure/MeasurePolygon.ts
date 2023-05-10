@@ -1,34 +1,27 @@
 import * as turf from '@turf/turf';
 import { Polygon } from "@turf/turf";
-import { EventData, Map, MapMouseEvent } from "mapbox-gl";
+import { EventData, FillPaint, LinePaint, Map, MapMouseEvent, SymbolLayout, SymbolPaint } from "mapbox-gl";
 import { createUUID } from '../../utils';
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
 export interface MeasurePolygonOptions extends MeasureOptions<GeoJSON.Polygon> {
-    /**
-        * 内部颜色
-        */
-    polygonColor?: string,
+
+    polygonPaintBuilder?(paint: FillPaint): void,
+    outlinePaintBuilder?(paint: LinePaint): void;
+
 
     /**
-     * 内部颜色透明度
+     * 外部设置label layout 
+     * @param layout 
      */
-    polygonOpacity?: number,
+    labelLayoutBuilder?(layout: SymbolLayout): void;
 
     /**
-     * 边框颜色
+     * 外部设置label Paint 
+     * @param paint 
      */
-    polygonOutlineColor?: string,
+    labelPaintBuilder?(paint: SymbolPaint): void;
 
-    /**
-     * 文字大小
-     */
-    textSize?: number,
-
-    /**
-     * 文字颜色
-     */
-    textColor?: string,
 
     /**
      *  创建面积文字,area为平方米
@@ -48,11 +41,6 @@ export default class MeasurePolygon extends MeasureBase {
      *
      */
     constructor(map: Map, private options: MeasurePolygonOptions = {}) {
-        options.polygonColor ??= "#ff0000";
-        options.polygonOpacity ??= 0.5;
-        options.polygonOutlineColor ??= "#000000";
-        options.textSize ??= 12;
-        options.textColor ??= "#000000";
         options.createText ??= (area: number) => area > 1000000 ?
             `${(area / 1000000).toFixed(4)}km²` :
             `${area.toFixed(4)}m²`;
@@ -64,30 +52,52 @@ export default class MeasurePolygon extends MeasureBase {
     }
 
     protected onInit(): void {
+        const polyonPaint: FillPaint = {
+            'fill-color': "#fbb03b",
+            'fill-opacity': 0.2
+        };
+        this.options.polygonPaintBuilder?.call(undefined, polyonPaint);
         this.layerGroup.add({
             id: this.id,
             type: 'fill',
             source: this.id,
             layout: {},
-            paint: {
-                'fill-color': this.options.polygonColor,
-                'fill-opacity': this.options.polygonOpacity,
-                'fill-outline-color': this.options.polygonOutlineColor
-            }
+            paint: polyonPaint
         });
 
+        const outlinePaint: LinePaint = {
+            "line-color": "#fbb03b",
+            "line-width": 4
+        };
+        this.options.outlinePaintBuilder?.call(undefined, outlinePaint);
+        this.layerGroup.add({
+            id: this.id + "_line",
+            type: 'line',
+            source: this.id,
+            layout: {},
+            paint: outlinePaint
+        });
+
+        const labelLayout: SymbolLayout = {
+            'text-field': ['format',
+                ['concat', "面积 : ", ['get', 'area']], {}, '\n', {}, '\n', {},
+                ['concat', "周长 : ", ['get', 'length']], {}],
+            'text-size': 16,
+            'text-justify': 'left'
+        }
+        const labelPaint: SymbolPaint = {
+            'text-color': "#000000",
+            "text-halo-color": '#ffffff',
+            "text-halo-width": 2
+        };
+        this.options.labelLayoutBuilder?.call(undefined, labelLayout);
+        this.options.labelPaintBuilder?.call(undefined, labelPaint);
         this.layerGroup.add({
             id: this.pointSourceId,
             type: 'symbol',
             source: this.pointSourceId,
-            layout: {
-                'text-field': ['format', ['concat', "面积 : ", ['get', 'area']], {}, '\n', {}, ['concat', "周长 : ", ['get', 'length']], {}],
-                'text-size': this.options.textSize,
-                'text-justify': 'left'
-            },
-            paint: {
-                'text-color': this.options.textColor,
-            }
+            layout: labelLayout,
+            paint: labelPaint
         });
     }
 

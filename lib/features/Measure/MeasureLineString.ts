@@ -1,59 +1,33 @@
 import * as turf from "@turf/turf";
 import { LineString } from "@turf/turf";
-import { MapMouseEvent, EventData, Map } from "mapbox-gl";
+import { MapMouseEvent, EventData, Map, LinePaint, CirclePaint, SymbolPaint, SymbolLayout } from "mapbox-gl";
 import { createUUID } from "../../utils";
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
 export interface MeasureLineStringOptions extends MeasureOptions<GeoJSON.LineString> {
-    /**
-     * 线颜色
-     */
-    lineColor?: string,
+
+    linePaintBuilder?(paint: LinePaint): void,
+    segmentPointPaintBuilder?(paint: CirclePaint): void;
+
 
     /**
-     * 线宽
+     * 外部设置label layout 
+     * 注意 区分线段中部和断点 使用 ['case', ['==', ['get', 'center'], true], ... , ... ]
+     * @param layout 
      */
-    lineWidth?: number,
+    labelLayoutBuilder?(layout: SymbolLayout): void;
 
     /**
-     * 端点颜色
+     * 外部设置label Paint 
+     * 注意 区分线段中部和断点 使用 ['case', ['==', ['get', 'center'], true], ... , ... ]
+     * @param paint 
      */
-    segmentPointColor?: string,
-
-    /**
-     * 端点大小
-     */
-    segmentPointSize?: number,
-
-    /**
-     * 文字在纵方向上的偏移
-     */
-    textOffsetY?: number,
-
-    /**
-     * 端点(距离求和)文字的大小
-     */
-    segmentTextSize?: number,
-
-    /**
-     * 端点(距离求和)文字的颜色
-     */
-    segmentTextColor?: string,
+    labelPaintBuilder?(paint: SymbolPaint): void;
 
     /**
      * 是否显示线段中间文字(线段长度)
      */
     showCenterText?: boolean,
-
-    /**
-     * 线段中间文字(线段长度)大小
-     */
-    centerTextSize?: number,
-
-    /**
-     * 线段中间文字(线段长度)颜色
-     */
-    centerTextColor?: string,
 
     /**
      * 计算长度显示的文字，length 单位为千米(km)
@@ -68,57 +42,58 @@ export default class MeasureLineString extends MeasureBase {
      *
      */
     constructor(map: Map, private options: MeasureLineStringOptions = {}) {
-        options.lineColor ??= "#000000";
-        options.lineWidth ??= 1;
-        options.segmentPointColor ??= "#000000";
-        options.segmentPointSize ??= 4;
-        options.textOffsetY ??= -1.2;
-        options.segmentTextSize ??= 12;
-        options.segmentTextColor ??= "#000000";
         options.showCenterText ??= true;
-        options.centerTextSize ??= 12;
-        options.centerTextColor ??= '#ff0000';
         options.createText ??= (length: number) => length > 1 ? `${length.toFixed(3)}km` : `${(length * 1000).toFixed(2)}m`;
 
         super(map);
     }
 
     protected onInit(): void {
+        const linePaint: LinePaint = {
+            'line-color': "#fbb03b",
+            'line-width': 2,
+        }
+        this.options.linePaintBuilder?.call(undefined, linePaint);
         this.layerGroup.add({
             id: this.id,
             type: 'line',
             source: this.id,
             layout: {},
-            paint: {
-                'line-color': this.options.lineColor,
-                'line-width': this.options.lineWidth,
-            }
+            paint: linePaint
         });
 
+        const segmentPointPaint: CirclePaint = {
+            'circle-color': "#fbb03b"
+        }
+        this.options.segmentPointPaintBuilder?.call(undefined, segmentPointPaint);
         this.layerGroup.add({
             id: this.pointSourceId,
             type: 'circle',
             source: this.pointSourceId,
             layout: {},
-            paint: {
-                'circle-color': this.options.segmentPointColor,
-                'circle-radius': this.options.segmentPointSize,
-            },
+            paint: segmentPointPaint,
             filter: ['!=', ['get', 'center'], true]
-        })
+        });
+
+        const labelPaint: SymbolPaint = {
+            "text-color": ['case', ['==', ['get', 'center'], true], '#ff0000', "#000000"],
+            "text-halo-color": "#ffffff",
+            "text-halo-width": 2,
+        }
+        const labelLayout: SymbolLayout = {
+            'text-field': ['get', 'distance'],
+            'text-offset': [0, -1.2],
+            'text-size': ['case', ['==', ['get', 'center'], true], 16, 16]
+        }
+        this.options.labelPaintBuilder?.call(undefined, labelPaint);
+        this.options.labelLayoutBuilder?.call(undefined, labelLayout);
 
         this.layerGroup.add({
-            id: this.pointSourceId + "_font",
+            id: this.pointSourceId + "_label",
             type: 'symbol',
             source: this.pointSourceId,
-            layout: {
-                'text-field': ['get', 'distance'],
-                'text-offset': [0, this.options.textOffsetY!],
-                'text-size': ['case', ['==', ['get', 'center'], true], this.options.centerTextSize, this.options.segmentTextSize]
-            },
-            paint: {
-                "text-color": ['case', ['==', ['get', 'center'], true], this.options.centerTextColor, this.options.segmentTextColor]
-            },
+            layout: labelLayout,
+            paint: labelPaint,
             filter: this.options.showCenterText ? ['all'] : ['!=', ['get', 'center'], true]
         })
     }
