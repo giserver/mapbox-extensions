@@ -113,7 +113,7 @@ export abstract class SwitchLayerBaseControl implements IControl {
     });
   }
 
-  changeLayerVisible(id: string, value: boolean) {
+  changeLayerVisible(id: string, value?: boolean) {
     for (let i = 0; i < this.groupContainers.length; i++) {
       const gc = this.groupContainers[i];
       for (let j = 0; j < gc.layerBtns.length; j++) {

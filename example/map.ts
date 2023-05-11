@@ -342,23 +342,33 @@ if (is_mobile) {
     map.on('load', () => {
         const measureMobile = new Measure4Mobile(map, document.body, { show });
 
-        const changeMeasureShowBtn = document.createElement('button');
-        changeMeasureShowBtn.innerText = "测量"
-        const style = changeMeasureShowBtn.style;
+        const controls = document.createElement('div');
+        const style = controls.style;
         style.position = "absolute";
         style.zIndex = "99";
         style.top = '0';
+
+        const changeMeasureShowBtn = document.createElement('button');
+        changeMeasureShowBtn.innerText = "测量"
+        const changeSLGHBtn = document.createElement("button");
+        changeSLGHBtn.innerText = "房屋管理";
 
         changeMeasureShowBtn.addEventListener('click', () => {
             show = !show;
             measureMobile.show(show);
         })
-        document.body.append(changeMeasureShowBtn);
 
-        map.addControl(new SwitchLayerControl({
+        changeSLGHBtn.addEventListener('click', () => {
+            switchlayerControl.changeLayerVisible("fff");
+        });
+
+        controls.append(changeMeasureShowBtn, changeSLGHBtn);
+
+        document.body.append(controls);
+        const switchlayerControl = new SwitchLayerControl({
             layerGroups
-        }));
-
+        });
+        map.addControl(switchlayerControl);
         map.addControl(new BackToOriginControl());
     })
 } else {
