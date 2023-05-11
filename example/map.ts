@@ -1,7 +1,7 @@
 import '../lib';
 import mapboxgl from 'mapbox-gl';
 import MeasureControl from '../lib/controls/MeasureControl';
-import SwitchMapControl, { LayerGroupsType, SwitchMap4MobileControl } from '../lib/controls/SwitchMapControl';
+import SwitchMapControl, { LayerGroupsType, SwitchLayerControl } from '../lib/controls/SwitchMapControl';
 import BackToOriginControl from '../lib/controls/BackToOriginControl';
 import DoodleControl from '../lib/controls/DoodleControl';
 import { Measure4Mobile, SetStyleProxy } from '../lib';
@@ -240,6 +240,55 @@ const layerGroups: LayerGroupsType = {
             ],
             'backgroundImage': '',
             active: true
+        }, {
+            name: 'fff10',
+            layer: [
+                {
+                    id: 'fff11',
+                    type: 'symbol',
+                    source: {
+                        type: 'geojson',
+                        data: {
+                            type: 'Feature',
+                            geometry: {
+                                type: 'Point',
+                                coordinates: [120.64, 31.2]
+                            },
+                            properties: { name: 'fff7' }
+                        }
+                    },
+                    layout: {
+                        "text-field": ['get', 'name'],
+                        'text-size': 30
+                    },
+                    paint: {
+                        "text-color": 'red'
+                    }
+                }, {
+                    id: 'fff12',
+                    type: 'symbol',
+                    source: {
+                        type: 'geojson',
+                        data: {
+                            type: 'Feature',
+                            geometry: {
+                                type: 'Point',
+                                coordinates: [120.64, 31.1]
+                            },
+                            properties: { name: 'fff8' }
+                        }
+                    },
+                    layout: {
+                        "text-field": ['get', 'name'],
+                        'text-size': 30
+                    },
+                    paint: {
+                        "text-color": 'red'
+                    }
+                }
+            ],
+            'backgroundImage': '',
+            active: true
         }]
     }, '可清除可全选': {
         uiType: 'SwitchBtn',
@@ -306,9 +355,11 @@ if (is_mobile) {
         })
         document.body.append(changeMeasureShowBtn);
 
-        map.addControl(new SwitchMap4MobileControl({
+        map.addControl(new SwitchLayerControl({
             layerGroups
         }));
+
+        map.addControl(new BackToOriginControl());
     })
 } else {
     let doodleControl: DoodleControl;

@@ -1,3 +1,7 @@
+.jas-ctrl-hidden {
+    display: none;
+}
+
 .jas-flex-center {
     display: flex;
     justify-content: center;
@@ -349,7 +353,7 @@
 .jas-ctrl-switchmap-alert-container {
     max-height: 300px;
     overflow-y: auto;
-    padding: 16px 4px 0 4px;
+    padding: 16px 0;
 }
 
 .jas-ctrl-switchmap-alert-container::-webkit-scrollbar {
@@ -365,6 +369,7 @@
 
 .jas-ctrl-switchmap-alert-container-group {
     margin-bottom: 24px;
+    padding: 0 4px;
 }
 
 .jas-ctrl-switchmap-alert-container-group-header {
@@ -425,8 +430,34 @@
 
 /* #endregion*/
 
-/* #region 切换图层 移动版本 */
-.jas-ctrl-switchmap4mobile-container {
+/* #region 切换图层 兼容移动版本*/
+.jas-ctrl-switchlayer {
+    position: relative;
+}
+
+.jas-ctrl-switchlayer4desktop-container {
+    opacity: 0;
+    cursor: auto;
+    top: 0;
+    right: 40px;
+    background-color: #fff;
+    position: absolute;
+    z-index: 10;
+    padding: 16px 24px;
+    min-width: 247px;
+}
+
+.jas-ctrl-switchlayer4desktop-container-active {
+    opacity: 1;
+}
+
+.jas-ctrl-switchlayer4desktop-container-groups {
+    height: 300px;
+    overflow: auto;
+    padding: 16px 0px;
+}
+
+.jas-ctrl-switchlayer4mobile-container {
     position: absolute;
     bottom: 0px;
     left: 0px;
@@ -440,40 +471,44 @@
     transition: transform 0.4s ease-in-out;
 }
 
-.jas-ctrl-switchmap4mobile-container-active {
+.jas-ctrl-switchlayer4mobile-container-active {
     transform: translateY(0);
 }
 
-.jas-ctrl-switchmap4mobile-container-header {
+.jas-ctrl-switchlayer-container-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.jas-ctrl-switchmap4mobile-container-header-label {
+.jas-ctrl-switchlayer-container-header-label {
     font-size: 20px;
     font-weight: 500;
 }
 
-.jas-ctrl-switchmap4mobile-container-groups {
-    height: 300px;
-    overflow-y: auto;
-    padding: 16px 4px 0 4px;
+.jas-ctrl-switchlayer-container-header-close {
+    cursor: pointer;
 }
 
-.jas-ctrl-switchmap4mobile-container-groups .jas-img-txt-switch-button-img:hover {
+.jas-ctrl-switchlayer4mobile-container-groups {
+    height: 300px;
+    overflow-y: auto;
+    padding: 16px 0px;
+}
+
+.jas-ctrl-switchlayer4mobile-container-groups .jas-img-txt-switch-button-img:hover {
     border: 2px solid #ffffff00;
 }
 
-.jas-ctrl-switchmap4mobile-container-groups .jas-ctrl-switchmap-alert-container-group-container {
+.jas-ctrl-switchlayer4mobile-container-groups .jas-ctrl-switchmap-alert-container-group-container {
     gap: 20px 24px;
 }
 
-.jas-ctrl-switchmap4mobile-container-groups .jas-ctrl-switchmap-alert-container-group>.mul-col {
+.jas-ctrl-switchlayer4mobile-container-groups .jas-ctrl-switchmap-alert-container-group>.mul-col {
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
-.jas-ctrl-switchmap4mobile-container-groups .jas-ctrl-switchmap-alert-container-group-header-controls-item {
+.jas-ctrl-switchlayer4mobile-container-groups .jas-ctrl-switchmap-alert-container-group-header-controls-item {
     font-size: 12px;
 }
 

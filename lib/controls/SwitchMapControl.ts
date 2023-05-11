@@ -12,7 +12,7 @@ const img_base = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFYAAABMCAYAAAD3
 
 export type LayerGroupsType = Record<string, SwitchGroupLayers>;
 
-interface SwitchItemOption {
+interface SwitchMapItemOption {
   /**
    * 切换图层显示的名称
    */
@@ -45,8 +45,8 @@ export interface SwitchMapExtraInfo extends SelectAndClearAllOptions, ShowToTopO
 }
 
 export interface SwitchMapControlOptions {
-  baseOption?: SwitchItemOption,
-  satelliteOption?: SwitchItemOption,
+  baseOption?: SwitchMapItemOption,
+  satelliteOption?: SwitchMapItemOption,
   showSatelliteDefault?: boolean,
   extra?: SwitchMapExtraInfo
 }
@@ -184,7 +184,7 @@ export default class SwitchMapControl implements IControl {
     const text_div = createHtmlElement('div', "jas-ctrl-switchmap-text")
     div.append(text_div);
 
-    const changeDiv = (option: SwitchItemOption) => {
+    const changeDiv = (option: SwitchMapItemOption) => {
       text_div.innerText = option.name!;
       text_div.style.color = option.textColor!;
       div.style.backgroundImage = `url("${option.backgroundImage}")`;
@@ -246,7 +246,7 @@ export default class SwitchMapControl implements IControl {
 }
 
 
-interface SwitchMap4MobileOptions extends SelectAndClearAllOptions, ShowToTopOptions {
+interface SwitchLayerOptions extends SelectAndClearAllOptions, ShowToTopOptions {
   /**
    * 名称 ：默认'图层'
    */
@@ -254,7 +254,7 @@ interface SwitchMap4MobileOptions extends SelectAndClearAllOptions, ShowToTopOpt
   layerGroups: LayerGroupsType
 }
 
-export class SwitchMap4MobileControl implements mapboxgl.IControl {
+export class SwitchLayerControl implements mapboxgl.IControl {
 
   private readonly img = `<svg t="1682610567805" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4548" data-darkreader-inline-fill="" width="32" height="32">
   <path d="M852.6 462.9l12.1 7.6c24.8 15.6 32.3 48.3 16.7 73.2-4.2 6.7-9.9 12.4-16.7 16.7L540.4 764.1c-17.3 10.8-39.2 10.8-56.4 0L159.3 560c-24.8-15.6-32.3-48.3-16.7-73.2 4.2-6.7 9.9-12.4 16.7-16.7l12.1-7.6L483.9 659c17.3 10.8 39.2 10.8 56.4 0l312.2-196 0.1-0.1z m0 156.1l12.1 7.6c24.8 15.6 32.3 48.3 16.7 73.2-4.2 6.7-9.9 12.4-16.7 16.7L540.4 920.2c-17.3 10.8-39.2 10.8-56.4 0L159.3 716.1c-24.8-15.6-32.3-48.3-16.7-73.2 4.2-6.7 9.9-12.4 16.7-16.7l12.1-7.6L483.9 815c17.3 10.8 39.2 10.8 56.4 0l312.2-196h0.1zM540 106.4l324.6 204.1c24.8 15.6 32.3 48.3 16.7 73.2-4.2 6.7-9.9 12.4-16.7 16.7L540.4 604c-17.3 10.8-39.2 10.8-56.4 0L159.3 399.8c-24.8-15.6-32.3-48.3-16.7-73.2 4.2-6.7 9.9-12.4 16.7-16.7l324.4-203.7c17.3-10.8 39.2-10.8 56.4 0l-0.1 0.2z" p-id="4549">
@@ -264,10 +264,13 @@ export class SwitchMap4MobileControl implements mapboxgl.IControl {
   <path d="M572.16 512l183.466667-183.04a42.666667 42.666667 0 1 0-60.586667-60.586667L512 451.84l-183.04-183.466667a42.666667 42.666667 0 0 0-60.586667 60.586667l183.466667 183.04-183.466667 183.04a42.666667 42.666667 0 0 0 0 60.586667 42.666667 42.666667 0 0 0 60.586667 0l183.04-183.466667 183.04 183.466667a42.666667 42.666667 0 0 0 60.586667 0 42.666667 42.666667 0 0 0 0-60.586667z" p-id="2621" fill="#8a8a8a">
   </path></svg>`
 
+  private minWidth = 600;
+  private allLayers: Array<SwitchLayerItem> = [];
+
   /**
    *
    */
-  constructor(private options: SwitchMap4MobileOptions) {
+  constructor(private options: SwitchLayerOptions) {
     options.name ??= "图层";
 
     options.selectAndClearAll ??= true;
@@ -276,36 +279,109 @@ export class SwitchMap4MobileControl implements mapboxgl.IControl {
   }
 
   onAdd(map: mapboxgl.Map): HTMLElement {
-    const div = createHtmlElement('div', "jas-btn-active", "jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group");
-    div.innerHTML = this.img;
-    div.addEventListener('click', () => {
-      container.classList.toggle("jas-ctrl-switchmap4mobile-container-active");
+    const [mobileContainer, mobileGroups, mobileClose] = this.createMobileUI(map);
+    const [desktopContainer, desktopGroups, desktopClose] = this.createDesktopUI(map);
+
+    const isMobile = map.getContainer().clientWidth < this.minWidth;
+    this.allLayers = appendLayerGroups(
+      map,
+      isMobile ? mobileGroups : desktopGroups,
+      this.options.layerGroups,
+      this.options
+    );
+    if (isMobile) {
+      desktopContainer.classList.add("jas-ctrl-hidden");
+    } else {
+      mobileContainer.classList.add("jas-ctrl-hidden");
+    }
+
+    const toggleBtn = createHtmlElement('div', "jas-ctrl-switchlayer", "jas-btn-active", "jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group");
+    toggleBtn.innerHTML = this.img;
+
+    const handelShowChange = () => {
+      mobileContainer.classList.toggle("jas-ctrl-switchlayer4mobile-container-active");
+      desktopContainer.classList.toggle("jas-ctrl-switchlayer4desktop-container-active");
+
+      const show = desktopContainer.classList.contains("jas-ctrl-switchlayer4desktop-container-active");
+      desktopContainer.style.pointerEvents = show ? "" : 'none';
+    }
+
+    toggleBtn.addEventListener('click', handelShowChange);
+    mobileClose.addEventListener('click', handelShowChange);
+    desktopClose.addEventListener('click', handelShowChange);
+
+    map.on('resize', e => {
+      const width = map.getContainer().clientWidth;
+      if (width < this.minWidth) {
+        desktopContainer.classList.add("jas-ctrl-hidden");
+        mobileContainer.classList.remove("jas-ctrl-hidden");
+
+        if (mobileGroups.children.length === 0)
+          mobileGroups.append(...desktopGroups.children)
+      } else {
+        mobileContainer.classList.add("jas-ctrl-hidden");
+        desktopContainer.classList.remove("jas-ctrl-hidden");
+
+        if (desktopGroups.children.length === 0)
+          desktopGroups.append(...mobileGroups.children)
+      }
     });
 
-    const container = createHtmlElement('div', "jas-ctrl-switchmap4mobile-container");
-    const header = createHtmlElement('div', "jas-ctrl-switchmap4mobile-container-header");
-    const label = createHtmlElement('div', "jas-ctrl-switchmap4mobile-container-header-label");
+    toggleBtn.append(desktopContainer)
+
+    return toggleBtn;
+  }
+  onRemove(map: mapboxgl.Map): void {
+    this.allLayers.forEach(x => {
+      if (x.layer instanceof Array) {
+        x.layer.forEach(l => map.removeLayer(l.id));
+      } else {
+        map.removeLayer(x.layer.id);
+      }
+    });
+  }
+  getDefaultPosition() {
+    return 'top-right'
+  }
+
+  private createDesktopUI(map: mapboxgl.Map) {
+    const container = createHtmlElement('div', "jas-ctrl-switchlayer4desktop-container");
+
+
+    const header = createHtmlElement('div', "jas-ctrl-switchlayer-container-header");
+    const label = createHtmlElement('div', "jas-ctrl-switchlayer-container-header-label");
     label.innerText = this.options.name!;
-    const close = createHtmlElement('div', "jas-ctrl-switchmap4mobile-container-header-close");
+    const close = createHtmlElement('div', "jas-ctrl-switchlayer-container-header-close");
     close.innerHTML = this.img_close;
     header.append(label, close);
-    close.addEventListener('click', () => {
-      container.classList.toggle("jas-ctrl-switchmap4mobile-container-active");
-    });
 
-    const groups = createHtmlElement('div', 'jas-ctrl-switchmap4mobile-container-groups');
+    const groups = createHtmlElement('div', "jas-ctrl-switchlayer4desktop-container-groups");
 
-    container.append(header);
-    container.append(groups);
-    appendLayerGroups(map, groups, this.options.layerGroups, this.options);
+    container.append(header, groups);
+
+    // 阻止事件穿透父级
+    container.addEventListener('click', e => {
+      e.stopPropagation();
+    })
+
+    return [container, groups, close];
+  }
+
+  private createMobileUI(map: mapboxgl.Map) {
+    const container = createHtmlElement('div', "jas-ctrl-switchlayer4mobile-container");
+
+    const header = createHtmlElement('div', "jas-ctrl-switchlayer-container-header");
+    const label = createHtmlElement('div', "jas-ctrl-switchlayer-container-header-label");
+    label.innerText = this.options.name!;
+    const close = createHtmlElement('div', "jas-ctrl-switchlayer-container-header-close");
+    close.innerHTML = this.img_close;
+    header.append(label, close);
+
+    const groups = createHtmlElement('div', 'jas-ctrl-switchlayer4mobile-container-groups');
+    container.append(header, groups);
     map.getContainer().append(container);
 
-    return div;
+    return [container, groups, close]
   }
-
-  onRemove(map: mapboxgl.Map): void {
-  }
-
-  getDefaultPosition?: (() => string) | undefined;
 
 }
