@@ -236,7 +236,7 @@ export default class SwitchMapControl implements IControl {
       changeSvgColor(nailDiv.children[0] as SVGAElement, this.alertDivShowAlways ? this.options.extra!.nailActiveColor! : '#2D3742');
     });
 
-    const groupsDiv = createHtmlElement('div', "jas-ctrl-switchmap-alert-container");
+    const groupsDiv = createHtmlElement('div', "jas-ctrl-switchmap-alert-container", "jas-ctrl-custom-scrollbar");
 
     alertDiv.append(headerDiv);
     alertDiv.append(groupsDiv);
@@ -347,7 +347,6 @@ export class SwitchLayerControl implements mapboxgl.IControl {
   private createDesktopUI(map: mapboxgl.Map) {
     const container = createHtmlElement('div', "jas-ctrl-switchlayer4desktop-container");
 
-
     const header = createHtmlElement('div', "jas-ctrl-switchlayer-container-header");
     const label = createHtmlElement('div', "jas-ctrl-switchlayer-container-header-label");
     label.innerText = this.options.name!;
@@ -355,7 +354,7 @@ export class SwitchLayerControl implements mapboxgl.IControl {
     close.innerHTML = this.img_close;
     header.append(label, close);
 
-    const groups = createHtmlElement('div', "jas-ctrl-switchlayer4desktop-container-groups");
+    const groups = createHtmlElement('div', "jas-ctrl-switchlayer4desktop-container-groups", "jas-ctrl-custom-scrollbar");
 
     container.append(header, groups);
 
