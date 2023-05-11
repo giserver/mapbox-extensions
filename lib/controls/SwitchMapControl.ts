@@ -51,7 +51,6 @@ export interface SwitchMapControlOptions {
   extra?: SwitchMapExtraInfo
 }
 
-
 export function appendLayerGroups(
   map: mapboxgl.Map,
   container: HTMLElement,
@@ -59,6 +58,7 @@ export function appendLayerGroups(
   options: SelectAndClearAllOptions & ShowToTopOptions = {}) {
 
   const allLayers = new Array<SwitchLayerItem>();
+  const groupContainers = new Array<SwitchGroupContainer>();
 
   for (let groupName in layerGroups) {
     const { layers, mutex } = layerGroups[groupName];
@@ -88,19 +88,52 @@ export function appendLayerGroups(
   for (let groupName in layerGroups) {
     const groupContainer = new SwitchGroupContainer(map, groupName, layerGroups[groupName], options);
     container.append(groupContainer.element);
+    groupContainers.push(groupContainer);
   }
 
-  return allLayers;
+  return groupContainers;
 }
 
-export default class SwitchMapControl implements IControl {
+export abstract class SwitchLayerBaseControl implements IControl {
+  protected groupContainers: Array<SwitchGroupContainer> = [];
+
+  abstract onAdd(map: mapboxgl.Map): HTMLElement;
+
+  onRemove(map: mapboxgl.Map): void {
+    this.groupContainers.forEach(gc => {
+      gc.layerBtns.forEach(lb => {
+        const layer = lb.options.layer;
+
+        if (layer instanceof Array) {
+          layer.forEach(l => map.removeLayer(l.id));
+        } else {
+          map.removeLayer(layer.id);
+        }
+      })
+    });
+  }
+
+  changeLayerVisible(id: string, value: boolean) {
+    for (let i = 0; i < this.groupContainers.length; i++) {
+      const gc = this.groupContainers[i];
+      for (let j = 0; j < gc.layerBtns.length; j++) {
+        const lBtn = gc.layerBtns[j];
+
+        if (lBtn.id === id)
+          lBtn.changeChecked(value, true);
+      }
+    }
+  }
+}
+
+export default class SwitchMapControl extends SwitchLayerBaseControl {
 
   private nailImg = `<svg t="1673283468858" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2736" data-darkreader-inline-fill="" width="22" height="22">
   <path d="M912.9 380.2L643.5 110.9c-12.1-12.1-29.6-15.8-45.6-9.8s-26.6 20.5-27.6 37.6l-4.9 83.7-299.1 199.4-112.6-5.4c-17.8-0.7-34 9.2-41.3 25.5s-3.7 35 8.9 47.7L314.7 683 102.5 895.2c-7.2 7.2-7.2 18.8 0 26 3.6 3.6 8.3 5.4 13 5.4s9.4-1.8 13-5.4L340.7 709l193.4 193.4c8.3 8.3 19.1 12.6 30.2 12.6 5.9 0 11.8-1.2 17.4-3.7 16.3-7.2 26.3-23.4 25.5-41.3l-5.4-112.6 199.5-299.2 83.7-4.9c17.1-1 31.5-11.6 37.6-27.6s2.4-33.4-9.7-45.5z m-24.6 32.5c-0.5 1.4-1.9 3.7-5.4 3.9l-85.2 5-135.3-135.3c-7.2-7.2-18.8-7.2-26 0s-7.2 18.8 0 26l130.9 130.9-187.5 281.2-223.7-223.7c-7.2-7.2-18.8-7.2-26 0s-7.2 18.8 0 26l225.1 225.1c2.8 2.8 6.3 4.5 9.9 5.1l5.5 114.9c0.2 3.5-1.9 5.1-3.6 5.9-1.7 0.8-4.4 1.2-6.8-1.3L147.3 463.6c-2.5-2.5-2-5.1-1.3-6.8 0.8-1.7 2.5-4 5.9-3.6l118.6 5.6c3.9 0.2 7.8-0.9 11.1-3.1l311.9-207.9c4.8-3.2 7.8-8.5 8.2-14.2l5.5-92.8c0.2-3.5 2.6-4.8 3.9-5.4 1.4-0.5 4.1-1 6.5 1.4l269.3 269.3c2.4 2.5 1.9 5.2 1.4 6.6z" fill="#2D3742" p-id="2737" data-darkreader-inline-fill="" style="--darkreader-inline-fill:#0d1722;">
   </path></svg>`;
 
   private alertDivShowAlways = false;
-  private allLayers: Array<SwitchLayerItem> = [];
+
 
   constructor(private options: SwitchMapControlOptions = {}) {
     options.baseOption ??= {};
@@ -123,6 +156,8 @@ export default class SwitchMapControl implements IControl {
       options.extra.selectAllLabel ??= "全选";
       options.extra.clearAllLabel ??= "清空";
     }
+
+    super();
   }
 
   onAdd(map: Map): HTMLElement {
@@ -146,7 +181,7 @@ export default class SwitchMapControl implements IControl {
     if (layerGroups && Object.getOwnPropertyNames(layerGroups).length > 0) {
       const { alertDiv, groupsDiv } = this.createGroupLayerAlertDiv();
 
-      this.allLayers = appendLayerGroups(map, groupsDiv, layerGroups, this.options.extra);
+      this.groupContainers = appendLayerGroups(map, groupsDiv, layerGroups, this.options.extra);
 
       baseDiv.append(alertDiv);
       baseDiv.addEventListener('mouseover', e => {
@@ -155,16 +190,6 @@ export default class SwitchMapControl implements IControl {
     }
 
     return baseDiv;
-  }
-
-  onRemove(map: Map): void {
-    this.allLayers.forEach(x => {
-      if (x.layer instanceof Array) {
-        x.layer.forEach(l => map.removeLayer(l.id));
-      } else {
-        map.removeLayer(x.layer.id);
-      }
-    });
   }
 
   getDefaultPosition() {
@@ -254,7 +279,7 @@ interface SwitchLayerOptions extends SelectAndClearAllOptions, ShowToTopOptions 
   layerGroups: LayerGroupsType
 }
 
-export class SwitchLayerControl implements mapboxgl.IControl {
+export class SwitchLayerControl extends SwitchLayerBaseControl {
 
   private readonly img = `<svg t="1682610567805" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4548" data-darkreader-inline-fill="" width="32" height="32">
   <path d="M852.6 462.9l12.1 7.6c24.8 15.6 32.3 48.3 16.7 73.2-4.2 6.7-9.9 12.4-16.7 16.7L540.4 764.1c-17.3 10.8-39.2 10.8-56.4 0L159.3 560c-24.8-15.6-32.3-48.3-16.7-73.2 4.2-6.7 9.9-12.4 16.7-16.7l12.1-7.6L483.9 659c17.3 10.8 39.2 10.8 56.4 0l312.2-196 0.1-0.1z m0 156.1l12.1 7.6c24.8 15.6 32.3 48.3 16.7 73.2-4.2 6.7-9.9 12.4-16.7 16.7L540.4 920.2c-17.3 10.8-39.2 10.8-56.4 0L159.3 716.1c-24.8-15.6-32.3-48.3-16.7-73.2 4.2-6.7 9.9-12.4 16.7-16.7l12.1-7.6L483.9 815c17.3 10.8 39.2 10.8 56.4 0l312.2-196h0.1zM540 106.4l324.6 204.1c24.8 15.6 32.3 48.3 16.7 73.2-4.2 6.7-9.9 12.4-16.7 16.7L540.4 604c-17.3 10.8-39.2 10.8-56.4 0L159.3 399.8c-24.8-15.6-32.3-48.3-16.7-73.2 4.2-6.7 9.9-12.4 16.7-16.7l324.4-203.7c17.3-10.8 39.2-10.8 56.4 0l-0.1 0.2z" p-id="4549">
@@ -265,7 +290,6 @@ export class SwitchLayerControl implements mapboxgl.IControl {
   </path></svg>`
 
   private minWidth = 600;
-  private allLayers: Array<SwitchLayerItem> = [];
 
   /**
    *
@@ -276,6 +300,8 @@ export class SwitchLayerControl implements mapboxgl.IControl {
     options.selectAndClearAll ??= true;
     options.clearAllLabel ??= "清空";
     options.selectAllLabel ??= "全选";
+
+    super();
   }
 
   onAdd(map: mapboxgl.Map): HTMLElement {
@@ -283,7 +309,7 @@ export class SwitchLayerControl implements mapboxgl.IControl {
     const [desktopContainer, desktopGroups, desktopClose] = this.createDesktopUI(map);
 
     const isMobile = map.getContainer().clientWidth < this.minWidth;
-    this.allLayers = appendLayerGroups(
+    this.groupContainers = appendLayerGroups(
       map,
       isMobile ? mobileGroups : desktopGroups,
       this.options.layerGroups,
@@ -331,15 +357,7 @@ export class SwitchLayerControl implements mapboxgl.IControl {
 
     return toggleBtn;
   }
-  onRemove(map: mapboxgl.Map): void {
-    this.allLayers.forEach(x => {
-      if (x.layer instanceof Array) {
-        x.layer.forEach(l => map.removeLayer(l.id));
-      } else {
-        map.removeLayer(x.layer.id);
-      }
-    });
-  }
+
   getDefaultPosition() {
     return 'top-right'
   }
