@@ -2,7 +2,6 @@
     display: none;
 }
 
-
 .jas-ctrl-custom-scrollbar::-webkit-scrollbar {
     width: 5px;
 }
@@ -18,14 +17,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.jas-btn-hover:hover {
-    background-color: #ddd;
-}
-
-.jas-btn-active:active {
-    background-color: #ddd;
 }
 
 .jas-mapbox-popup>.mapboxgl-popup-content {
@@ -51,6 +42,18 @@
     height: 29px;
     width: 29px;
     cursor: pointer;
+}
+
+@media screen and (min-width:600px) {
+    .jas-one-button-mapbox:hover {
+        background-color: #ddd;
+    }
+}
+
+@media screen and (max-width:600px) {
+    .jas-one-button-mapbox:active {
+        background-color: #ddd;
+    }
 }
 
 /* #region switch 控件 */
@@ -432,6 +435,7 @@
 /* #endregion*/
 
 /* #region 切换图层 兼容移动版本*/
+
 .jas-ctrl-switchlayer {
     position: relative;
 }
@@ -515,3 +519,57 @@
 }
 
 /* #endregion */
+
+.jas-ctrl-extend {
+    position: relative;
+}
+
+.jas-ctrl-extend.jas-ctrl-extend-open .jas-ctrl-extend-img-close {
+    display: block;
+}
+
+.jas-ctrl-extend.jas-ctrl-extend-open .jas-ctrl-extend-img-open {
+    display: none;
+}
+
+.jas-ctrl-extend .jas-ctrl-extend-img-close {
+    display: none;
+}
+
+.jas-ctrl-extend .jas-ctrl-extend-desktop-container {
+    opacity: 0;
+    cursor: auto;
+    top: 0;
+    right: 40px;
+    background-color: #fff;
+    position: absolute;
+    z-index: 10;
+    padding: 16px 24px;
+    min-width: 247px;
+    height: 50px;
+    pointer-events: none;
+}
+
+.jas-ctrl-extend.jas-ctrl-extend-open .jas-ctrl-extend-desktop-container {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.jas-ctrl-extend-mobile-contianer {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    height: 50px;
+    padding: 16px 24px;
+    border-radius: 16px 16px 0 0;
+    background-color: #ffffff;
+
+    z-index: 10;
+    transform: translateY(100%);
+    transition: transform 0.4s ease-in-out;
+}
+
+.jas-ctrl-extend-mobile-contianer-active {
+    transform: translateY(0);
+}

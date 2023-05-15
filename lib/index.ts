@@ -9,6 +9,7 @@ import { SwitchGroupLayers, SwitchLayerItem } from "./features/SwitchMap/types";
 import BackToOriginControl from "./controls/BackToOriginControl";
 import DoodleControl from "./controls/DoodleControl";
 import Measure4Mobile from "./features/Measure/Measure4Mobile";
+import ExtendControl from "./controls/ExtendControl";
 
 import SetStyleProxy from "./features/SetStyleProxy";
 
@@ -20,6 +21,7 @@ export {
     SwitchLayerControl,
     BackToOriginControl,
     DoodleControl,
+    ExtendControl,
 
     appendLayerGroups,
     SwitchMapControlOptions,

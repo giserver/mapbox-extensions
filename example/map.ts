@@ -4,7 +4,7 @@ import MeasureControl from '../lib/controls/MeasureControl';
 import SwitchMapControl, { LayerGroupsType, SwitchLayerControl } from '../lib/controls/SwitchMapControl';
 import BackToOriginControl from '../lib/controls/BackToOriginControl';
 import DoodleControl from '../lib/controls/DoodleControl';
-import { Measure4Mobile, SetStyleProxy } from '../lib';
+import { ExtendControl, Measure4Mobile, SetStyleProxy } from '../lib';
 
 import '../lib/index.css';
 
@@ -449,6 +449,8 @@ if (is_mobile) {
         map.addControl(measureControl);
         map.addControl(new BackToOriginControl());
         map.addControl(doodleControl);
+
+        map.addControl(new ExtendControl());
     })
 
 
