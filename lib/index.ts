@@ -3,15 +3,16 @@ import LayerGroup from './features/LayerGroup'
 import { Dict } from './utils';
 
 import MeasureControl from "./controls/MeasureControl";
-import SwitchMapControl, { SwitchMapExtraInfo, SwitchMapControlOptions, SwitchLayerControl, appendLayerGroups } from "./controls/SwitchMapControl";
-import { SwitchGroupLayers, SwitchLayerItem } from "./features/SwitchMap/types";
-
+import SwitchMapControl, { SwitchMapExtraInfo, SwitchMapControlOptions } from "./controls/SwitchMapControl";
+import SwitchLayerControl from "./controls/SwitchLayerControl";
 import BackToOriginControl from "./controls/BackToOriginControl";
 import DoodleControl from "./controls/DoodleControl";
 import Measure4Mobile from "./features/Measure/Measure4Mobile";
 import ExtendControl from "./controls/ExtendControl";
 
 import SetStyleProxy from "./features/SetStyleProxy";
+import SwitchGroupContainer from "./features/SwitchLayer/SwitchGroupContainer";
+import { SwitchGroupLayers, SwitchLayerItem } from "./features/SwitchLayer/types";
 
 
 export {
@@ -23,9 +24,9 @@ export {
     DoodleControl,
     ExtendControl,
 
-    appendLayerGroups,
     SwitchMapControlOptions,
     SwitchMapExtraInfo,
+    SwitchGroupContainer,
     SwitchGroupLayers,
     SwitchLayerItem,
 

@@ -1,12 +1,15 @@
 import '../lib';
 import mapboxgl from 'mapbox-gl';
 import MeasureControl from '../lib/controls/MeasureControl';
-import SwitchMapControl, { LayerGroupsType, SwitchLayerControl } from '../lib/controls/SwitchMapControl';
+import SwitchMapControl from '../lib/controls/SwitchMapControl';
 import BackToOriginControl from '../lib/controls/BackToOriginControl';
 import DoodleControl from '../lib/controls/DoodleControl';
+import SwitchLayerControl from '../lib/controls/SwitchLayerControl';
 import { ExtendControl, Measure4Mobile, SetStyleProxy } from '../lib';
 
 import '../lib/index.css';
+import { createHtmlElement } from '../lib/utils';
+import { LayerGroupsType } from '../lib/features/SwitchLayer/types';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
 const lightStyle = 'mapbox://styles/mapbox/light-v11';
@@ -350,26 +353,20 @@ if (is_mobile) {
 
         const changeMeasureShowBtn = document.createElement('button');
         changeMeasureShowBtn.innerText = "测量"
-        const changeSLGHBtn = document.createElement("button");
-        changeSLGHBtn.innerText = "房屋管理";
 
         changeMeasureShowBtn.addEventListener('click', () => {
             show = !show;
             measureMobile.show(show);
         })
 
-        changeSLGHBtn.addEventListener('click', () => {
-            switchlayerControl.changeLayerVisible("fff");
-        });
-
-        controls.append(changeMeasureShowBtn, changeSLGHBtn);
+        controls.append(changeMeasureShowBtn);
 
         document.body.append(controls);
-        const switchlayerControl = new SwitchLayerControl({
-            layerGroups
-        });
-        map.addControl(switchlayerControl);
+
         map.addControl(new BackToOriginControl());
+        map.addControl(new SwitchLayerControl({
+            layerGroups
+        }));
     })
 } else {
     let doodleControl: DoodleControl;
@@ -399,7 +396,6 @@ if (is_mobile) {
         map.addControl(new SwitchMapControl({
             satelliteOption: {
                 textColor: 'white',
-                //backgroundImage: '/relics.png'
             },
             extra: {
                 layerGroups
@@ -445,12 +441,11 @@ if (is_mobile) {
             })
         });
 
-        //map.addControl(new mapboxgl.NavigationControl())
         map.addControl(measureControl);
         map.addControl(new BackToOriginControl());
         map.addControl(doodleControl);
 
-        map.addControl(new ExtendControl());
+        map.addControl(new ExtendControl({ content: createHtmlElement("div") }));
     })
 
 
