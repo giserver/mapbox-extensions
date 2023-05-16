@@ -365,67 +365,6 @@
     padding: 16px 0;
 }
 
-.jas-ctrl-switchmap-alert-container-group {
-    margin-bottom: 24px;
-    padding: 0 4px;
-}
-
-.jas-ctrl-switchmap-alert-container-group-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-
-    font-size: 14px;
-    font-weight: 500;
-
-    line-height: 20px;
-    margin-bottom: 16px;
-}
-
-.jas-ctrl-switchmap-alert-container-group-header-title-collapse {
-    margin-right: 6px;
-}
-
-.jas-ctrl-switchmap-alert-container-group-header-controls {
-    display: flex;
-    align-items: center;
-    font-weight: 400;
-    font-size: 8px;
-    margin-right: 4px;
-}
-
-.jas-ctrl-switchmap-alert-container-group-header-controls-item {
-    cursor: pointer;
-}
-
-.jas-ctrl-switchmap-alert-container-group-header-controls-item:hover {
-    color: #1677FF;
-}
-
-.jas-ctrl-switchmap-alert-container-group-header-controls-split {
-    margin: 0 4px;
-}
-
-.jas-ctrl-switchmap-alert-container-group-container {
-    display: grid;
-    gap: 20px 38px;
-    min-width: 226px;
-    padding: 0 4px;
-}
-
-.jas-ctrl-switchmap-alert-container-group-container-hidden {
-    display: none;
-}
-
-.jas-ctrl-switchmap-alert-container-group>.mul-col {
-    grid-template-columns: 1fr 1fr 1fr;
-    justify-items: center;
-}
-
-.jas-ctrl-switchmap-alert-container-group>.one-col {
-    grid-template-columns: 1fr;
-}
-
 /* #endregion*/
 
 /* #region 切换图层 兼容移动版本*/
@@ -456,19 +395,81 @@
     padding: 16px 0px;
 }
 
+
+.jas-ctrl-switchlayer-group {
+    margin-bottom: 24px;
+    padding: 0 4px;
+}
+
+.jas-ctrl-switchlayer-group-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    line-height: 20px;
+    margin-bottom: 16px;
+}
+
+.jas-ctrl-switchlayer-group-header-title-collapse {
+    margin-right: 6px;
+}
+
+.jas-ctrl-switchlayer-group-header-controls {
+    display: flex;
+    align-items: center;
+    font-weight: 400;
+    font-size: 8px;
+    margin-right: 4px;
+}
+
+.jas-ctrl-switchlayer-group-header-controls-item {
+    cursor: pointer;
+}
+
+.jas-ctrl-switchlayer-group-header-controls-item:hover {
+    color: #1677FF;
+}
+
+.jas-ctrl-switchlayer-group-header-controls-split {
+    margin: 0 4px;
+}
+
+.jas-ctrl-switchlayer-group-container {
+    display: grid;
+    gap: 20px 38px;
+    min-width: 226px;
+    padding: 0 4px;
+}
+
+.jas-ctrl-switchlayer-group-container-hidden {
+    display: none;
+}
+
+.jas-ctrl-switchlayer-group>.mul-col {
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-items: center;
+}
+
+.jas-ctrl-switchlayer-group>.one-col {
+    grid-template-columns: 1fr;
+}
+
 .jas-ctrl-extend-mobile-contianer .jas-img-txt-switch-button-img:hover {
     border: 2px solid #ffffff00;
 }
 
-.jas-ctrl-extend-mobile-contianer .jas-ctrl-switchmap-alert-container-group-container {
+.jas-ctrl-extend-mobile-contianer .jas-ctrl-switchlayer-group-container {
     gap: 20px 24px;
 }
 
-.jas-ctrl-extend-mobile-contianer .jas-ctrl-switchmap-alert-container-group>.mul-col {
+.jas-ctrl-extend-mobile-contianer .jas-ctrl-switchlayer-group>.mul-col {
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
-.jas-ctrl-extend-mobile-contianer .jas-ctrl-switchmap-alert-container-group-header-controls-item {
+.jas-ctrl-extend-mobile-contianer .jas-ctrl-switchlayer-group-header-controls-item {
     font-size: 12px;
 }
 
