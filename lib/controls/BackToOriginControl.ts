@@ -16,12 +16,12 @@ export default class BackToOriginControl implements IControl {
     }
 
     onAdd(map: Map): HTMLElement {
-        this.options.easeToOptions ??= {
-            center: map.getCenter(),
-            zoom: map.getZoom(),
-            pitch: map.getPitch(),
-            bearing: map.getBearing()
-        };
+        this.options.easeToOptions ??= {};
+        const easeToOptions = this.options.easeToOptions;
+        easeToOptions.center ??= map.getCenter();
+        easeToOptions.zoom ??= map.getZoom();
+        easeToOptions.pitch ??= map.getPitch();
+        easeToOptions.bearing ??= map.getBearing();
 
         const div = createHtmlElement('div', "jas-btn-hover", "jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group")
         div.innerHTML = svgs.origin;
