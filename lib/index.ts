@@ -2,13 +2,13 @@ import { Map, AnyLayer, AnySourceData } from "mapbox-gl";
 import LayerGroup from './features/LayerGroup'
 import { Dict } from './utils';
 
-import MeasureControl from "./controls/MeasureControl";
-import SwitchMapControl, { SwitchMapExtraInfo, SwitchMapControlOptions } from "./controls/SwitchMapControl";
-import SwitchLayerControl from "./controls/SwitchLayerControl";
-import BackToOriginControl from "./controls/BackToOriginControl";
-import DoodleControl from "./controls/DoodleControl";
-import Measure4Mobile from "./features/Measure/Measure4Mobile";
-import ExtendControl from "./controls/ExtendControl";
+import MeasureControl, { MeasureControlOptions } from "./controls/MeasureControl";
+import Measure4Mobile, { Measure4MobileOptions } from "./features/Measure/Measure4Mobile";
+import SwitchMapControl, { SwitchMapControlOptions, SwitchMapExtraInfo } from "./controls/SwitchMapControl";
+import SwitchLayerControl, { SwitchLayerOptions } from "./controls/SwitchLayerControl";
+import BackToOriginControl, { BackToOriginControlOptions } from "./controls/BackToOriginControl";
+import DoodleControl, { DoodleControlOptions } from "./controls/DoodleControl";
+import ExtendControl, { ExtendControlOptions } from "./controls/ExtendControl";
 
 import SetStyleProxy from "./features/SetStyleProxy";
 import SwitchGroupContainer from "./features/SwitchLayer/SwitchGroupContainer";
@@ -23,15 +23,21 @@ export {
     BackToOriginControl,
     DoodleControl,
     ExtendControl,
+    Measure4Mobile,
+    SetStyleProxy,
 
+    MeasureControlOptions,
+    Measure4MobileOptions,
     SwitchMapControlOptions,
     SwitchMapExtraInfo,
+    SwitchLayerOptions,
+    BackToOriginControlOptions,
+    DoodleControlOptions,
+    ExtendControlOptions,
+
     SwitchGroupContainer,
     SwitchGroupLayers,
     SwitchLayerItem,
-
-    Measure4Mobile,
-    SetStyleProxy
 }
 
 declare module "mapbox-gl" {

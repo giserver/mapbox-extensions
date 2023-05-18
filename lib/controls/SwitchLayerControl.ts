@@ -5,7 +5,7 @@ import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions } from "../
 import SwitchGroupContainer from "../features/SwitchLayer/SwitchGroupContainer";
 import svgs from '../svg';
 
-interface SwitchLayerOptions extends SelectAndClearAllOptions, ShowToTopOptions {
+export interface SwitchLayerOptions extends SelectAndClearAllOptions, ShowToTopOptions {
     /**
      * 名称 ：默认'图层'
      */
