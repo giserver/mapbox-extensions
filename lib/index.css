@@ -497,17 +497,20 @@
     opacity: 0;
     cursor: auto;
     top: 0;
-    right: 40px;
+    right: 30px;
+    border-radius: 4px;
+    transition: 0.2s;
     background-color: #fff;
     position: absolute;
     z-index: 100;
     padding: 16px 24px;
-    min-width: 247px;
     pointer-events: none;
 }
 
 .jas-ctrl-extend.jas-ctrl-extend-open .jas-ctrl-extend-desktop-container {
     opacity: 1;
+    right: 40px;
+    transition: 0.4s;
     pointer-events: all;
 }
 
