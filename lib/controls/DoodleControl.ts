@@ -1,6 +1,6 @@
 import { EventData, GeoJSONSource, IControl, Map, MapEventType } from "mapbox-gl";
 import { createHtmlElement } from "../utils";
-import svgs from '../svg'
+import SvgBuilder from "../svg";
 
 export interface DoodleControlOptions {
     /**
@@ -85,7 +85,7 @@ export default class DoodleControl implements IControl {
         this.doodle_switch_div = createHtmlElement('div', "jas-btn-hover", "jas-flex-center", "jas-ctrl-doodle-switch", "mapboxgl-ctrl-group");
         this.doodle_switch_svg = createHtmlElement('div', "jas-ctrl-doodle-switch-svg");
         this.doodle_switch_span = createHtmlElement('span');
-        this.doodle_switch_svg.innerHTML = svgs.pen;
+        this.doodle_switch_svg.innerHTML = new SvgBuilder('pen').create();
         this.doodle_switch_span.innerText = this.options.name!;
         this.doodle_switch_div.append(this.doodle_switch_svg);
         this.doodle_switch_div.append(this.doodle_switch_span);

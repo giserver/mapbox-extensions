@@ -5,7 +5,7 @@ import MeasurePoint, { MeasurePointOptions } from "../features/Measure/MeasurePo
 import MeasureLineString, { MeasureLineStringOptions } from "../features/Measure/MeasureLineString";
 import MeasurePolygon, { MeasurePolygonOptions } from "../features/Measure/MeasurePolygon";
 import { copyToClipboard, createHtmlElement } from "../utils";
-import svgs from '../svg';
+import SvgBuilder from '../svg';
 
 export interface MeasureControlOptions {
 
@@ -95,9 +95,9 @@ export default class MeasureControl implements mapboxgl.IControl {
     }
 
     onAdd(map: mapboxgl.Map): HTMLElement {
-        this.measures.set('Point', { measure: new MeasurePoint(map, this.options.measurePointOptions), svg: svgs.point });
-        this.measures.set('LineString', { measure: new MeasureLineString(map, this.options.measureLineStringOptions), svg: svgs.line });
-        this.measures.set('Polygon', { measure: new MeasurePolygon(map, this.options.measurePolygonOptions), svg: svgs.polygon });
+        this.measures.set('Point', { measure: new MeasurePoint(map, this.options.measurePointOptions), svg: new SvgBuilder('point').create() });
+        this.measures.set('LineString', { measure: new MeasureLineString(map, this.options.measureLineStringOptions), svg: new SvgBuilder('line').create() });
+        this.measures.set('Polygon', { measure: new MeasurePolygon(map, this.options.measurePolygonOptions), svg: new SvgBuilder('polygon').create() });
 
         this.measures.forEach((_, k) => {
             if (this.options.enableModes?.indexOf(k) === -1)
@@ -112,7 +112,7 @@ export default class MeasureControl implements mapboxgl.IControl {
             div.append(btn);
         })
 
-        div.append(this.createButton(svgs.clean, () => {
+        div.append(this.createButton(new SvgBuilder("clean").create(), () => {
             this.measures.forEach(m => m.measure.clear());
         }));
 
@@ -208,8 +208,8 @@ export default class MeasureControl implements mapboxgl.IControl {
                 if (pf) {
                     const center = turf.center(pf.geometry as turf.AllGeoJSON).geometry.coordinates;
                     this.popup.setHTML(`<div style="display:flex;align-items:center;">
-                                                <div id="popup-btn-copy" class='jas-ctrl' style="margin:0 5px 0 0;cursor:pointer;">${svgs.copy}</div>
-                                                <div id="popup-btn-clean" class='jas-ctrl' style="cursor:pointer;">${svgs.clean}</div>
+                                                <div id="popup-btn-copy" class='jas-ctrl' style="margin:0 5px 0 0;cursor:pointer;">${new SvgBuilder('copy').create()}</div>
+                                                <div id="popup-btn-clean" class='jas-ctrl' style="cursor:pointer;">${new SvgBuilder('clean').create()}</div>
                                             </div>`).setLngLat(ev.lngLat).addTo(ev.target);
 
                     const copyBtn = document.getElementById("popup-btn-copy")!;

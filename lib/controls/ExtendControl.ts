@@ -1,6 +1,6 @@
 import mapboxgl from "mapbox-gl";
 import { createHtmlElement } from "../utils";
-import svgs from '../svg';
+import SvgBuilder from '../svg'
 
 export interface ExtendControlOptions {
     img1?: string | SVGElement,
@@ -43,8 +43,8 @@ export default class ExtendControl implements mapboxgl.IControl {
         const image_open_wapper = createHtmlElement('div', "jas-ctrl-extend-img-open");
         const image_close_wapper = createHtmlElement('div', "jas-ctrl-extend-img-close");
 
-        this.appendImage(image_open_wapper, svgs.extend_open, this.options.img1);
-        this.appendImage(image_close_wapper, svgs.extend_close, this.options.img2);
+        this.appendImage(image_open_wapper, new SvgBuilder('extend_open').create(), this.options.img1);
+        this.appendImage(image_close_wapper, new SvgBuilder('extend_close').create(), this.options.img2);
 
         map.on('resize', e => {
             const width = map.getContainer().clientWidth;

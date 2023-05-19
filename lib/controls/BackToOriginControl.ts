@@ -1,6 +1,6 @@
 import { EaseToOptions, IControl, Map } from "mapbox-gl";
 import { createHtmlElement } from "../utils";
-import svgs from '../svg';
+import SvgBuilder from '../svg';
 
 export interface BackToOriginControlOptions {
     easeToOptions?: EaseToOptions
@@ -23,8 +23,8 @@ export default class BackToOriginControl implements IControl {
         easeToOptions.pitch ??= map.getPitch();
         easeToOptions.bearing ??= map.getBearing();
 
-        const div = createHtmlElement('div', "jas-btn-hover", "jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group")
-        div.innerHTML = svgs.origin;
+        const div = createHtmlElement('div', "jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group")
+        div.innerHTML = new SvgBuilder('origin').create();
 
         div.addEventListener('click', e => {
             map.easeTo(this.options.easeToOptions!)
