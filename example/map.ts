@@ -28,6 +28,7 @@ const map = new mapboxgl.Map({
 const setStyleProxy = new SetStyleProxy(map);
 
 const is_mobile = getQueryVariable("mobile");
+const controlDiv = document.getElementById("control")!;
 
 const layerGroups: LayerGroupsType = {
     '城市规划': {
@@ -344,13 +345,6 @@ if (is_mobile) {
 
     map.on('load', () => {
         const measureMobile = new Measure4Mobile(map, document.body, { show });
-
-        const controls = document.createElement('div');
-        const style = controls.style;
-        style.position = "absolute";
-        style.zIndex = "99";
-        style.top = '0';
-
         const changeMeasureShowBtn = document.createElement('button');
         changeMeasureShowBtn.innerText = "测量"
 
@@ -359,9 +353,7 @@ if (is_mobile) {
             measureMobile.show(show);
         })
 
-        controls.append(changeMeasureShowBtn);
-
-        document.body.append(controls);
+        controlDiv.append(changeMeasureShowBtn);
 
         map.addControl(new BackToOriginControl());
         map.addControl(new SwitchLayerControl({

@@ -8,7 +8,8 @@ export interface ExtendControlOptions {
     img1?: string | SVGElement,
     img2?: string | SVGAElement,
     content: HTMLElement | Array<HTMLElement> | ((map: mapboxgl.Map) => HTMLElement),
-    position?: UIPostion
+    position?: UIPostion,
+    adaptMobile?: boolean,
 }
 
 export default class ExtendControl implements mapboxgl.IControl {
@@ -16,9 +17,8 @@ export default class ExtendControl implements mapboxgl.IControl {
     private declare extendBtn: HTMLDivElement;
     private declare mobileContainer: HTMLDivElement;
 
-    /**
-     *
-     */
+    private _open: boolean = false;
+
     constructor(private options: ExtendControlOptions) {
         this.options.position ??= "top-right";
         const svg_extend_left = new SvgBuilder('extend_left').create();
@@ -26,6 +26,7 @@ export default class ExtendControl implements mapboxgl.IControl {
 
         this.options.img1 ??= this.options.position.endsWith("right") ? svg_extend_left : svg_extend_right;
         this.options.img2 ??= this.options.position.endsWith("right") ? svg_extend_right : svg_extend_left;;
+        this.options.adaptMobile ??= true;
     }
 
     onAdd(map: mapboxgl.Map): HTMLElement {
@@ -35,7 +36,7 @@ export default class ExtendControl implements mapboxgl.IControl {
         this.mobileContainer = mobileContainer;
 
         let currentContainer = mobileContainer;
-        if (isMobile)
+        if (isMobile && this.options.adaptMobile)
             desktopContainer.classList.add("jas-ctrl-hidden");
         else {
             mobileContainer.classList.add("jas-ctrl-hidden");
@@ -56,6 +57,8 @@ export default class ExtendControl implements mapboxgl.IControl {
         this.appendImage(image_close_wapper, this.options.img2!);
 
         map.on('resize', e => {
+            if (!this.options.adaptMobile) return;
+
             const width = map.getContainer().clientWidth;
             if (width < this.minWidth) {
                 desktopContainer.classList.add("jas-ctrl-hidden");
@@ -83,8 +86,8 @@ export default class ExtendControl implements mapboxgl.IControl {
             e.stopPropagation();
         });
 
-        extendBtn.addEventListener('click', e => {
-            this.toggle();
+        extendBtn.addEventListener('click', () => {
+            this.open = !this.open;
         });
 
         return this.extendBtn;
@@ -94,19 +97,20 @@ export default class ExtendControl implements mapboxgl.IControl {
 
     getDefaultPosition() { return this.options.position! };
 
-    toggle() {
-        this.extendBtn.classList.toggle("jas-ctrl-extend-open");
-        this.mobileContainer.classList.toggle("jas-ctrl-extend-mobile-contianer-active");
+    get open() {
+        return this._open;
     }
 
-    open() {
-        this.extendBtn.classList.add("jas-ctrl-extend-open");
-        this.mobileContainer.classList.add("jas-ctrl-extend-mobile-contianer-active");
-    }
+    set open(value: boolean) {
+        if (value) {
+            this.extendBtn.classList.add("jas-ctrl-extend-open");
+            this.mobileContainer.classList.add("jas-ctrl-extend-mobile-contianer-active");
+        } else {
+            this.extendBtn.classList.remove("jas-ctrl-extend-open");
+            this.mobileContainer.classList.remove("jas-ctrl-extend-mobile-contianer-active");
+        }
 
-    close() {
-        this.extendBtn.classList.remove("jas-ctrl-extend-open");
-        this.mobileContainer.classList.remove("jas-ctrl-extend-mobile-contianer-active");
+        this._open = value;
     }
 
     private appendImage(parent: HTMLDivElement, img: string | SVGElement) {

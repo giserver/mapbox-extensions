@@ -88,7 +88,7 @@ export default class SwitchLayerControl extends SwitchLayerBaseControl {
                 this.groupContainers = SwitchGroupContainer.appendLayerGroups(map, groups, this.options.layerGroups, this.options);
 
                 close.addEventListener('click', () => {
-                    extend.close();
+                    extend.open = false;
                 })
 
                 return container;
