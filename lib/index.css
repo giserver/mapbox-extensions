@@ -260,6 +260,13 @@
     background-color: rgb(52, 122, 250) !important
 }
 
+.jas-ctrl-measure-mobile-item {
+    cursor: pointer;
+    height: 29px;
+    width: 29px;
+    float: right;
+}
+
 .jas-ctrl-measure-mobile-switch {
     background-color: #fff;
     position: absolute;

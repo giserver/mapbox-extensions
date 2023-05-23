@@ -1,6 +1,7 @@
 import '../lib';
 import mapboxgl from 'mapbox-gl';
 import MeasureControl from '../lib/controls/MeasureControl';
+import MeasureSealControl from '../lib/controls/MeasureSealControl';
 import SwitchMapControl from '../lib/controls/SwitchMapControl';
 import BackToOriginControl from '../lib/controls/BackToOriginControl';
 import DoodleControl from '../lib/controls/DoodleControl';
@@ -437,6 +438,8 @@ if (is_mobile) {
         map.addControl(new ExtendControl({
             content: createHtmlElement("div", "jas-ctrl-measure-mobile-operation-item")
         }));
+
+        map.addControl(new MeasureSealControl())
     })
 
 

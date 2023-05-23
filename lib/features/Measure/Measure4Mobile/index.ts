@@ -3,6 +3,7 @@ import { createHtmlElement } from '../../../utils';
 import MeasureBase from './MeasureBase';
 import MeasureLineString from './MeasureLineString';
 import MeasurePolygon from './MeasurePolygon';
+import SvgBuilder from '../../../svg';
 
 export type MeasureType = 'LineString' | 'Polygon';
 
@@ -17,28 +18,103 @@ interface MeasureConfig {
     measureDiv: HTMLDivElement
 }
 
-export default class Measure4Mobile {
+export class MeasureMobileUIBase {
+
+    protected declare currentMeasure: MeasureBase;
+    readonly measuresMap = new Map<MeasureType, MeasureConfig>();
+
+    private crosshairDiv: HTMLElement;
+    private operationDiv: HTMLElement;
+
+    /**
+     *
+     */
+    constructor(private operationContainer: HTMLElement, private crosshairContainer: HTMLElement) {
+        this.operationDiv = this.createOperationUI();
+        operationContainer.append(this.operationDiv);
+        this.crosshairDiv = this.createCrosshairUI();
+        crosshairContainer.append(this.crosshairDiv);
+    }
+
+    private createOperationUI() {
+        const operationDiv = createHtmlElement('div', 'jas-ctrl-measure-mobile-operation');
+
+        const revokeDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-btn");
+        revokeDiv.innerHTML = new SvgBuilder('revoke').create();
+        revokeDiv.innerHTML += `<div>撤销</div>`;
+        revokeDiv.addEventListener('click', () => {
+            this.currentMeasure.revokePoint();
+        });
+
+        const finishDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-btn");
+        finishDiv.innerHTML = new SvgBuilder('finish').create();
+        finishDiv.innerHTML += `<div>完成</div>`;
+        finishDiv.addEventListener('click', () => {
+            this.currentMeasure.finish();
+        })
+
+        const addPointDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-add-point", "jas-flex-center");
+        addPointDiv.innerHTML = "<div>定点</div>"
+        addPointDiv.addEventListener('click', () => {
+            this.currentMeasure.addPoint();
+        })
+
+        operationDiv.appendChild(revokeDiv);
+        operationDiv.appendChild(addPointDiv);
+        operationDiv.appendChild(finishDiv);
+
+        return operationDiv;
+    }
+
+    private createCrosshairUI() {
+        const div = createHtmlElement('div', "jas-ctrl-measure-mobile-crosshair");
+        div.innerHTML = new SvgBuilder('crosshair').create();
+        return div;
+    }
+
+    show(value: boolean) {
+        if (value) {
+            this.crosshairContainer.append(this.crosshairDiv);
+            this.operationContainer.append(this.operationDiv);
+
+        } else {
+            this.crosshairContainer.removeChild(this.crosshairDiv);
+            this.operationContainer.removeChild(this.operationDiv);
+        }
+
+    }
+
+    clear() {
+        this.measuresMap.forEach(v => {
+            v.measure.clear();
+        })
+    }
+
+    changeMeasureType(type: MeasureType) {
+        const { measure, measureDiv } = this.measuresMap.get(type)!;
+        this.currentMeasure?.finish();
+        this.currentMeasure = measure;
+        this.currentMeasure.start();
+
+        // UI 选择背景颜色变换
+        this.measuresMap.forEach(x => {
+            x.measureDiv.style.backgroundColor = "";
+        })
+
+        measureDiv.style.backgroundColor = "rgb(211,211,211)";
+    }
+
+    getCurrentPosition(map: mapboxgl.Map) {
+        const x = this.crosshairDiv.getBoundingClientRect().left + this.crosshairDiv.clientWidth / 2;
+        const y = this.crosshairDiv.getBoundingClientRect().top + this.crosshairDiv.clientHeight / 2;
+
+        return map.unproject([x, y]);
+    }
+}
+
+export default class Measure4Mobile extends MeasureMobileUIBase {
 
     //#region svg icons
-
-    private readonly img_revoke = `<svg t="1675136064753" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2701" width="20" height="20">
-    <path d="M135.168 276.48h462.848c176.128 0 317.44 141.312 317.44 317.44s-141.312 317.44-317.44 317.44H389.12c-12.288 0-20.48 8.192-20.48 20.48s8.192 20.48 20.48 20.48h208.896c198.656 0 358.4-159.744 358.4-358.4s-159.744-358.4-358.4-358.4h-462.848l139.264-139.264c8.192-8.192 8.192-20.48 0-28.672-8.192-8.192-20.48-8.192-28.672 0l-174.08 174.08c-8.192 8.192-8.192 20.48 0 28.672l174.08 174.08c8.192 8.192 20.48 8.192 28.672 0 8.192-8.192 8.192-20.48 0-28.672l-139.264-139.264z" fill="#32373B" p-id="2702"></path></svg>`;
-    private readonly img_finish = `<svg t="1675136091082" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3612" width="20" height="20">
-    <path d="M997.888 70.144C686.592 261.12 460.8 502.272 358.912 623.104l-248.832-195.072-110.08 88.576 429.568 437.248c73.728-189.44 308.224-559.616 594.432-822.784l-26.112-60.928m0 0z" p-id="3613" fill="#20B727"></path></svg>`;
-    private readonly img_crosshair = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <g clip-path="url(#clip0_572_16938)">
-    <path d="M8.54004 2.48705C8.43027 1.6089 9.11499 0.833252 9.99998 0.833252C10.885 0.833252 11.5697 1.6089 11.4599 2.48705L10.9367 6.67302C10.8776 7.14542 10.4761 7.49992 9.99998 7.49992C9.52391 7.49992 9.12233 7.14542 9.06328 6.67302L8.54004 2.48705Z" fill="#F05E60"/>
-    <path d="M2.48711 11.46C1.60896 11.5698 0.833313 10.8851 0.833313 10.0001C0.833313 9.1151 1.60896 8.43037 2.48711 8.54014L6.67308 9.06339C7.14548 9.12244 7.49998 9.52401 7.49998 10.0001C7.49998 10.4762 7.14548 10.8777 6.67308 10.9368L2.48711 11.46Z" fill="#F05E60"/>
-    <path d="M11.46 17.513C11.5697 18.3911 10.885 19.1667 10 19.1667C9.11503 19.1667 8.43031 18.3911 8.54008 17.513L9.06332 13.327C9.12237 12.8546 9.52395 12.5001 10 12.5001C10.4761 12.5001 10.8777 12.8546 10.9367 13.327L11.46 17.513Z" fill="#F05E60"/>
-    <path d="M17.5129 8.53998C18.391 8.43021 19.1667 9.11493 19.1667 9.99992C19.1667 10.8849 18.391 11.5696 17.5129 11.4599L13.3269 10.9366C12.8545 10.8776 12.5 10.476 12.5 9.99992C12.5 9.52385 12.8545 9.12227 13.3269 9.06322L17.5129 8.53998Z" fill="#F05E60"/>
-    <circle cx="10" cy="10.0001" r="0.833333" fill="#F05E60"/>
-    </g>
-    <defs>
-    <clipPath id="clip0_572_16938">
-    <rect width="20" height="20" fill="white"/>
-    </clipPath>
-    </defs>
-    </svg>`;
 
     private readonly img_polygon = `<svg t="1659591707587" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1188" width="20" height="20">
     <g fill="none" stroke="black">
@@ -59,9 +135,6 @@ export default class Measure4Mobile {
 
     //#endregion
 
-    private declare currentMeasure: MeasureBase;
-    private measuresMap = new Map<MeasureType, MeasureConfig>();
-
     readonly show: (value: boolean) => void;
 
     /**
@@ -70,19 +143,25 @@ export default class Measure4Mobile {
      * @param container dom whitch ui insert into
      * @param show init show ui (default flase)
      */
-    constructor(private map: mapboxgl.Map, private container: string | HTMLElement, private options: Measure4MobileOptions = {}) {
+    constructor(private map: mapboxgl.Map, container: string | HTMLElement, options: Measure4MobileOptions = {}) {
         options.show ??= false;
         options.measureActiveColor ??= "rgb(211,211,211)";
         options.defaultType ??= "LineString";
 
-        const parentDiv = this.createUI();
+        const parentDiv = typeof container === "string" ? document.getElementById(container)! : container;
+        const containerWapper = createHtmlElement('div');
+
+        super(containerWapper, containerWapper);
+
+        containerWapper.append(this.createMeasureSwitchUI());
+        parentDiv.append(containerWapper)
 
         this.show = (value: boolean) => {
             this.measuresMap.forEach(v => {
                 v.measure.clear();
             })
 
-            parentDiv.style.display = value ? '' : 'none';
+            containerWapper.style.display = value ? '' : 'none';
 
             if (value)
                 this.changeMeasureType(options.defaultType!);
@@ -91,59 +170,8 @@ export default class Measure4Mobile {
         this.show(options.show);
     }
 
-    private createUI(): HTMLDivElement {
-        const container = typeof this.container === "string" ? document.getElementById(this.container) : this.container;
-        if (!container)
-            throw new Error("element 'container' not found");
-
-        const parentDiv = document.createElement('div');
-        const crosshairDiv = this.createCrosshairUI();
-        [this.createOperationUI(), this.createMeasureSwitchUI(crosshairDiv), crosshairDiv].forEach(div => {
-            parentDiv.appendChild(div);
-        });
-
-        container.appendChild(parentDiv);
-
-        return parentDiv;
-    }
-
-    private createOperationUI() {
-        const operationDiv = createHtmlElement('div', 'jas-ctrl-measure-mobile-operation');
-
-        const revokeDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-btn");
-        revokeDiv.innerHTML = this.img_revoke;
-        revokeDiv.innerHTML += `<div>撤销</div>`;
-        revokeDiv.addEventListener('click', () => {
-            this.currentMeasure.revokePoint();
-        });
-
-        const finishDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-btn");
-        finishDiv.innerHTML = this.img_finish;
-        finishDiv.innerHTML += `<div>完成</div>`;
-        finishDiv.addEventListener('click', () => {
-            this.currentMeasure.finish();
-        })
-
-        const addPointDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-add-point", "jas-flex-center");
-        addPointDiv.innerHTML = "<div>定点</div>"
-        addPointDiv.addEventListener('click', () => {
-            this.currentMeasure.addPoint();
-        })
-
-        operationDiv.appendChild(revokeDiv);
-        operationDiv.appendChild(addPointDiv);
-        operationDiv.appendChild(finishDiv);
-
-        return operationDiv;
-    }
-
-    private createMeasureSwitchUI(crosshairDiv: HTMLDivElement) {
-        const getCrossLngLat = () => {
-            const x = crosshairDiv.getBoundingClientRect().left + crosshairDiv.clientWidth / 2;
-            const y = crosshairDiv.getBoundingClientRect().top + crosshairDiv.clientHeight / 2;
-
-            return this.map.unproject([x, y])
-        }
+    private createMeasureSwitchUI() {
+        const getCrossLngLat = () => this.getCurrentPosition(this.map);
 
         const measureSwitchDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-switch");
 
@@ -170,9 +198,7 @@ export default class Measure4Mobile {
         const clearDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-switch-item");
         clearDiv.innerHTML = this.img_clean;
         clearDiv.addEventListener('click', () => {
-            this.measuresMap.forEach(v => {
-                v.measure.clear();
-            })
+            this.clear();
         })
 
         measureSwitchDiv.appendChild(measureLineStringDiv);
@@ -181,24 +207,5 @@ export default class Measure4Mobile {
 
         return measureSwitchDiv;
     }
-
-    private createCrosshairUI() {
-        const div = createHtmlElement('div', "jas-ctrl-measure-mobile-crosshair");
-        div.innerHTML = this.img_crosshair;
-
-        return div;
-    }
-
-    private changeMeasureType(type: MeasureType) {
-        const { measure, measureDiv } = this.measuresMap.get(type)!;
-        this.currentMeasure?.finish();
-        this.currentMeasure = measure;
-        this.currentMeasure.start();
-
-        // UI 选择背景颜色变换
-        this.measuresMap.forEach(x => {
-            x.measureDiv.style.backgroundColor = "";
-        })
-        measureDiv.style.backgroundColor = this.options.measureActiveColor!;
-    }
 }
+
