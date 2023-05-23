@@ -394,9 +394,6 @@ if (is_mobile) {
 
         // 切换卫星影像 可以自定义图层
         map.addControl(new SwitchMapControl({
-            satelliteOption: {
-                textColor: 'white',
-            },
             extra: {
                 layerGroups
             }

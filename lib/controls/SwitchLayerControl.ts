@@ -59,6 +59,8 @@ export default class SwitchLayerControl extends SwitchLayerBaseControl {
     constructor(private options: SwitchLayerOptions) {
         options.name ??= "图层";
         options.position ??= 'top-right';
+
+        options.selectAndClearAll = true;
         options.selectAllLabel ??= "全选";
         options.clearAllLabel ??= "清空";
 

@@ -65,7 +65,7 @@ export default class SwitchMapControl extends SwitchLayerBaseControl {
 
     options.satelliteOption ??= {};
     options.satelliteOption.name ??= '卫星影像';
-    options.satelliteOption.textColor ??= 'black';
+    options.satelliteOption.textColor ??= 'white';
     options.satelliteOption.backgroundImage ??= img_satellite;
 
     options.showSatelliteDefault ??= false;
