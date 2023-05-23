@@ -445,7 +445,7 @@ if (is_mobile) {
         map.addControl(new BackToOriginControl());
         map.addControl(doodleControl);
 
-        map.addControl(new ExtendControl({ content: createHtmlElement("div") }));
+        map.addControl(new ExtendControl({ content: createHtmlElement("div", "jas-ctrl-measure-mobile-operation-item") }));
     })
 
 

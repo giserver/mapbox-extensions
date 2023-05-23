@@ -2,10 +2,13 @@ import mapboxgl from "mapbox-gl";
 import { createHtmlElement } from "../utils";
 import SvgBuilder from '../svg'
 
+export type UIPostion = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+
 export interface ExtendControlOptions {
     img1?: string | SVGElement,
     img2?: string | SVGAElement,
-    content: HTMLElement | Array<HTMLElement> | ((map: mapboxgl.Map) => HTMLElement)
+    content: HTMLElement | Array<HTMLElement> | ((map: mapboxgl.Map) => HTMLElement),
+    position?: UIPostion
 }
 
 export default class ExtendControl implements mapboxgl.IControl {
@@ -17,11 +20,17 @@ export default class ExtendControl implements mapboxgl.IControl {
      *
      */
     constructor(private options: ExtendControlOptions) {
+        this.options.position ??= "top-right";
+        const svg_extend_left = new SvgBuilder('extend_left').create();
+        const svg_extend_right = new SvgBuilder('extend_right').create();
+
+        this.options.img1 ??= this.options.position.endsWith("right") ? svg_extend_left : svg_extend_right;
+        this.options.img2 ??= this.options.position.endsWith("right") ? svg_extend_right : svg_extend_left;;
     }
 
     onAdd(map: mapboxgl.Map): HTMLElement {
         const isMobile = map.getContainer().clientWidth < this.minWidth;
-        const desktopContainer = createHtmlElement("div", "jas-ctrl-extend-desktop-container");
+        const desktopContainer = createHtmlElement("div", "jas-ctrl-extend-desktop-container", this.options.position!);
         const mobileContainer = createHtmlElement('div', "jas-ctrl-extend-mobile-contianer");
         this.mobileContainer = mobileContainer;
 
@@ -43,8 +52,8 @@ export default class ExtendControl implements mapboxgl.IControl {
         const image_open_wapper = createHtmlElement('div', "jas-ctrl-extend-img-open");
         const image_close_wapper = createHtmlElement('div', "jas-ctrl-extend-img-close");
 
-        this.appendImage(image_open_wapper, new SvgBuilder('extend_open').create(), this.options.img1);
-        this.appendImage(image_close_wapper, new SvgBuilder('extend_close').create(), this.options.img2);
+        this.appendImage(image_open_wapper, this.options.img1!);
+        this.appendImage(image_close_wapper, this.options.img2!);
 
         map.on('resize', e => {
             const width = map.getContainer().clientWidth;
@@ -62,6 +71,8 @@ export default class ExtendControl implements mapboxgl.IControl {
                     desktopContainer.append(...mobileContainer.children);
             }
         });
+
+        console.log("extend-control", this)
 
         const extendBtn = createHtmlElement("div", "jas-ctrl-extend", "jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group");
         this.extendBtn = extendBtn;
@@ -82,7 +93,8 @@ export default class ExtendControl implements mapboxgl.IControl {
     }
     onRemove(map: mapboxgl.Map): void {
     }
-    getDefaultPosition?: (() => string) | undefined;
+
+    getDefaultPosition() { return this.options.position! };
 
     toggle() {
         this.extendBtn.classList.toggle("jas-ctrl-extend-open");
@@ -99,17 +111,13 @@ export default class ExtendControl implements mapboxgl.IControl {
         this.mobileContainer.classList.remove("jas-ctrl-extend-mobile-contianer-active");
     }
 
-    private appendImage(parent: HTMLDivElement, defaultValue: string, img?: string | SVGElement) {
-        if (img) {
-            if (typeof img === 'string')
-                if (img.replace(/\s+/g, "").startsWith("<svg"))
-                    parent.innerHTML += img;
-                else
-                    parent.style.backgroundImage = img;
+    private appendImage(parent: HTMLDivElement, img: string | SVGElement) {
+        if (typeof img === 'string')
+            if (img.replace(/\s+/g, "").startsWith("<svg"))
+                parent.innerHTML += img;
             else
-                parent.append(img);
-        } else {
-            parent.innerHTML = defaultValue;
-        }
+                parent.style.backgroundImage = img;
+        else
+            parent.append(img);
     }
 }

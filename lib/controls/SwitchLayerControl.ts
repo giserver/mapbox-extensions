@@ -1,9 +1,8 @@
 import mapboxgl from "mapbox-gl";
 import { createHtmlElement } from "../utils";
-import ExtendControl from "./ExtendControl";
+import ExtendControl, { UIPostion } from "./ExtendControl";
 import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions } from "../features/SwitchLayer/types";
 import SwitchGroupContainer from "../features/SwitchLayer/SwitchGroupContainer";
-import svgs from '../svg';
 import SvgBuilder from "../svg";
 
 export interface SwitchLayerOptions extends SelectAndClearAllOptions, ShowToTopOptions {
@@ -11,7 +10,12 @@ export interface SwitchLayerOptions extends SelectAndClearAllOptions, ShowToTopO
      * 名称 ：默认'图层'
      */
     name?: string,
-    layerGroups: LayerGroupsType
+    layerGroups: LayerGroupsType,
+
+    /**
+     * 组件位置
+     */
+    position?: UIPostion
 }
 
 
@@ -54,6 +58,10 @@ export default class SwitchLayerControl extends SwitchLayerBaseControl {
      */
     constructor(private options: SwitchLayerOptions) {
         options.name ??= "图层";
+        options.position ??= 'top-right';
+        options.selectAllLabel ??= "全选";
+        options.clearAllLabel ??= "清空";
+
         super();
     }
 
@@ -61,6 +69,7 @@ export default class SwitchLayerControl extends SwitchLayerBaseControl {
 
         const extend = new ExtendControl({
             img1: new SvgBuilder('layer').create(),
+            position: this.options.position,
             content: map => {
                 const container = createHtmlElement('div', "jas-ctrl-switchlayer-container");
 
@@ -74,7 +83,7 @@ export default class SwitchLayerControl extends SwitchLayerBaseControl {
                 const groups = createHtmlElement('div', 'jas-ctrl-switchlayer-container-groups', 'jas-ctrl-custom-scrollbar');
                 container.append(header, groups);
 
-                SwitchGroupContainer.appendLayerGroups(map, groups, this.options.layerGroups, this.options);
+                this.groupContainers = SwitchGroupContainer.appendLayerGroups(map, groups, this.options.layerGroups, this.options);
 
                 close.addEventListener('click', () => {
                     extend.close();
@@ -86,4 +95,6 @@ export default class SwitchLayerControl extends SwitchLayerBaseControl {
 
         return extend.onAdd(map);
     }
+
+    getDefaultPosition() { return this.options.position! };
 }

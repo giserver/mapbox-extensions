@@ -448,6 +448,10 @@
     display: none;
 }
 
+.jas-ctrl-switchlayer-group:last-child {
+    margin-bottom: 0;
+}
+
 .jas-ctrl-switchlayer-group>.mul-col {
     grid-template-columns: 1fr 1fr 1fr;
     justify-items: center;
@@ -496,8 +500,6 @@
 .jas-ctrl-extend .jas-ctrl-extend-desktop-container {
     opacity: 0;
     cursor: auto;
-    top: 0;
-    right: 30px;
     border-radius: 4px;
     transition: 0.2s;
     background-color: #fff;
@@ -507,11 +509,46 @@
     pointer-events: none;
 }
 
+.jas-ctrl-extend .jas-ctrl-extend-desktop-container.top-right {
+    top: 0;
+    right: 30px;
+}
+
+.jas-ctrl-extend .jas-ctrl-extend-desktop-container.bottom-right {
+    bottom: 0;
+    right: 30px;
+}
+
+.jas-ctrl-extend .jas-ctrl-extend-desktop-container.top-left {
+    top: 0;
+    left: 30px;
+}
+
+.jas-ctrl-extend .jas-ctrl-extend-desktop-container.bottom-left {
+    bottom: 0;
+    left: 30px;
+}
+
 .jas-ctrl-extend.jas-ctrl-extend-open .jas-ctrl-extend-desktop-container {
     opacity: 1;
-    right: 40px;
     transition: 0.4s;
     pointer-events: all;
+}
+
+.jas-ctrl-extend.jas-ctrl-extend-open .jas-ctrl-extend-desktop-container.top-right {
+    right: 40px;
+}
+
+.jas-ctrl-extend.jas-ctrl-extend-open .jas-ctrl-extend-desktop-container.bottom-right {
+    right: 40px;
+}
+
+.jas-ctrl-extend.jas-ctrl-extend-open .jas-ctrl-extend-desktop-container.top-left {
+    left: 40px;
+}
+
+.jas-ctrl-extend.jas-ctrl-extend-open .jas-ctrl-extend-desktop-container.bottom-left {
+    left: 40px;
 }
 
 .jas-ctrl-extend-mobile-contianer {
