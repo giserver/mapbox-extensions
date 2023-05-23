@@ -10,6 +10,8 @@ export interface ExtendControlOptions {
     content: HTMLElement | Array<HTMLElement> | ((map: mapboxgl.Map) => HTMLElement),
     position?: UIPostion,
     adaptMobile?: boolean,
+
+    onChange?(open: boolean): void
 }
 
 export default class ExtendControl implements mapboxgl.IControl {
@@ -102,6 +104,8 @@ export default class ExtendControl implements mapboxgl.IControl {
     }
 
     set open(value: boolean) {
+        if (value === this._open) return;
+
         if (value) {
             this.extendBtn.classList.add("jas-ctrl-extend-open");
             this.mobileContainer.classList.add("jas-ctrl-extend-mobile-contianer-active");
@@ -110,6 +114,7 @@ export default class ExtendControl implements mapboxgl.IControl {
             this.mobileContainer.classList.remove("jas-ctrl-extend-mobile-contianer-active");
         }
 
+        this.options.onChange?.call(undefined, value);
         this._open = value;
     }
 
