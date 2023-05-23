@@ -72,8 +72,6 @@ export default class ExtendControl implements mapboxgl.IControl {
             }
         });
 
-        console.log("extend-control", this)
-
         const extendBtn = createHtmlElement("div", "jas-ctrl-extend", "jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group");
         this.extendBtn = extendBtn;
         extendBtn.append(image_open_wapper, image_close_wapper);
@@ -115,8 +113,14 @@ export default class ExtendControl implements mapboxgl.IControl {
         if (typeof img === 'string')
             if (img.replace(/\s+/g, "").startsWith("<svg"))
                 parent.innerHTML += img;
-            else
-                parent.style.backgroundImage = img;
+            else {
+                const style = parent.style;
+                style.height = "100%";
+                style.width = "100%";
+                style.backgroundImage = `url('${img}')`;
+                style.backgroundRepeat = 'no-repeat';
+                style.backgroundSize = "100%"
+            }
         else
             parent.append(img);
     }
