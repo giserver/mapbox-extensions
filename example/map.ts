@@ -6,7 +6,7 @@ import SwitchMapControl from '../lib/controls/SwitchMapControl';
 import BackToOriginControl from '../lib/controls/BackToOriginControl';
 import DoodleControl from '../lib/controls/DoodleControl';
 import SwitchLayerControl from '../lib/controls/SwitchLayerControl';
-import { ExtendControl, Measure4Mobile, SetStyleProxy } from '../lib';
+import { ExtendControl, SetStyleProxy } from '../lib';
 
 import '../lib/index.css';
 import { createHtmlElement } from '../lib/utils';
@@ -23,13 +23,11 @@ const map = new mapboxgl.Map({
     zoom: 10,
     center: [120.5, 31],
     pitch: 0,
-    style: currentStyle
+    style: currentStyle,
+    attributionControl: false
 });
 
 const setStyleProxy = new SetStyleProxy(map);
-
-const is_mobile = getQueryVariable("mobile");
-const controlDiv = document.getElementById("control")!;
 
 const layerGroups: LayerGroupsType = {
     '城市规划': {
@@ -295,162 +293,136 @@ const layerGroups: LayerGroupsType = {
             'backgroundImage': '',
             active: true
         }]
-    }, '可清除可全选': {
-        uiType: 'SwitchBtn',
-        layers: [{
-            name: "xxx",
-            layer: {
-                id: 'kqc_1',
-                type: 'symbol',
-                source: {
-                    type: 'geojson',
-                    data: {
-                        type: 'Feature',
-                        geometry: {
-                            type: 'Point',
-                            coordinates: [120.54, 30.9]
-                        },
-                        properties: { name: '可清除' }
-                    }
-                },
-                layout: {
-                    "text-field": ['get', 'name']
-                }
-            }
-        }, {
-            name: "xxx1",
-            layer: {
-                id: 'kqc_2',
-                type: 'symbol',
-                source: {
-                    type: 'geojson',
-                    data: {
-                        type: 'Feature',
-                        geometry: {
-                            type: 'Point',
-                            coordinates: [120.65, 30.9]
-                        },
-                        properties: { name: '可清除12' }
-                    }
-                },
-                layout: {
-                    "text-field": ['get', 'name']
-                }
-            }
-        }]
     }
 };
 
-if (is_mobile) {
-    let show = false;
 
-    map.on('load', () => {
-        const measureMobile = new Measure4Mobile(map, document.body, { show });
-        const changeMeasureShowBtn = document.createElement('button');
-        changeMeasureShowBtn.innerText = "测量"
+let doodleControl: DoodleControl;
+let measureControl: MeasureControl;
 
-        changeMeasureShowBtn.addEventListener('click', () => {
-            show = !show;
-            measureMobile.show(show);
-        })
+// 测量
+measureControl = new MeasureControl({
+    horizontal: true,
+    geometryClick: true,
+    onGeometryCopy: (geom: string) => { alert(`复制成功 : ${geom}`) },
+    onFeatureDelete: (id: string) => { alert(`删除成功 : ${id}`) },
+    onStart: () => { doodleControl.stop() },
+    onStop: () => { console.log("measure stop") },
+    measurePolygonOptions: {
+        onDrawed: (id, geometry) => { console.log(id, JSON.stringify(geometry)) }
+    }
+});
 
-        controlDiv.append(changeMeasureShowBtn);
+doodleControl = new DoodleControl({
+    onStart: () => { measureControl.stop() },
+    onDrawed: polygon => { setTimeout(() => { alert(JSON.stringify(polygon)) }, 200) }
+})
 
-        map.addControl(new BackToOriginControl());
-        map.addControl(new SwitchLayerControl({
+map.on('load', () => {
+
+    // 切换卫星影像 可以自定义图层
+    map.addControl(new SwitchMapControl({
+        extra: {
             layerGroups
-        }));
-    })
-} else {
-    let doodleControl: DoodleControl;
-    let measureControl: MeasureControl;
-
-    // 测量
-    measureControl = new MeasureControl({
-        horizontal: true,
-        geometryClick: true,
-        onGeometryCopy: (geom: string) => { alert(`复制成功 : ${geom}`) },
-        onFeatureDelete: (id: string) => { alert(`删除成功 : ${id}`) },
-        onStart: () => { doodleControl.stop() },
-        onStop: () => { console.log("measure stop") },
-        measurePolygonOptions: {
-            onDrawed: (id, geometry) => { console.log(id, JSON.stringify(geometry)) }
         }
+    }));
+
+    // 加载多个图片
+    map.addImages({ 'img1': '/relics.png', 'img2': '/relics.png' }, () => {
+        map.addLayer({
+            id: 'images',
+            type: 'symbol',
+            source: {
+                type: 'geojson',
+                data: {
+                    type: 'FeatureCollection',
+                    features: [
+                        {
+                            type: 'Feature',
+                            properties: {
+                                img: 'img1'
+                            },
+                            geometry: {
+                                type: 'Point',
+                                coordinates: [120.5, 31]
+                            }
+                        },
+                        {
+                            type: 'Feature',
+                            properties: {
+                                img: 'img2'
+                            },
+                            geometry: {
+                                type: 'Point',
+                                coordinates: [120.6, 31]
+                            }
+                        }
+                    ]
+                }
+            },
+            layout: {
+                'icon-image': ['get', 'img']
+            }
+        })
     });
 
-    doodleControl = new DoodleControl({
-        onStart: () => { measureControl.stop() },
-        onDrawed: polygon => { setTimeout(() => { alert(JSON.stringify(polygon)) }, 200) }
-    })
+    map.addControl(measureControl);
+    map.addControl(new BackToOriginControl());
+    map.addControl(doodleControl);
 
-    map.on('load', () => {
+    map.addControl(new ExtendControl({
+        content: createHtmlElement("div", "jas-ctrl-measure-mobile-operation-item")
+    }));
 
-        // 切换卫星影像 可以自定义图层
-        map.addControl(new SwitchMapControl({
-            extra: {
-                layerGroups
-            }
-        }));
+    map.addControl(new MeasureSealControl());
 
-        // 加载多个图片
-        map.addImages({ 'img1': '/relics.png', 'img2': '/relics.png' }, () => {
-            map.addLayer({
-                id: 'images',
-                type: 'symbol',
-                source: {
-                    type: 'geojson',
-                    data: {
-                        type: 'FeatureCollection',
-                        features: [
-                            {
+    map.addControl(new SwitchLayerControl({
+        position: "top-left",
+        layerGroups: {
+            '可清除可全选': {
+                uiType: 'SwitchBtn',
+                layers: [{
+                    name: "xxx",
+                    layer: {
+                        id: 'kqc_1',
+                        type: 'symbol',
+                        source: {
+                            type: 'geojson',
+                            data: {
                                 type: 'Feature',
-                                properties: {
-                                    img: 'img1'
-                                },
                                 geometry: {
                                     type: 'Point',
-                                    coordinates: [120.5, 31]
-                                }
-                            },
-                            {
-                                type: 'Feature',
-                                properties: {
-                                    img: 'img2'
+                                    coordinates: [120.54, 30.9]
                                 },
-                                geometry: {
-                                    type: 'Point',
-                                    coordinates: [120.6, 31]
-                                }
+                                properties: { name: '可清除' }
                             }
-                        ]
+                        },
+                        layout: {
+                            "text-field": ['get', 'name']
+                        }
                     }
-                },
-                layout: {
-                    'icon-image': ['get', 'img']
-                }
-            })
-        });
-
-        map.addControl(measureControl);
-        map.addControl(new BackToOriginControl());
-        map.addControl(doodleControl);
-
-        map.addControl(new ExtendControl({
-            content: createHtmlElement("div", "jas-ctrl-measure-mobile-operation-item")
-        }));
-
-        map.addControl(new MeasureSealControl())
-    })
-
-
-}
-
-function getQueryVariable(variable: string) {
-    const query = window.location.search.substring(1);
-    const vars = query.split("&");
-    for (let i = 0; i < vars.length; i++) {
-        const pair = vars[i].split("=");
-        if (pair[0] === variable)
-            return pair[1];
-    }
-}
+                }, {
+                    name: "xxx1",
+                    layer: {
+                        id: 'kqc_2',
+                        type: 'symbol',
+                        source: {
+                            type: 'geojson',
+                            data: {
+                                type: 'Feature',
+                                geometry: {
+                                    type: 'Point',
+                                    coordinates: [120.65, 30.9]
+                                },
+                                properties: { name: '可清除12' }
+                            }
+                        },
+                        layout: {
+                            "text-field": ['get', 'name']
+                        }
+                    }
+                }]
+            }
+        }
+    }));
+})

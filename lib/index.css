@@ -44,14 +44,6 @@
     cursor: pointer;
 }
 
-@media screen and (min-width:600px) {}
-
-@media screen and (max-width:600px) {
-    .jas-one-button-mapbox:active {
-        background-color: #ddd;
-    }
-}
-
 /* #region switch 控件 */
 .jas-switch {
     width: 44px;
@@ -388,7 +380,7 @@
 }
 
 .jas-ctrl-switchlayer-container-header-label {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 500;
 }
 
@@ -577,3 +569,24 @@
 }
 
 /* #endregion */
+
+@media screen and (min-width:600px) {}
+
+@media screen and (max-width:600px) {
+    .jas-one-button-mapbox:active {
+        background-color: #ddd;
+    }
+
+
+    .jas-ctrl-switchmap {
+        height: 64px;
+        width: 64px;
+    }
+
+    .jas-ctrl-switchmap-text {
+        letter-spacing: 0;
+        font-size: 12px;
+        margin-bottom: 5px;
+        font-weight: 400;
+    }
+}
