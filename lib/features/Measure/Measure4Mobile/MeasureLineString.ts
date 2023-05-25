@@ -8,10 +8,10 @@ import * as turf from '@turf/turf'
  * @extends {MeasureBase}
  */
 export default class MeasureLineString extends MeasureBase {
-    protected getCoordinates(): turf.helpers.Position[] | undefined {
+    protected getCoordinates(): GeoJSON.Position[] | undefined {
         if (!this.currentFeature)
             return undefined;
-        return (this.currentFeature.geometry as turf.LineString).coordinates;
+        return (this.currentFeature.geometry as GeoJSON.LineString).coordinates;
     }
 
     protected onInit(): void {
@@ -63,7 +63,7 @@ export default class MeasureLineString extends MeasureBase {
                 properties: {}
             })
         } else {
-            const geometry = this.currentFeature!.geometry as turf.LineString;
+            const geometry = this.currentFeature!.geometry as GeoJSON.LineString;
             geometry.coordinates.push(point);
             distance = geometry.coordinates.length > 1 ? this.getDistanceString(geometry) : '0';
         }
@@ -89,7 +89,7 @@ export default class MeasureLineString extends MeasureBase {
        * @param line 
        * @returns 
        */
-    private getDistanceString(line: turf.LineString) {
+    private getDistanceString(line: GeoJSON.LineString) {
         const length = turf.length(turf.lineString(line.coordinates));
         return length > 1 ? `${length.toFixed(3)}km` : `${(length * 1000).toFixed(2)}m`
     }

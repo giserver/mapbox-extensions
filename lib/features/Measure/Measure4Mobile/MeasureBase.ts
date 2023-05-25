@@ -29,7 +29,7 @@ export default abstract class MeasureBase {
     protected abstract onAddPoint(): void;
     protected abstract onRevokePoint(): void;
     protected abstract onFinish(): void;
-    protected abstract getCoordinates(): turf.helpers.Position[] | undefined;
+    protected abstract getCoordinates(): GeoJSON.Position[] | undefined;
 
     constructor(protected map: mapboxgl.Map, protected getCrossLngLat: () => mapboxgl.LngLat) {
 

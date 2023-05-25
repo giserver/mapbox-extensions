@@ -1,5 +1,4 @@
 import * as turf from "@turf/turf";
-import { LineString } from "@turf/turf";
 import { MapMouseEvent, EventData, Map, LinePaint, CirclePaint, SymbolPaint, SymbolLayout } from "mapbox-gl";
 import { createUUID } from "../../utils";
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
@@ -240,7 +239,7 @@ export default class MeasureLineString extends MeasureBase {
 
     // 获取最后一个feature的线数据
     private get currentLine() {
-        return this.currentFeature.geometry as LineString;
+        return this.currentFeature.geometry as GeoJSON.LineString;
     }
 
     /**
@@ -248,7 +247,7 @@ export default class MeasureLineString extends MeasureBase {
      * @param line 
      * @returns 
      */
-    private getDistanceString(line: LineString) {
+    private getDistanceString(line: GeoJSON.LineString) {
         const length = turf.length(turf.lineString(line.coordinates));
         return this.options.createText!(length);
     }

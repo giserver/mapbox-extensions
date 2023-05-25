@@ -8,10 +8,10 @@ import * as turf from '@turf/turf'
  * @extends {MeasureBase}
  */
 export default class MeasurePolygon extends MeasureBase {
-    protected getCoordinates(): turf.helpers.Position[] | undefined {
+    protected getCoordinates(): GeoJSON.Position[] | undefined {
         if (!this.currentFeature)
             return undefined;
-        return (this.currentFeature.geometry as turf.Polygon).coordinates[0];
+        return (this.currentFeature.geometry as GeoJSON.Polygon).coordinates[0];
     }
 
     protected onInit(): void {
@@ -60,7 +60,7 @@ export default class MeasurePolygon extends MeasureBase {
                 properties: { area: '0' }
             })
         } else {
-            const geometry = this.currentFeature?.geometry as turf.Polygon;
+            const geometry = this.currentFeature?.geometry as GeoJSON.Polygon;
             geometry.coordinates[0].push(point);
             this.currentFeature!.properties!.area = geometry.coordinates[0].length > 2 ? this.getAreaString(geometry) : '0';
         }
@@ -76,7 +76,7 @@ export default class MeasurePolygon extends MeasureBase {
     }
 
     protected onRevokePoint(): void {
-        const geometry = this.currentFeature?.geometry as turf.Polygon;
+        const geometry = this.currentFeature?.geometry as GeoJSON.Polygon;
         this.currentFeature!.properties!.area = geometry.coordinates[0].length < 3 ? '0' : this.getAreaString(geometry);
         this.updateDataSource()
     }
@@ -88,7 +88,7 @@ export default class MeasurePolygon extends MeasureBase {
        * @param line 
        * @returns 
        */
-    private getAreaString(polygon: turf.Polygon) {
+    private getAreaString(polygon: GeoJSON.Polygon) {
         const area = turf.area(polygon);
         return area > 1000000 ? `${(area / 1000000).toFixed(2)}km²` : `${area.toFixed(2)}m²`
     }

@@ -1,5 +1,4 @@
 import * as turf from '@turf/turf';
-import { Polygon } from "@turf/turf";
 import { EventData, FillPaint, LinePaint, Map, MapMouseEvent, SymbolLayout, SymbolPaint } from "mapbox-gl";
 import { createUUID } from '../../utils';
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
@@ -217,6 +216,6 @@ export default class MeasurePolygon extends MeasureBase {
     }
 
     private get currentPolygon() {
-        return this.currentFeature.geometry as Polygon;
+        return this.currentFeature.geometry as GeoJSON.Polygon;
     }
 }
