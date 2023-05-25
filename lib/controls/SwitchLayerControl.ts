@@ -1,6 +1,6 @@
 import mapboxgl from "mapbox-gl";
 import { createHtmlElement } from "../utils";
-import ExtendControl, { UIPostion } from "./ExtendControl";
+import ExtendControl, { UIPosition } from "./ExtendControl";
 import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions } from "../features/SwitchLayer/types";
 import SwitchGroupContainer from "../features/SwitchLayer/SwitchGroupContainer";
 import SvgBuilder from "../svg";
@@ -15,7 +15,7 @@ export interface SwitchLayerOptions extends SelectAndClearAllOptions, ShowToTopO
     /**
      * 组件位置
      */
-    position?: UIPostion
+    position?: UIPosition
 }
 
 

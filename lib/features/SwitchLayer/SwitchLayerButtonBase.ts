@@ -67,13 +67,15 @@ export default abstract class SwitchLayerButtonBase {
         element.addEventListener('click', () => {
             this.changeChecked(undefined, true);
 
+            // 计算互斥
             if (this.checked) {
                 this.container.layerBtns.forEach(oBtn => {
-                    if (oBtn.id !== this.id &&
-                        (this.container.options.mutex ||
-                            this.options.mutex ||
-                            oBtn.options.mutex ||
-                            (this.options.mutexIdentity && this.options.mutexIdentity === oBtn.options.mutexIdentity))) {
+                    if (oBtn === this) return;
+
+                    if (this.container.options.mutex ||
+                        this.options.mutex ||
+                        oBtn.options.mutex ||
+                        (this.options.mutexIdentity && this.options.mutexIdentity === oBtn.options.mutexIdentity)) {
                         oBtn.changeChecked(false);
                     }
                 })

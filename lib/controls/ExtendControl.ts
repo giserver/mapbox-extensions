@@ -2,13 +2,13 @@ import mapboxgl from "mapbox-gl";
 import { createHtmlElement } from "../utils";
 import SvgBuilder from '../svg'
 
-export type UIPostion = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+export type UIPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 
 export interface ExtendControlOptions {
     img1?: string | SVGElement,
     img2?: string | SVGAElement,
     content: HTMLElement | Array<HTMLElement> | ((map: mapboxgl.Map) => HTMLElement),
-    position?: UIPostion,
+    position?: UIPosition,
     adaptMobile?: boolean,
 
     onChange?(open: boolean): void

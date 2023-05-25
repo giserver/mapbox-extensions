@@ -1,16 +1,28 @@
 import mapboxgl from "mapbox-gl";
-import MeasureControl from "./MeasureControl";
-import ExtendControl from "./ExtendControl";
+import MeasureControl, { MeasureControlOptions } from "./MeasureControl";
+import ExtendControl, { UIPosition } from "./ExtendControl";
 import SvgBuilder from "../svg";
 import { createHtmlElement } from "../utils";
 import { MeasureMobileUIBase } from "../features/Measure/Measure4Mobile";
 import MeasureLineString from "../features/Measure/Measure4Mobile/MeasureLineString";
 import MeasurePolygon from "../features/Measure/Measure4Mobile/MeasurePolygon";
 
-export default class MeasureSealControl implements mapboxgl.IControl {
+export type Measure2ControlOptions = MeasureControlOptions & {
+    position?: UIPosition
+}
+
+export default class Measure2Control implements mapboxgl.IControl {
     private minWidth = 600;
     private measureControl: MeasureControl | undefined;
     private measureMobileControl: MeasureMobileUIBase | undefined;
+
+    /**
+     *
+     */
+    constructor(private options: Measure2ControlOptions = {}) {
+        options.horizontal ??= true;
+        options.position ??= 'top-right';
+    }
 
     onAdd(map: mapboxgl.Map): HTMLElement {
         const mapContainer = map.getContainer();
@@ -82,5 +94,7 @@ export default class MeasureSealControl implements mapboxgl.IControl {
         this.measureControl?.onRemove(map);
     }
 
-    getDefaultPosition?: (() => string) | undefined;
+    getDefaultPosition() {
+        return this.options.position!;
+    }
 }
