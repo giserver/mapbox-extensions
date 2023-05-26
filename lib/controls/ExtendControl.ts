@@ -9,7 +9,7 @@ export interface ExtendControlOptions {
     img2?: string | SVGAElement,
     content: HTMLElement | Array<HTMLElement> | ((map: mapboxgl.Map) => HTMLElement),
     position?: UIPosition,
-    adaptMobile?: boolean,
+    mustBe?: "pc" | "mobile",
 
     onChange?(open: boolean): void
 }
@@ -27,8 +27,7 @@ export default class ExtendControl implements mapboxgl.IControl {
         const svg_extend_right = new SvgBuilder('extend_right').create();
 
         this.options.img1 ??= this.options.position.endsWith("right") ? svg_extend_left : svg_extend_right;
-        this.options.img2 ??= this.options.position.endsWith("right") ? svg_extend_right : svg_extend_left;;
-        this.options.adaptMobile ??= true;
+        this.options.img2 ??= this.options.position.endsWith("right") ? svg_extend_right : svg_extend_left;
     }
 
     onAdd(map: mapboxgl.Map): HTMLElement {
@@ -38,7 +37,7 @@ export default class ExtendControl implements mapboxgl.IControl {
         this.mobileContainer = mobileContainer;
 
         let currentContainer = mobileContainer;
-        if (isMobile && this.options.adaptMobile)
+        if (isMobile && (!this.options.mustBe || this.options.mustBe === 'mobile'))
             desktopContainer.classList.add("jas-ctrl-hidden");
         else {
             mobileContainer.classList.add("jas-ctrl-hidden");
@@ -59,7 +58,7 @@ export default class ExtendControl implements mapboxgl.IControl {
         this.appendImage(image_close_wapper, this.options.img2!);
 
         map.on('resize', e => {
-            if (!this.options.adaptMobile) return;
+            if (this.options.mustBe) return;
 
             const width = map.getContainer().clientWidth;
             if (width < this.minWidth) {

@@ -2,7 +2,7 @@ import mapboxgl from "mapbox-gl";
 import MeasureControl, { MeasureControlOptions } from "./MeasureControl";
 import ExtendControl, { UIPosition } from "./ExtendControl";
 import SvgBuilder from "../svg";
-import { createHtmlElement } from "../utils";
+import { createHtmlElement, isMobile } from "../utils";
 import { MeasureMobileUIBase } from "../features/Measure/Measure4Mobile";
 import MeasureLineString from "../features/Measure/Measure4Mobile/MeasureLineString";
 import MeasurePolygon from "../features/Measure/Measure4Mobile/MeasurePolygon";
@@ -26,11 +26,11 @@ export default class Measure2Control implements mapboxgl.IControl {
 
     onAdd(map: mapboxgl.Map): HTMLElement {
         const mapContainer = map.getContainer();
-        const isMobile = mapContainer.clientWidth < this.minWidth;
+        const isMobileWidth = mapContainer.clientWidth < this.minWidth;
 
         let extendContent: HTMLElement;
 
-        if (isMobile) { // TODO:需要找到一个平衡的模式重构，数据结构混乱
+        if (isMobileWidth || isMobile()) { // TODO:需要找到一个平衡的模式重构，数据结构混乱
             extendContent = createHtmlElement('div', "jas-ctrl-measure", "mapboxgl-ctrl-group", "hor");
             this.measureMobileControl = new MeasureMobileUIBase(mapContainer, mapContainer);
             this.measureMobileControl.show(false);
@@ -73,7 +73,7 @@ export default class Measure2Control implements mapboxgl.IControl {
 
         const extendControl = new ExtendControl({
             content: extendContent,
-            adaptMobile: false,
+            mustBe: "pc",
             onChange: open => {
                 if (open) {
                     this.measureMobileControl?.show(true);

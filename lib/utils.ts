@@ -77,3 +77,7 @@ export function createHtmlElement<K extends keyof HTMLElementTagNameMap>(target:
     element.classList.add(...classNames);
     return element;
 }
+
+export function isMobile() {
+    return window.navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i);
+}
