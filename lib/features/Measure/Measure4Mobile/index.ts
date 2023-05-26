@@ -105,8 +105,8 @@ export class MeasureMobileUIBase {
     }
 
     getCurrentPosition(map: mapboxgl.Map) {
-        const x = this.crosshairDiv.getBoundingClientRect().left + this.crosshairDiv.clientWidth / 2;
-        const y = this.crosshairDiv.getBoundingClientRect().top + this.crosshairDiv.clientHeight / 2;
+        const x = this.crosshairDiv.getBoundingClientRect().left + this.crosshairDiv.clientWidth / 2 - map.getContainer().getBoundingClientRect().left;
+        const y = this.crosshairDiv.getBoundingClientRect().top + this.crosshairDiv.clientHeight / 2 - map.getContainer().getBoundingClientRect().top;
 
         return map.unproject([x, y]);
     }

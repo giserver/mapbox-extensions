@@ -37,7 +37,7 @@ export default class ExtendControl implements mapboxgl.IControl {
         this.mobileContainer = mobileContainer;
 
         let currentContainer = mobileContainer;
-        if (isMobile && (!this.options.mustBe || this.options.mustBe === 'mobile'))
+        if (isMobile && this.options.mustBe !== 'pc')
             desktopContainer.classList.add("jas-ctrl-hidden");
         else {
             mobileContainer.classList.add("jas-ctrl-hidden");
