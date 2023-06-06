@@ -1,4 +1,6 @@
-import * as turf from '@turf/turf';
+import centroid from '@turf/centroid';
+import turfArea from '@turf/area';
+import turfLength from '@turf/length';
 import { EventData, FillPaint, LinePaint, Map, MapMouseEvent, SymbolLayout, SymbolPaint } from "mapbox-gl";
 import { createUUID } from '../../utils';
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
@@ -161,9 +163,9 @@ export default class MeasurePolygon extends MeasureBase {
             coords.push(coords[0]);
 
             // 在中心点添加标注
-            const center = turf.centroid(this.currentPolygon);
-            const area = this.options.createText!(turf.area(this.currentFeature));
-            const length = this.options.createLengthText!(turf.length(this.currentFeature));
+            const center = centroid(this.currentPolygon);
+            const area = this.options.createText!(turfArea(this.currentFeature));
+            const length = this.options.createLengthText!(turfLength(this.currentFeature));
             center.id = this.currentFeature.id;
             center.properties = {
                 area,

@@ -1,4 +1,3 @@
-import * as turf from '@turf/turf'
 import { createUUID } from '../../../utils';
 import mapboxgl from 'mapbox-gl';
 

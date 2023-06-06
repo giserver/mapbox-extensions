@@ -1,5 +1,5 @@
 import MeasureBase from "./MeasureBase";
-import * as turf from '@turf/turf'
+import turfLength from '@turf/length'
 
 /**
  *  测量距离
@@ -90,7 +90,11 @@ export default class MeasureLineString extends MeasureBase {
        * @returns 
        */
     private getDistanceString(line: GeoJSON.LineString) {
-        const length = turf.length(turf.lineString(line.coordinates));
+        const length = turfLength({
+            type: 'Feature',
+            geometry: line,
+            properties: {}
+        });
         return length > 1 ? `${length.toFixed(3)}km` : `${(length * 1000).toFixed(2)}m`
     }
 }

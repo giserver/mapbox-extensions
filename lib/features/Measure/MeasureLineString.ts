@@ -1,4 +1,4 @@
-import * as turf from "@turf/turf";
+import turfLength from "@turf/length";
 import { MapMouseEvent, EventData, Map, LinePaint, CirclePaint, SymbolPaint, SymbolLayout } from "mapbox-gl";
 import { createUUID } from "../../utils";
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
@@ -248,7 +248,11 @@ export default class MeasureLineString extends MeasureBase {
      * @returns 
      */
     private getDistanceString(line: GeoJSON.LineString) {
-        const length = turf.length(turf.lineString(line.coordinates));
+        const length = turfLength({
+            type: 'Feature',
+            geometry: line,
+            properties: {}
+        });
         return this.options.createText!(length);
     }
 }

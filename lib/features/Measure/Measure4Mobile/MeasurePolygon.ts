@@ -1,5 +1,5 @@
 import MeasureBase from "./MeasureBase";
-import * as turf from '@turf/turf'
+import turfArea from '@turf/area'
 
 /**
  *  测量面积
@@ -89,7 +89,7 @@ export default class MeasurePolygon extends MeasureBase {
        * @returns 
        */
     private getAreaString(polygon: GeoJSON.Polygon) {
-        const area = turf.area(polygon);
+        const area = turfArea(polygon);
         return area > 1000000 ? `${(area / 1000000).toFixed(2)}km²` : `${area.toFixed(2)}m²`
     }
 

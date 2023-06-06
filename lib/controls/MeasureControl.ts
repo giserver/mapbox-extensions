@@ -1,5 +1,5 @@
 import mapboxgl from "mapbox-gl";
-import * as turf from '@turf/turf';
+import centroid from '@turf/centroid';
 import MeasureBase, { MeasureType } from "../features/Measure/MeasureBase";
 import MeasurePoint, { MeasurePointOptions } from "../features/Measure/MeasurePoint";
 import MeasureLineString, { MeasureLineStringOptions } from "../features/Measure/MeasureLineString";
@@ -206,7 +206,7 @@ export default class MeasureControl implements mapboxgl.IControl {
             this.measures.forEach(mp => {
                 const pf = mp.measure.getFeatrue(feature.properties!['id'].toString());
                 if (pf) {
-                    const center = turf.center(pf.geometry as turf.AllGeoJSON).geometry.coordinates;
+                    const center = centroid(pf.geometry as any).geometry.coordinates;
                     this.popup.setHTML(`<div style="display:flex;align-items:center;">
                                                 <div id="popup-btn-copy" class='jas-ctrl' style="margin:0 5px 0 0;cursor:pointer;">${new SvgBuilder('copy').create()}</div>
                                                 <div id="popup-btn-clean" class='jas-ctrl' style="cursor:pointer;">${new SvgBuilder('clean').create()}</div>
