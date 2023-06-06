@@ -10,7 +10,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "webpack serve --config ./webpack.config.dev.js",
-    "build": "tsc && copy lib\\index.css dist && webpack --config ./webpack.config.cdn.js",
+    "build": "webpack --config ./webpack.config.cdn.js && tsc",
     "build-example": "webpack --config ./webpack.config.js"
   },
   "dependencies": {

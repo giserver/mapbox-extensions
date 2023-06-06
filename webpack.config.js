@@ -1,7 +1,9 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const path = require('path');
+
 
 module.exports = {
     mode: 'production',
@@ -43,6 +45,11 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: "./example/index.html"
         }),
-        new CleanWebpackPlugin()
+        new CleanWebpackPlugin(),
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: "./example/assets", to: "assets" }
+            ]
+        })
     ]
 }

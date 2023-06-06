@@ -1,3 +1,5 @@
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const path = require('path');
 
 module.exports = {
@@ -33,5 +35,13 @@ module.exports = {
     },
     externals: {
         'mapbox-gl': 'mapboxgl'
-    }
+    },
+    plugins: [
+        new CleanWebpackPlugin(),
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: "./lib/index.css", to: "./" }
+            ]
+        })
+    ]
 };

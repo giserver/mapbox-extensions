@@ -53,7 +53,7 @@ const layerGroups: LayerGroupsType = {
                     'text-field': ['get', 'name']
                 }
             }],
-            'backgroundImage': '/house-user.png',
+            'backgroundImage': './assets/house-user.png',
             active: true
         }, {
             name: '建筑群',
@@ -75,7 +75,7 @@ const layerGroups: LayerGroupsType = {
                     "text-field": ['get', 'name']
                 }
             }],
-            'backgroundImage': '/building.png',
+            'backgroundImage': './assets/building.png',
         }, {
             name: '水路规划',
             layer: {
@@ -96,7 +96,7 @@ const layerGroups: LayerGroupsType = {
                     "text-field": ['get', 'name']
                 }
             },
-            'backgroundImage': '/wetland.png',
+            'backgroundImage': './assets/wetland.png',
         }, {
             name: '公路规划',
             layer: {
@@ -117,7 +117,7 @@ const layerGroups: LayerGroupsType = {
                     "text-field": ['get', 'name']
                 }
             },
-            'backgroundImage': '/road.png',
+            'backgroundImage': './assets/road.png',
             easeToOptions: {
                 center: [120.53, 31.2]
             }
@@ -145,7 +145,7 @@ const layerGroups: LayerGroupsType = {
                     "text-field": ['get', 'name']
                 }
             },
-            'backgroundImage': '/house-user.png',
+            'backgroundImage': './assets/house-user.png',
             mutex: true
         }, {
             name: 'fff5',
@@ -168,8 +168,8 @@ const layerGroups: LayerGroupsType = {
                     'text-size': 30,
                 }
             },
-            'backgroundImage': '/building.png',
-            'backgroundImageActive': '/building-active.png',
+            'backgroundImage': './assets/building.png',
+            'backgroundImageActive': './assets/building-active.png',
             active: true,
         }, {
             name: 'fff6',
@@ -328,7 +328,7 @@ map.on('load', () => {
     }));
 
     // 加载多个图片
-    map.addImages({ 'img1': '/relics.png', 'img2': '/relics.png' }, () => {
+    map.addImages({ 'img1': './assets/relics.png', 'img2': './assets/relics.png' }, () => {
         map.addLayer({
             id: 'images',
             type: 'symbol',

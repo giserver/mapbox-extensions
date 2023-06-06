@@ -14,6 +14,9 @@ yarn build
 4. add css : `import 'mapbox-extensions/dist/index.css'`
 5. enjoy extensions.
 
+## demo 
+[examples](https://cocaine-coder.github.io/mapbox-extensions/example-dist/)
+
 ## Give a Star! :star:
 If you like or are using this project to learn or start your solution, please give it a star. Thanks!
 
