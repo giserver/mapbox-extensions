@@ -1,111 +1,130 @@
 # mapbox-extensions 
 [![npm](https://img.shields.io/npm/v/mapbox-extensions)](https://www.npmjs.com/package/mapbox-extensions)  
-mapboxgl的扩展库，例如新增changeStyle替代原有的setStyle解决要保存已经加载的图层，自定义图层组并且增加对图层组的操作，等等。。。
-## dev & build 
-```
-yarn
-yarn dev
-yarn build
-```
+mapbox的扩展组件库，包含测量、图层切换、底图切换、涂鸦绘制、回到原始位置等功能
+## DEMO
+[examples](https://cocaine-coder.github.io/mapbox-extensions/example-dist/)
 ## 使用    
-1. 确保mapboxgl已经在项目中安装. 
-2. `npm install` / `yarn add` `mapbox-extensions`. 
-3. 导包 `import 'mapbox-extensions'` at your entry file. 
-4. 导入css `import 'mapbox-extensions/dist/index.css'`
+### CDN 
+``` html
+<script src="https://jsd.onmicrosoft.cn/npm/mapbox-extensions@1.3.14/dist/mapbox-extensions.js"></script>
+<link href="https://jsd.onmicrosoft.cn/npm/mapbox-extensions@1.3.14/dist/index.css" rel="stylesheet">
+```  
+### NODE 
+```
+npm install / yarn add  mapbox-extensions
 
-## 给颗星星吧! :star:
+import { SwitchLayerControl } from 'mapbox-extensions'
+import 'mapbox-extensions/dist/index.css'
+```
+## 给颗星星呗! :star:
 如果您觉得这个项目还不错，可以在您的项目中使用或者对您有些许启发，请给颗星星吧，谢谢！
 
 ## 功能 
-### `修改样式`  
-在map对象中的使用setStyle方法会将现有的所有数据源和图层清空，使用changeStyle可以保存这些数据源和图层，但是必须设置要保存的图层id
+### `测量` 
 ``` ts
-const map = new mapboxgl.Map({...});
-map.changeStyle(["layer-polygon","xxxlayer"] , options);
-```
-
-### `图层组`
-``` ts
-const map = new mapboxgl.Map({...});
-const group = map.addLayerGroup('group1');
-
-group.add(layer); // 添加一个图层到图层组，并且会自动地将图层添加到map中
-group.show = false; //设置所有在这个组的图层设置为不可见 
-group.show = true;
-
-console.log(group.layerIds); // ['layerid']
-
-group.moveTo(); // 图层组的所有图层置顶
-group.moveTo("beforeId"); // 移动图层至id为beforeId的图层之后
-
-group.remove('layerid');
-group.removeAll();
-
-map.removeLayerGroup('group1');
-```  
-### `测量`  
-这个是一个自定义的测量控件，实现了mapboxgl中的IControl，所以您可以直接作为ui使用它。你可以测量点（经纬度），线（长度），面（面积）。
-
-![测量](./doc/img/draw.gif)
-
-``` ts
-const map = new mapboxgl.Map({...});
-
-map.addControl(new MeasureControl(options)) // 参数可以为空，或自行配置
-```
-*参数*  
-- [MeasureControlOptions](./lib/controls/MeasureControl.ts)
-- [MeasurePointOptions](./lib/features/Meature/MeasurePoint.ts)  
-- [MeasureLineStringOptions](./lib/features/Meature/MeasureLineString.ts)  
-- [MeasurePolygonOptions](./lib/features/Meature/MeasurePolygon.ts)  
-
+map.addControl(new MeasureControl({
+    horizontal : true,         //默认false 控件是否横置   
+    btnBgColor : 'red',        //默认'#ffffff'
+    btnActiveColor:'red',      //默认'#ddd'
+    geometryClick:true,        //默认false 测量后的图像是否可选
+    enableModes:['LineString'],//默认所有 允许的测量模式
+    onStart:()=>{},            //默认空 开始测量的回调
+    onStop:()=>{},             //默认空 结束测量的回调
+    measurePointOptions:{      //默认空 测量点的配置
+    },
+    measureLineStringOptions:{ //默认空 测量线的配置
+    },
+    measurePolygonOptions:{    //默认空 测量面的配置
+    }
+}))
+``` 
+![测量](./doc/img/measure.gif)
 *鼠标操作* 
 - 左键点击 : 添加一个点
 - 右键点击 : 删除一个点
-- 左键双击 : 完成测量，开始下一次测量  
-你也可以使用那三个测量类自定义ui，在 [MeasureBase](./lib/features/Meature/MeasureBase.ts) 这个抽象类中可以找到所有的公开方法，很简单😄
-
-*增加的功能*
-- [MeasureControlOptions](./lib/controls/MeasureControl.ts) 参数中的 `geometryClick` 控制图形(包括文字标注)是否可以点击，点击后弹出 复制、删除功能
-![点击](./doc/img/draw1.gif)
+- 左键双击 : 完成测量，开始下一次测量 
 
 ### `回到初始位置`
-就是一个很简单的map.easeTo功能的封装，默认 zoom center pitch bearing 从map的初始值中取
-
 ``` ts
-map.addControl(new BackToOriginControl({
-    //eastToOptions:{}
-}))
+map.addControl(new BackToOriginControl({}))
 ```
-
 ![回到初始位置](./doc/img/back2origin.gif)
 
-### `切换图层` 
-- 切换到卫星影像
-
-    可以自定义 `textColor` `backgroundImage` 和显示名字 `name` 
-
-- 附加图层
-
-    通过配置`extraLayers`参数，激活附加图层ui，提供图层分组功能，组与组之间图层的显隐不互斥，组可以通过`mutex`直接设置各个图层互斥，也可以在非互斥组内配置`LayerItem`的`mutex`参数设置该图层与其他图层互斥。
-
-    您还可以通过设置active属性设置图层默认加载到地图(显示)，但这个active会在初始化控件时检查互斥是否正确，如果互斥组内存在一个以上的active图层或者非互斥组内存在一个互斥图层以及其他的active图层，则抛出异常。
+### `切换底图` *附加图层*
 ``` ts
 map.addControl(new SwitchMapControl({
-    satelliteOption: {
-        textColor: 'white',
-        //backgroundImage: '/relics.png'
+    satelliteOption:{        // 默认空  卫星底图配置
+        name: "satellite",   // 默认'卫星底图'
+        textColor : 'red',   // 文字颜色
+        backgroundImage : "",// 背景图片
     },
-    extra:{
-      'foo':{
-      }
+    showSatelliteDefault:true, // 默认false 是否默认显示卫星影像
+    extra:{  // 默认空 与下面切换图层控件选项类似
+        nailActiveColor : "red" // 默认蓝色 固定面板图钉的颜色
     }
 }));
 ```
-![切换图层](./doc/img/switchmap.gif)
+![切换底图](./doc/img/switchmap.gif)
+
+### `切换图层` *兼容移动端*
+``` ts
+map.addControl(new SwitchLayerControl({
+    name:"图层管理器" ,       // 默认'图层' 名称 
+    position:"top-left",    // 代替addControl中第二个参数(禁止填写) 
+
+    selectAndClearAll:true, // 默认 true 是否开启全选和清空
+    selectAllLabel:"全选",   // 默认'全选' 全选label 
+    clearAllLabel:"清空",    // 默认'清空' 清空label
+
+    showToTop:true,         // 默认false 是否置顶图层
+    topLayerId:"",          // 默认不填 置顶在xxx图层之后
+
+    layerGroups:{           // 必填 图层组
+        "图层组1":{
+            mutex:true,         // 默认false 图层组全部互斥
+            collapse:true,      // 默认false 是否使用折叠面板
+            uiType:"SwitchBtn", // 默认'ImgTxtBtn'
+            layers:[
+               {
+                 name:"图层1",   // 必填 图层名字
+                 layer: {},     // 必填 mapboxgl 图层或者图层数组
+                 fixed:true,    // 默认false 是否固定 使showToTop无效
+                 zoom:-100,     // 默认0 图层加载顺序
+                 easeToOptions:{},     // 默认空 激活图层后移动到
+                 mutex:true,           // 默认false 图层是否与其他图层互斥
+                 mutexIdentity:"t1",   // 默认空 图层互斥标识 标识一样则互斥
+                 active:true,          // 默认false 是否初始显示
+                 backgroundImage:"",   // 默认空 背景图片
+                 backgroundImageActive:"", // 默认空 激活后背景图片
+ 
+                 onVisibleChange:(visible:boolean)=>{}
+               }
+            ]
+        }
+    }
+}));
+```
+![切换图层](./doc/img/switchlayer.gif)
+
+![切换图层移动版](./doc/img/switchlayer-mobile.gif)
+
+### `弹出面板` *兼容移动端*
+``` ts
+map.addControl(new ExtendControl({
+    img1 : "",              // 关闭状态图标
+    img2 : "",              // 开启状态图标
+    content : div,          // 必填 内容
+    position : "top-left",  // 代替addControl中第二个参数(禁止填写)
+    mustBe : "pc",          // 强制
+
+    onChange:(open:boolean)=>{}
+}));
+```
+![弹出面板](./doc/img/extend.gif)
+
+![弹出面板移动版](./doc/img/extend-mobile.gif)
 
 ### `涂鸦` 
-为圈选做的控件，模仿画笔在地图上画出多边形，在回调中配置扩展逻辑
 
 ``` ts
 map.addControl(new DoodleControl({
@@ -113,7 +132,7 @@ map.addControl(new DoodleControl({
     name: '',           // 控件名字
     reName : '',        // 重绘名
     exitText : '',      // 退出文本
-    lineColor : '',     //线颜色
+    lineColor : '',     // 线颜色
     lineWidth : 1,      // 线宽
     polygonColor: '',   // 多边形颜色
     polygonOpacity : 1, // 多边形透明度
