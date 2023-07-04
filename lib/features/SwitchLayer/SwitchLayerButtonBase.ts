@@ -23,7 +23,7 @@ export default abstract class SwitchLayerButtonBase {
     }
 
     get id() {
-        return this.options.layer instanceof Array<AnyLayer> ?
+        return this.options.layer instanceof Array ?
             this.options.layer.map(x => x.id).join('&') :
             this.options.layer.id;
     }
@@ -43,7 +43,7 @@ export default abstract class SwitchLayerButtonBase {
         }
 
         // layer visibility change
-        const layers = this.options.layer instanceof Array<AnyLayer> ? this.options.layer : [this.options.layer];
+        const layers = this.options.layer instanceof Array ? this.options.layer : [this.options.layer];
         layers.forEach(layer => {
             this.map.setLayoutProperty(layer.id, 'visibility', this.checked ? 'visible' : 'none');
         })

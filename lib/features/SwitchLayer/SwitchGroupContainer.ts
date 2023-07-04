@@ -115,7 +115,7 @@ export default class SwitchGroupContainer {
 
         orderBy(allLayers, l => l.zoom!);
         allLayers.forEach(l => {
-            if (l.layer instanceof Array<mapboxgl.AnyLayer>)
+            if (l.layer instanceof Array)
                 l.layer.forEach(x => map.addLayer(x));
             else
                 map.addLayer(l.layer);
