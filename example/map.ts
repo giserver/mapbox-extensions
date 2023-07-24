@@ -371,7 +371,9 @@ map.on('load', () => {
     map.addControl(doodleControl);
 
     map.addControl(new ExtendControl({
-        content: createHtmlElement("div", "jas-ctrl-measure-mobile-operation-item")
+        content: createHtmlElement("div", "jas-ctrl-measure-mobile-operation-item"),
+        closeable:true,
+        title: "这是一个tittle"
     }));
 
     map.addControl(new Measure2Control());

@@ -10,6 +10,8 @@ export interface ExtendControlOptions {
     content: HTMLElement | Array<HTMLElement> | ((map: mapboxgl.Map) => HTMLElement),
     position?: UIPosition,
     mustBe?: "pc" | "mobile",
+    title? : string,
+    closeable? : boolean,
 
     onChange?(open: boolean): void
 }
@@ -42,6 +44,28 @@ export default class ExtendControl implements mapboxgl.IControl {
         else {
             mobileContainer.classList.add("jas-ctrl-hidden");
             currentContainer = desktopContainer;
+        }
+
+        if(this.options.title || this.options.closeable){
+            const contianerHeader = createHtmlElement('div',"jas-ctrl-extend-container-header");
+            const {title,closeable} = this.options;
+            if(title){
+                const contianerHeaderTitle = createHtmlElement('h3',"jas-ctrl-extend-container-header-title");
+                contianerHeaderTitle.innerText = title;
+                contianerHeader.append(contianerHeaderTitle);
+            }
+
+            if(closeable){
+                const contianerHeaderClose = createHtmlElement('div',"jas-ctrl-extend-container-header-close");
+                contianerHeaderClose.innerHTML = new SvgBuilder('X').create();
+                contianerHeaderClose.addEventListener('click',()=>{
+                    this.open = false;
+                });
+                
+                contianerHeader.append(contianerHeaderClose);
+            }
+
+            currentContainer.append(contianerHeader);
         }
 
         if (this.options.content instanceof Array)

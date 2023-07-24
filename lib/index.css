@@ -508,6 +508,26 @@
     pointer-events: none;
 }
 
+.jas-ctrl-extend-container-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: max-content;
+}
+
+.jas-ctrl-extend-mobile-contianer .jas-ctrl-extend-container-header{
+    width: 100% !important;
+}
+
+.jas-ctrl-extend-container-header-title{
+    margin-block: 0;
+}
+
+.jas-ctrl-extend-container-header-close{
+    margin-left: auto;
+    cursor: pointer;
+}
+
 .jas-ctrl-extend .jas-ctrl-extend-desktop-container.top-right {
     top: 0;
     right: 30px;
