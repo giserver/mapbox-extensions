@@ -43,6 +43,9 @@ export default class MeasureLineString extends MeasureBase {
             layout: {
                 'text-field': "{distance}",
                 'text-offset': [0, -1.2]
+            }, paint: {
+                "text-halo-color": '#fff',
+                "text-halo-width":2
             }
         })
     }

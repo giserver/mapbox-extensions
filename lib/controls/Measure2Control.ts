@@ -65,7 +65,7 @@ export default class Measure2Control implements mapboxgl.IControl {
             extendContent.append(measureLineDiv, measurePolygonDiv, measureClearDiv);
             this.measureMobileControl?.changeMeasureType('LineString');
         } else {
-            this.measureControl = new MeasureControl({ horizontal: true });
+            this.measureControl = new MeasureControl(this.options);
             extendContent = this.measureControl.onAdd(map);
             extendContent.classList.remove('mapboxgl-ctrl');
             extendContent.style.margin = '0';
