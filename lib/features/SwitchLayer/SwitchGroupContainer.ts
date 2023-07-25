@@ -4,6 +4,7 @@ import ImgTxtSwitchLayerButton from "./ImgTxtSwitchLayerButton";
 import SwitchLayerButton from "./SwitchLayerButton";
 import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
 import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions, SwitchGroupLayers, SwitchLayerItem } from "./types";
+import emitter from "../../events";
 
 export default class SwitchGroupContainer {
 
@@ -13,7 +14,7 @@ export default class SwitchGroupContainer {
     /**
      *
      */
-    constructor(private map: Map, name: string, readonly options: SwitchGroupLayers, readonly extraOptions: SelectAndClearAllOptions & ShowToTopOptions) {
+    constructor(private map: Map, readonly name: string, readonly options: SwitchGroupLayers, readonly extraOptions: SelectAndClearAllOptions & ShowToTopOptions) {
         this.element = createHtmlElement('div', 'jas-ctrl-switchlayer-group');
 
         const container = createHtmlElement('div', 'jas-ctrl-switchlayer-group-container', options.uiType === "SwitchBtn" ? 'one-col' : 'mul-col');
@@ -127,6 +128,45 @@ export default class SwitchGroupContainer {
             groupContainers.push(groupContainer);
         }
 
+        emitter.on('layer-visible-changed', e => {
+
+            // 判断互斥 改变与之互斥button checked为false
+            if (e.btn.checked) {
+                // 全局互斥标识
+                if (e.btn.options.mutexIdentity) {
+                    groupContainers.forEach(x => {
+                        x.layerBtns.forEach(oBtn => {
+                            if (oBtn === e.btn) return;
+
+                            if (oBtn.options.mutexIdentity === e.btn.options.mutexIdentity)
+                                oBtn.changeChecked(false);
+                        })
+                    })
+                }
+                // 仅仅组内互斥
+                e.btn.container.layerBtns.forEach(oBtn => {
+                    if (oBtn === e.btn) return;
+
+                    if (e.btn.container.options.mutex ||
+                        e.btn.options.mutex ||
+                        oBtn.options.mutex) {
+                        oBtn.changeChecked(false);
+                    }
+                });
+            }
+        })
+
         return groupContainers;
+    }
+
+    static setLayerVisible(gc: SwitchGroupContainer, id: string, value?: boolean) {
+        for (let j = 0; j < gc.layerBtns.length; j++) {
+            const lBtn = gc.layerBtns[j];
+
+            if (lBtn.id === id) {
+                lBtn.changeChecked(value, true);
+                emitter.emit('layer-visible-changed', { btn: lBtn });
+            }
+        }
     }
 }

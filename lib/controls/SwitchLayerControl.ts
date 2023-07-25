@@ -40,13 +40,7 @@ export abstract class SwitchLayerBaseControl implements mapboxgl.IControl {
 
     changeLayerVisible(id: string, value?: boolean) {
         for (let i = 0; i < this.groupContainers.length; i++) {
-            const gc = this.groupContainers[i];
-            for (let j = 0; j < gc.layerBtns.length; j++) {
-                const lBtn = gc.layerBtns[j];
-
-                if (lBtn.id === id)
-                    lBtn.changeChecked(value, true);
-            }
+            SwitchGroupContainer.setLayerVisible(this.groupContainers[i],id,value);
         }
     }
 }

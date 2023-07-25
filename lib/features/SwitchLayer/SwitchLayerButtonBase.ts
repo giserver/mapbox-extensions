@@ -1,6 +1,7 @@
-import { AnyLayer, Map } from "mapbox-gl";
+import { Map } from "mapbox-gl";
 import SwitchGroupContainer from "./SwitchGroupContainer";
 import { SwitchLayerItem } from "./types";
+import emitter from "../../events";
 
 export default abstract class SwitchLayerButtonBase {
 
@@ -8,11 +9,14 @@ export default abstract class SwitchLayerButtonBase {
     protected readonly token = "checked";
     readonly element: HTMLElement;
 
-    constructor(private map: Map, public readonly options: SwitchLayerItem, private container: SwitchGroupContainer) {
+    constructor(private map: Map, public readonly options: SwitchLayerItem, public readonly container: SwitchGroupContainer) {
         const { container: c, button: b } = this.createHtmlElement();
         this.element = c;
 
-        this.addClickEvent(b);
+        b.addEventListener('click', () => {
+            this.changeChecked(undefined, true);
+            emitter.emit("layer-visible-changed", { btn: this });
+        });
 
         this._checked = this.options.active === true;
         this.changeChecked(this._checked);
@@ -61,26 +65,6 @@ export default abstract class SwitchLayerButtonBase {
 
         // invoke callback
         this.options.onVisibleChange?.call(undefined, this.checked);
-    }
-
-    protected addClickEvent(element: HTMLElement) {
-        element.addEventListener('click', () => {
-            this.changeChecked(undefined, true);
-
-            // 计算互斥
-            if (this.checked) {
-                this.container.layerBtns.forEach(oBtn => {
-                    if (oBtn === this) return;
-
-                    if (this.container.options.mutex ||
-                        this.options.mutex ||
-                        oBtn.options.mutex ||
-                        (this.options.mutexIdentity && this.options.mutexIdentity === oBtn.options.mutexIdentity)) {
-                        oBtn.changeChecked(false);
-                    }
-                })
-            }
-        });
     }
 
     protected abstract createHtmlElement(): { container: HTMLElement, button: HTMLElement };
