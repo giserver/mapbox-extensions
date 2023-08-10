@@ -1,7 +1,7 @@
 import centroid from '@turf/centroid';
 import turfArea from '@turf/area';
 import turfLength from '@turf/length';
-import { EventData, FillPaint, LinePaint, Map, MapMouseEvent, SymbolLayout, SymbolPaint } from "mapbox-gl";
+import mapboxgl, { EventData, FillPaint, LinePaint, Map, MapMouseEvent, SymbolLayout, SymbolPaint } from "mapbox-gl";
 import { createUUID } from '../../utils';
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
@@ -76,6 +76,20 @@ export default class MeasurePolygon extends MeasureBase {
             type: 'line',
             source: this.id,
             layout: {},
+            paint: outlinePaint
+        });
+
+        this.map.addSource(this.id + "_line_addion", {
+            type: 'geojson',
+            data: {
+                type: 'FeatureCollection',
+                features: []
+            }
+        });
+        this.layerGroup.add({
+            id: this.id + "_line_addion",
+            type: 'line',
+            source: this.id + "_line_addion",
             paint: outlinePaint
         });
 
@@ -177,6 +191,11 @@ export default class MeasurePolygon extends MeasureBase {
             this.options.onDrawed?.call(this, this.currentFeature.id!.toString(), this.currentPolygon);
         }
 
+        (this.map.getSource(this.id + "_line_addion") as mapboxgl.GeoJSONSource).setData({
+            type: 'FeatureCollection',
+            features:[]
+        })
+
         this.updateGeometryDataSource();
         this.updatePointDataSource();
     };
@@ -184,6 +203,14 @@ export default class MeasurePolygon extends MeasureBase {
     private onMouseMoveHandler = (e: MapMouseEvent & EventData) => {
         const point = [e.lngLat.lng, e.lngLat.lat];
         const coords = this.currentPolygon.coordinates[0];
+
+        if (coords.length === 2) {
+            (this.map.getSource(this.id + "_line_addion") as mapboxgl.GeoJSONSource).setData({
+                type: 'Feature',
+                geometry: { type: 'LineString', coordinates: coords },
+                properties: {}
+            })
+        }
 
         if (coords.length > 1)
             coords.pop();
