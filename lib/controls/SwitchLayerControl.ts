@@ -7,6 +7,11 @@ import SvgBuilder from "../svg";
 
 export interface SwitchLayerOptions extends SelectAndClearAllOptions, ShowToTopOptions {
     /**
+     * 图标
+     */
+    icon?: string | SVGElement,
+    
+    /**
      * 名称 ：默认'图层'
      */
     name?: string,
@@ -40,7 +45,7 @@ export abstract class SwitchLayerBaseControl implements mapboxgl.IControl {
 
     changeLayerVisible(id: string, value?: boolean) {
         for (let i = 0; i < this.groupContainers.length; i++) {
-            SwitchGroupContainer.setLayerVisible(this.groupContainers[i],id,value);
+            SwitchGroupContainer.setLayerVisible(this.groupContainers[i], id, value);
         }
     }
 }
@@ -64,7 +69,7 @@ export default class SwitchLayerControl extends SwitchLayerBaseControl {
     onAdd(map: mapboxgl.Map): HTMLElement {
 
         const extend = new ExtendControl({
-            img1: new SvgBuilder('layer').create(),
+            img1: this.options.icon || new SvgBuilder('layer').create(),
             position: this.options.position,
             content: map => {
                 const container = createHtmlElement('div', "jas-ctrl-switchlayer-container");
