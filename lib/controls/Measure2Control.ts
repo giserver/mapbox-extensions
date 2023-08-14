@@ -8,7 +8,8 @@ import MeasureLineString from "../features/Measure/Measure4Mobile/MeasureLineStr
 import MeasurePolygon from "../features/Measure/Measure4Mobile/MeasurePolygon";
 
 export type Measure2ControlOptions = MeasureControlOptions & {
-    position?: UIPosition
+    position?: UIPosition,
+    checkUIWidth?: boolean
 }
 
 export default class Measure2Control implements mapboxgl.IControl {
@@ -22,6 +23,7 @@ export default class Measure2Control implements mapboxgl.IControl {
     constructor(private options: Measure2ControlOptions = {}) {
         options.horizontal ??= true;
         options.position ??= 'top-right';
+        options.checkUIWidth ??= true;
     }
 
     onAdd(map: mapboxgl.Map): HTMLElement {
@@ -30,23 +32,22 @@ export default class Measure2Control implements mapboxgl.IControl {
 
         let extendContent: HTMLElement;
 
-        if (isMobileWidth || isMobile()) { // TODO:需要找到一个平衡的模式重构，数据结构混乱
+        if ((this.options.checkUIWidth && isMobileWidth) || isMobile()) {
             extendContent = createHtmlElement('div', "jas-ctrl-measure", "mapboxgl-ctrl-group", "hor");
-            this.measureMobileControl = new MeasureMobileUIBase(mapContainer, mapContainer);
+            this.measureMobileControl = new MeasureMobileUIBase(map,mapContainer, mapContainer);
             this.measureMobileControl.show(false);
 
             const measureLineDiv = createHtmlElement('div', "jas-flex-center", "jas-ctrl-measure-mobile-item");
             const measurePolygonDiv = createHtmlElement('div', "jas-flex-center", "jas-ctrl-measure-mobile-item");
             const measureClearDiv = createHtmlElement('div', "jas-flex-center", "jas-ctrl-measure-mobile-item");
 
-            const getCrossLngLat = () => this.measureMobileControl!.getCurrentPosition(map);
-
             measureLineDiv.innerHTML = new SvgBuilder('line').create();
             measureLineDiv.addEventListener('click', () => {
                 this.measureMobileControl?.changeMeasureType('LineString');
-            })
+            });
+
             this.measureMobileControl.measuresMap.set('LineString', {
-                measure: new MeasureLineString(map, getCrossLngLat),
+                measure: new MeasureLineString(map),
                 measureDiv: measureLineDiv
             });
             measurePolygonDiv.innerHTML = new SvgBuilder('polygon').create();
@@ -54,7 +55,7 @@ export default class Measure2Control implements mapboxgl.IControl {
                 this.measureMobileControl?.changeMeasureType('Polygon');
             })
             this.measureMobileControl.measuresMap.set('Polygon', {
-                measure: new MeasurePolygon(map, getCrossLngLat),
+                measure: new MeasurePolygon(map),
                 measureDiv: measurePolygonDiv
             });
             measureClearDiv.innerHTML = new SvgBuilder('clean').create();
@@ -63,7 +64,7 @@ export default class Measure2Control implements mapboxgl.IControl {
             })
 
             extendContent.append(measureLineDiv, measurePolygonDiv, measureClearDiv);
-            this.measureMobileControl?.changeMeasureType('LineString');
+            //this.measureMobileControl?.changeMeasureType('LineString');
         } else {
             this.measureControl = new MeasureControl(this.options);
             extendContent = this.measureControl.onAdd(map);

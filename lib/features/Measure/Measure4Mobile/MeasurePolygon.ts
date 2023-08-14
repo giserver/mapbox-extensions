@@ -45,8 +45,7 @@ export default class MeasurePolygon extends MeasureBase {
         })
     }
 
-    protected onAddPoint(): void {
-        let pos = this.getCrossLngLat();
+    protected onAddPoint(pos:mapboxgl.LngLat): void {
         let point = [pos.lng, pos.lat]
         // 第一次定点 或者中间清空->获取不到currentFeature
         if (!this.isDrawing || !this.currentFeature) {

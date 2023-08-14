@@ -29,7 +29,7 @@ export class MeasureMobileUIBase {
     /**
      *
      */
-    constructor(private operationContainer: HTMLElement, private crosshairContainer: HTMLElement) {
+    constructor(protected map:mapboxgl.Map, private operationContainer: HTMLElement, private crosshairContainer: HTMLElement) {
         this.operationDiv = this.createOperationUI();
         operationContainer.append(this.operationDiv);
         this.crosshairDiv = this.createCrosshairUI();
@@ -56,7 +56,7 @@ export class MeasureMobileUIBase {
         const addPointDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-add-point", "jas-flex-center");
         addPointDiv.innerHTML = "<div>定点</div>"
         addPointDiv.addEventListener('click', () => {
-            this.currentMeasure.addPoint();
+            this.currentMeasure.addPoint(this.getCurrentPosition(this.map));
         })
 
         operationDiv.appendChild(revokeDiv);
@@ -76,12 +76,13 @@ export class MeasureMobileUIBase {
         if (value) {
             this.crosshairContainer.append(this.crosshairDiv);
             this.operationContainer.append(this.operationDiv);
-
+            this.currentMeasure?.start();
         } else {
             this.crosshairContainer.removeChild(this.crosshairDiv);
             this.operationContainer.removeChild(this.operationDiv);
+            this.currentMeasure?.finish();
+            this.currentMeasure?.stop();
         }
-
     }
 
     clear() {
@@ -93,6 +94,7 @@ export class MeasureMobileUIBase {
     changeMeasureType(type: MeasureType) {
         const { measure, measureDiv } = this.measuresMap.get(type)!;
         this.currentMeasure?.finish();
+        this.currentMeasure?.stop();
         this.currentMeasure = measure;
         this.currentMeasure.start();
 
@@ -143,7 +145,7 @@ export default class Measure4Mobile extends MeasureMobileUIBase {
      * @param container dom whitch ui insert into
      * @param show init show ui (default flase)
      */
-    constructor(private map: mapboxgl.Map, container: string | HTMLElement, options: Measure4MobileOptions = {}) {
+    constructor(map: mapboxgl.Map, container: string | HTMLElement, options: Measure4MobileOptions = {}) {
         options.show ??= false;
         options.measureActiveColor ??= "rgb(211,211,211)";
         options.defaultType ??= "LineString";
@@ -151,7 +153,7 @@ export default class Measure4Mobile extends MeasureMobileUIBase {
         const parentDiv = typeof container === "string" ? document.getElementById(container)! : container;
         const containerWapper = createHtmlElement('div');
 
-        super(containerWapper, containerWapper);
+        super(map,containerWapper, containerWapper);
 
         containerWapper.append(this.createMeasureSwitchUI());
         parentDiv.append(containerWapper)
@@ -171,7 +173,6 @@ export default class Measure4Mobile extends MeasureMobileUIBase {
     }
 
     private createMeasureSwitchUI() {
-        const getCrossLngLat = () => this.getCurrentPosition(this.map);
 
         const measureSwitchDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-switch");
 
@@ -181,7 +182,7 @@ export default class Measure4Mobile extends MeasureMobileUIBase {
             this.changeMeasureType('LineString');
         });
         this.measuresMap.set('LineString', {
-            measure: new MeasureLineString(this.map, getCrossLngLat),
+            measure: new MeasureLineString(this.map),
             measureDiv: measureLineStringDiv
         });
 
@@ -191,7 +192,7 @@ export default class Measure4Mobile extends MeasureMobileUIBase {
             this.changeMeasureType('Polygon');
         });
         this.measuresMap.set('Polygon', {
-            measure: new MeasurePolygon(this.map, getCrossLngLat),
+            measure: new MeasurePolygon(this.map),
             measureDiv: measurePolygonDiv
         });
 

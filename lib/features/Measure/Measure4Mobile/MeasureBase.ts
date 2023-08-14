@@ -22,15 +22,17 @@ export default abstract class MeasureBase {
         features: []
     }
 
+    private touchAddPointHandler :(ev: mapboxgl.MapMouseEvent & mapboxgl.EventData)=>void
+
     isDrawing = false;
 
     protected abstract onInit(): void;
-    protected abstract onAddPoint(): void;
+    protected abstract onAddPoint(pos:mapboxgl.LngLat): void;
     protected abstract onRevokePoint(): void;
     protected abstract onFinish(): void;
     protected abstract getCoordinates(): GeoJSON.Position[] | undefined;
 
-    constructor(protected map: mapboxgl.Map, protected getCrossLngLat: () => mapboxgl.LngLat) {
+    constructor(protected map: mapboxgl.Map) {
 
         this.sourceId = createUUID()
         this.pointSourceId = createUUID()
@@ -43,7 +45,12 @@ export default abstract class MeasureBase {
         this.map.addSource(this.pointSourceId, {
             type: 'geojson',
             data: this.geojsonPoint
-        })
+        });
+
+        let that = this
+        this.touchAddPointHandler = (e)=>{
+            that.addPoint(e.lngLat);
+        }
 
         //onInit 实现添加图层，配置图层样式
         this.onInit();
@@ -71,21 +78,26 @@ export default abstract class MeasureBase {
             this.onInit()
         }
 
-        this.map.moveLayer(this.sourceId)
-        this.map.moveLayer(this.pointSourceId)
-        this.map.moveLayer(this.symbolSourceId)
+        this.map.moveLayer(this.sourceId);
+        this.map.moveLayer(this.pointSourceId);
+        this.map.moveLayer(this.symbolSourceId);
+
+        this.map.on('click',this.touchAddPointHandler);
+    }
+
+    stop(){
+        this.map.off('click',this.touchAddPointHandler);
     }
 
     /**
      *  画点
      *
      * @abstract
-     * @param {Function} [callback]
      * @memberof Draw
      */
-    addPoint() {
+    addPoint(pos:mapboxgl.LngLat) {
         // 创建或更新currentFeature 并更新数据源，添加线测量
-        this.onAddPoint();
+        this.onAddPoint(pos);
     }
 
     /**
