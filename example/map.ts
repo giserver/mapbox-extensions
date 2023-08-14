@@ -321,11 +321,13 @@ doodleControl = new DoodleControl({
 map.on('load', () => {
 
     // 切换卫星影像 可以自定义图层
-    map.addControl(new SwitchMapControl({
+    const switchMapControl = new SwitchMapControl({
         extra: {
             layerGroups
         }
-    }));
+    });
+    map.addControl(switchMapControl);
+    switchMapControl.adaptMobile();
 
     // 加载多个图片
     map.addImages({ 'img1': './assets/relics.png', 'img2': './assets/relics.png' }, () => {
