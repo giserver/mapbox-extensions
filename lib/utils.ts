@@ -1,3 +1,5 @@
+import SvgBuilder from "./svg";
+
 export class Dict<TKey, TValue> extends Map<TKey, TValue>{ }
 
 

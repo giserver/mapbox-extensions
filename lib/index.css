@@ -44,6 +44,68 @@
     cursor: pointer;
 }
 
+.jas-btn{
+    border: 0;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+.jas-btn-confirm{
+    color: #fff;
+    background-color: #1677FF;
+}
+
+.jas-btn-cancle{
+    border: 1px solid #00000099 !important;
+    box-sizing: border-box;
+}
+
+/* #region modal */
+.jas-modal{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 9999;
+
+    display: flex;
+    justify-content: center;
+
+    background-color: #00000088
+}
+
+.jas-modal-container{
+    padding: 12px;
+    border-radius: 4px;
+    width: fit-content;
+    min-width: 200px;
+    height: fit-content;
+    background-color: #fefefe;
+
+    margin-top: 10%;
+}
+
+.jas-modal-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.jas-modal-header-title{
+    font-weight: 500;
+}
+
+.jas-modal-foot{
+    display: flex;
+    justify-content: end;
+    column-gap: 10px;
+    margin-top: 8px;
+}
+/* #endregion */
+
 /* #region switch 控件 */
 .jas-switch {
     width: 44px;

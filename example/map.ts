@@ -6,7 +6,7 @@ import SwitchMapControl from '../lib/controls/SwitchMapControl';
 import BackToOriginControl from '../lib/controls/BackToOriginControl';
 import DoodleControl from '../lib/controls/DoodleControl';
 import SwitchLayerControl from '../lib/controls/SwitchLayerControl';
-import { ExtendControl, SetStyleProxy } from '../lib';
+import { ExtendControl, MarkerControl, SetStyleProxy } from '../lib';
 
 import '../lib/index.css';
 import { createHtmlElement } from '../lib/utils';
@@ -429,4 +429,6 @@ map.on('load', () => {
             }
         }
     }));
+
+    map.addControl(new MarkerControl());
 })

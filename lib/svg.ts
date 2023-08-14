@@ -141,6 +141,14 @@ const SvgTemplateInfoMapper = {
         <path d="M997.888 70.144C686.592 261.12 460.8 502.272 358.912 623.104l-248.832-195.072-110.08 88.576 429.568 437.248c73.728-189.44 308.224-559.616 594.432-822.784l-26.112-60.928m0 0z" p-id="3613" fill="#20B727"></path></svg>`,
         width: 20,
         height: 20
+    },
+    flag : {
+        template:`<svg width="{w}" height="{h}" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4066" >
+                        <path d="M256 544V768h64v128H128v-128h64V128h64v32c81.152 42.688 178.56 42.688 292.224 0 113.728-42.688 229.632-42.688 347.776 0v384c-134.208-42.688-250.048-42.688-347.52 0-97.408 42.688-194.944 42.688-292.48 0z" fill="#666666" p-id="4067">
+                        </path>
+                    </svg>`,
+        width: 20,
+        height: 20
     }
 } as const
 
@@ -172,8 +180,8 @@ export default class SvgBuilder<T extends keyof (typeof SvgTemplateInfoMapper)> 
 
         if (type === 'svg') {
             const p = document.createElement('div');
-            p.innerText = svgString;
-            return p.firstChild as SVGElement;
+            p.innerHTML = svgString;
+            return p.querySelector('svg') as SVGElement;
         }
 
         return svgString;
