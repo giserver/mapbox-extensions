@@ -4,6 +4,8 @@ import { Dict } from './utils';
 
 import MeasureControl, { MeasureControlOptions } from "./controls/MeasureControl";
 import Measure4Mobile, { Measure4MobileOptions } from "./features/Measure/Measure4Mobile";
+import Measure2Control,{ Measure2ControlOptions } from "./controls/Measure2Control";
+
 import SwitchMapControl, { SwitchMapControlOptions, SwitchMapExtraInfo } from "./controls/SwitchMapControl";
 import SwitchLayerControl, { SwitchLayerOptions } from "./controls/SwitchLayerControl";
 import BackToOriginControl, { BackToOriginControlOptions } from "./controls/BackToOriginControl";
@@ -18,6 +20,7 @@ import { SwitchGroupLayers, SwitchLayerItem } from "./features/SwitchLayer/types
 export {
     LayerGroup,
     MeasureControl,
+    Measure2Control,
     SwitchMapControl,
     SwitchLayerControl,
     BackToOriginControl,
@@ -28,6 +31,7 @@ export {
 
     MeasureControlOptions,
     Measure4MobileOptions,
+    Measure2ControlOptions,
     SwitchMapControlOptions,
     SwitchMapExtraInfo,
     SwitchLayerOptions,
