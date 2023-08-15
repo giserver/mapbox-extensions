@@ -34,7 +34,7 @@ export default class ExtendControl implements mapboxgl.IControl {
 
     onAdd(map: mapboxgl.Map): HTMLElement {
         const isMobile = map.getContainer().clientWidth < this.minWidth;
-        const desktopContainer = createHtmlElement("div", "jas-ctrl-extend-desktop-container", this.options.position!);
+        const desktopContainer = createHtmlElement("div", "jas-ctrl-extend-desktop-container",'mapboxgl-ctrl-group', this.options.position!);
         const mobileContainer = createHtmlElement('div', "jas-ctrl-extend-mobile-contianer");
         this.mobileContainer = mobileContainer;
 
@@ -50,7 +50,7 @@ export default class ExtendControl implements mapboxgl.IControl {
             const contianerHeader = createHtmlElement('div',"jas-ctrl-extend-container-header");
             const {title,closeable} = this.options;
             if(title){
-                const contianerHeaderTitle = createHtmlElement('h3',"jas-ctrl-extend-container-header-title");
+                const contianerHeaderTitle = createHtmlElement('div',"jas-ctrl-extend-container-header-title");
                 contianerHeaderTitle.innerText = title;
                 contianerHeader.append(contianerHeaderTitle);
             }

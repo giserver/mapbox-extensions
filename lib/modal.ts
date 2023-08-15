@@ -43,7 +43,7 @@ export function createConfirmModal(options: ConfirmModalOptions) {
     const footDiv = createHtmlElement('div', 'jas-modal-foot');
 
     const confirmBtn = createHtmlElement('button', 'jas-btn','jas-btn-confirm');
-    const cancleBtn = createHtmlElement('button','jas-btn', 'jas-btn-cancle');
+    const cancleBtn = createHtmlElement('button','jas-btn', 'jas-btn-default');
     confirmBtn.innerText = "确定";
     cancleBtn.innerText = "取消";
 

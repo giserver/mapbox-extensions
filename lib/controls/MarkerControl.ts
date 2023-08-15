@@ -2,6 +2,7 @@ import mapboxgl from "mapbox-gl";
 import ExtendControl, { UIPosition } from "./ExtendControl";
 import { createHtmlElement } from "../utils";
 import SvgBuilder from "../svg";
+import MarkerManager from "../features/Marker/MarkerManager";
 
 export interface MarkerControlOptions {
     icon?: string | SVGElement
@@ -22,16 +23,24 @@ export default class MarkerControl implements mapboxgl.IControl {
 
         const content = createHtmlElement('div');
         content.style.height = "600px";
+        content.append(MarkerManager.Instance.htmlElement);
 
         const extend = new ExtendControl({
+            title:"标注",
+            closeable:true,
             ...this.options,
             content,
             img1: this.options.icon,
             onChange: (open) => {
                 if (!open) {
+                
                 }
             }
         });
+
+        setTimeout(() => {
+            extend.open = true;
+        }, 100);
 
         return extend.onAdd(map);
     }
