@@ -671,7 +671,7 @@
 .jas-ctrl-marker-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
 }
 
 .jas-ctrl-marker-btns-container {
@@ -713,7 +713,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 5px;
+    padding: 8px;
 }
 
 .jas-ctrl-marker-layer-header:hover {
@@ -742,7 +742,7 @@
 .jas-ctrl-marker-item-container {
     height: 20px;
     font-size: 14px;
-    padding: 4px;
+    padding: 5px;
     line-height: normal !important;
     display: flex;
     justify-content: space-between;

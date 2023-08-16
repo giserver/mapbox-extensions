@@ -23,7 +23,7 @@ export default class MarkerControl implements mapboxgl.IControl {
 
         const content = createHtmlElement('div');
         content.style.height = "600px";
-        content.append(MarkerManager.Instance.htmlElement);
+        content.append(new MarkerManager(map).htmlElement);
 
         const extend = new ExtendControl({
             title:"标注",

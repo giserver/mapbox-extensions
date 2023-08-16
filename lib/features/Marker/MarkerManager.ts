@@ -2,20 +2,21 @@ import { createConfirmModal } from "../../modal";
 import SvgBuilder from "../../svg";
 import { createHtmlElement } from "../../utils";
 import { array } from 'wheater';
+import { MarkerFeatrueProperties, MarkerFeatureType, MarkerLayerProperties } from "./types";
+import DrawManager from "./DrawMarker";
+import mapboxgl from "mapbox-gl";
 
 export default class MarkerManager {
 
-    private static _instance: MarkerManager;
-
     readonly htmlElement = createHtmlElement('div', 'jas-ctrl-marker');
 
-    private readonly pageLayer;
-    private readonly pageSearch = createHtmlElement('div', 'jas-ctrl-hidden');
+    private readonly drawManger : DrawManager;
+    private readonly pageLayer : HTMLDivElement;
 
     /**
      *
      */
-    private constructor() {
+    constructor(map:mapboxgl.Map) {
         this.pageLayer = new MarkerLayerContext({
             'type': 'FeatureCollection',
             'features': [
@@ -29,9 +30,7 @@ export default class MarkerManager {
                         id: '1',
                         name: '标注1',
                         group_id: '1',
-                        style: {
-
-                        }
+                        date: Date.now()
                     }
                 }, {
                     type: 'Feature',
@@ -43,23 +42,41 @@ export default class MarkerManager {
                         id: '2',
                         name: '标注2',
                         group_id: '1',
-                        style: {}
+                        date: Date.now(),
+                    }
+                },
+                {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [1, 1]
+                    },
+                    properties: {
+                        id: '3',
+                        name: '标注3',
+                        group_id: '1',
+                        date: Date.now()
                     }
                 }
             ]
         }, [{
             id: '1',
-            name: '测试图层'
+            name: '测试图层',
+            date: Date.now(),
         }, {
             id: '2',
-            name: '测试图层2'
+            name: '测试图层2',
+            date: Date.now(),
         }]).htmlElementLayer;
 
-        this.htmlElement.append(this.createHeader(), this.createDataContainer());
-    }
+        this.drawManger = new DrawManager(map,{
+            onDrawFinish:(draw,flush)=>{
+                console.log(draw.currentFeature);
+                // flush();
+            }
+        })
 
-    static get Instance() {
-        return this._instance ??= new MarkerManager();
+        this.htmlElement.append(this.createHeader(), this.createDataContainer());
     }
 
     private createHeader() {
@@ -71,31 +88,17 @@ export default class MarkerManager {
     private createDataContainer() {
         const container = createHtmlElement('div', 'jas-ctrl-marker-data');
 
-        container.append(this.pageLayer, this.pageSearch);
+        container.append(this.pageLayer);
         return container;
     }
 
     private createHeaderMenu() {
-        const btnLayer = createHtmlElement('button', 'jas-btn', 'jas-btn-active');
-        const btnSearch = createHtmlElement('button', 'jas-btn', 'jas-btn-default');
-        btnLayer.innerText = "图层";
-        btnSearch.innerText = '搜索';
 
-        const changeBtnActiveHandler = () => {
-            btnLayer.classList.toggle('jas-btn-active');
-            btnLayer.classList.toggle('jas-btn-default');
-            btnSearch.classList.toggle('jas-btn-active');
-            btnSearch.classList.toggle('jas-btn-default');
-
-            this.pageLayer.classList.toggle("jas-ctrl-hidden");
-            this.pageSearch.classList.toggle("jas-ctrl-hidden");
-        }
-
-        btnLayer.addEventListener('click', changeBtnActiveHandler);
-        btnSearch.addEventListener('click', changeBtnActiveHandler);
+        const search = createHtmlElement('input');
+        search.type = 'text'
 
         const c = createHtmlElement('div', "jas-flex-center", 'jas-ctrl-marker-menu');
-        c.append(btnLayer, btnSearch);
+        c.append(search);
 
         return c;
     }
@@ -110,36 +113,16 @@ export default class MarkerManager {
         btnLine.innerHTML = svgBuilder.change('marker_line').create();
         btnPolygon.innerHTML = svgBuilder.resize(21, 21).change('marker_polygon').create();
 
+        btnPoint.addEventListener('click',()=>this.drawManger.start('Point'));
+        btnLine.addEventListener('click',()=>this.drawManger.start('LineString'));
+        btnPolygon.addEventListener('click',()=>this.drawManger.start('Polygon'));
+
         const c = createHtmlElement('div', "jas-flex-center", "jas-ctrl-marker-btns-container");
         c.append(btnPoint, btnLine, btnPolygon);
 
         return c;
     }
 }
-
-interface MarkerFeatrueProperties {
-    id: string,
-    name: string,
-    group_id: string,
-    style: {
-        Point?: {
-
-        },
-        LineString?: {
-
-        },
-        Polygon?: {
-
-        }
-    }
-}
-
-interface MarkerLayerProperties {
-    id: string,
-    name: string,
-}
-
-type MarkerFeatureType = GeoJSON.Feature<GeoJSON.Geometry, MarkerFeatrueProperties>;
 
 interface MarkerItemOptions {
     onRemove?(id: string): void
@@ -189,29 +172,38 @@ class MarkerItem {
         this.options.onRemove?.call(undefined, this.feature.properties.id);
     }
 
+    setVisible(value: boolean) {
+        if (value)
+            this.htmlElement.classList.remove('jas-ctrl-hidden');
+        else
+            this.htmlElement.classList.add('jas-ctrl-hidden');
+
+        this.feature.properties.visible = value;
+    }
+
     private createSuffixEdit() {
         const div = createHtmlElement('div');
-        div.append(new SvgBuilder('edit').create('svg'));
+        div.append(new SvgBuilder('edit').resize(17, 17).create('svg'));
 
         return div;
     }
     private createSuffixEditGeometry() {
         const div = createHtmlElement('div');
-        div.append(new SvgBuilder('remake').create('svg'));
+        div.append(new SvgBuilder('remake').resize(17, 17).create('svg'));
 
         return div;
     }
 
     private createSuffixExport() {
         const div = createHtmlElement('div');
-        div.append(new SvgBuilder('export').resize(17, 17).create('svg'));
+        div.append(new SvgBuilder('export').resize(15, 15).create('svg'));
 
         return div;
     }
 
     private createSuffixDel() {
         const div = createHtmlElement('div');
-        div.append(new SvgBuilder('clean').resize(17, 17).create('svg'));
+        div.append(new SvgBuilder('delete').resize(15, 15).create('svg'));
 
         return div;
     }
@@ -265,6 +257,13 @@ class MarkerLayer {
         }
     }
 
+    setVisible(value:boolean){
+        if(value)
+            this.htmlElement.classList.remove('jas-ctrl-hidden');
+        else
+            this.htmlElement.classList.remove('jas-ctrl-hidden');
+    }
+
     private createHeader() {
         const header = createHtmlElement('div', 'jas-ctrl-marker-layer-header');
 
@@ -296,14 +295,14 @@ class MarkerLayer {
 
     private createSuffixExp() {
         const exp = createHtmlElement('div');
-        exp.innerHTML = new SvgBuilder('export').resize(18, 18).create();
+        exp.innerHTML = new SvgBuilder('export').resize(15, 15).create();
 
         return exp
     }
 
     private createSuffixEdit() {
         const edit = createHtmlElement('div');
-        edit.innerHTML = new SvgBuilder('edit').create();
+        edit.innerHTML = new SvgBuilder('edit').resize(18, 18).create();
         edit.addEventListener('click', () => {
             const content = createHtmlElement('div', 'jas-flex-center');
             const label = createHtmlElement('div');
@@ -326,7 +325,7 @@ class MarkerLayer {
 
     private createSuffixDel() {
         const del = createHtmlElement('div');
-        del.innerHTML = new SvgBuilder('clean').resize(18, 18).create();
+        del.innerHTML = new SvgBuilder('delete').resize(15, 15).create();
         del.addEventListener('click', () => {
             createConfirmModal({
                 title: '确认',
@@ -342,7 +341,7 @@ class MarkerLayer {
     }
 
     private createSuffixVisible() {
-        const svgBuilder = new SvgBuilder('eye');
+        const svgBuilder = new SvgBuilder('eye').resize(18, 18);
         const eye = svgBuilder.create();
         const uneye = svgBuilder.change('uneye').create();
 
@@ -353,7 +352,7 @@ class MarkerLayer {
             visible.innerHTML = visible.innerHTML === eye ? uneye : eye;
         });
 
-        visible.style.cursor= "pointer";
+        visible.style.cursor = "pointer";
         visible.style.marginLeft = "5px";
 
         return visible;
@@ -363,7 +362,6 @@ class MarkerLayer {
 class MarkerLayerContext {
     readonly items: MarkerLayer[] = [];
     readonly htmlElementLayer = createHtmlElement('div');
-    readonly htmlElementSearch = createHtmlElement('div');
 
     constructor(
         fc: GeoJSON.FeatureCollection<GeoJSON.Geometry, MarkerFeatrueProperties>,
@@ -371,9 +369,37 @@ class MarkerLayerContext {
         const values = array.groupBy(fc.features, f => f.properties.group_id);
 
         layers.forEach(l => {
-            this.items.push(new MarkerLayer(l, values.get(l.id) || []))
-        })
+            const features = values.get(l.id) || [];
+            const fm = array.groupBy(features, f => f.geometry.type);
+            const layerFeatures =
+                (fm.get('Point') || []).sort(x => x.properties.date).concat(
+                    (fm.get('LineString') || []).sort(x => x.properties.date)).concat(
+                        (fm.get('Polygon') || []).sort(x => x.properties.date));
+
+            this.items.push(new MarkerLayer(l, layerFeatures));
+        });
 
         this.htmlElementLayer.append(...this.items.map(x => x.htmlElement));
+    }
+
+    search(value?: string) {
+        this.items.forEach(l => {
+            if (value) {
+                let hitCount = 0;
+                l.items.forEach(m=>{
+                    const isHit = m.feature.properties.name.includes(value);
+                    m.setVisible(isHit);
+                    hitCount++;
+                });
+                l.setVisible(hitCount > 0);
+            } else {
+                // 复原操作
+                l.setVisible(true);
+                l.collapse(true);
+                l.items.forEach(m => {
+                    m.setVisible(true);
+                });
+            }
+        });
     }
 }
