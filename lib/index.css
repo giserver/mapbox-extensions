@@ -677,7 +677,7 @@
 .jas-ctrl-marker-btns-container {
     column-gap: 5px;
     border: 1px solid #ddd;
-    border-radius: 6px;
+    border-radius: 4px;
 }
 
 .jas-ctrl-marker-item-btn {
