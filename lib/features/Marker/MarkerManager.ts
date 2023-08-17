@@ -6,6 +6,7 @@ import { MarkerFeatrueProperties, MarkerFeatureType, MarkerLayerProperties } fro
 import DrawManager from "./DrawMarker";
 import mapboxgl from "mapbox-gl";
 import LayerGroup from "../LayerGroup";
+import emitter from "../../events";
 
 export default class MarkerManager {
 
@@ -204,8 +205,8 @@ class MarkerItem {
         prefix.append(geometryType);
         suffix.append(
             // this.createSuffixEditGeometry(), 
-            this.createSuffixEdit(), 
-            this.createSuffixExport(), 
+            this.createSuffixEdit(),
+            this.createSuffixExport(),
             this.createSuffixDel());
 
         this.htmlElement.addEventListener('mouseenter', () => {
@@ -242,6 +243,7 @@ class MarkerItem {
 
         return div;
     }
+
     private createSuffixEditGeometry() {
         const div = createHtmlElement('div');
         div.append(new SvgBuilder('remake').resize(17, 17).create('svg'));
@@ -252,13 +254,31 @@ class MarkerItem {
     private createSuffixExport() {
         const div = createHtmlElement('div');
         div.append(new SvgBuilder('export').resize(15, 15).create('svg'));
-
+        
         return div;
     }
 
     private createSuffixDel() {
         const div = createHtmlElement('div');
         div.append(new SvgBuilder('delete').resize(15, 15).create('svg'));
+
+        div.addEventListener('click', () => {
+            createConfirmModal({
+                title: '确认',
+                content: "删除标记",
+                onConfirm: () => {
+                    // 外部删除 
+                    this.options.onRemove?.call(undefined, this.feature);
+
+                    // 更新地图
+                    emitter.emit('marker-item-remove', this.feature);
+
+                    // 删除ui
+                    this.htmlElement.remove();
+                },
+                onCancle: () => { }
+            });
+        });
 
         return div;
     }
@@ -290,7 +310,16 @@ class MarkerLayer {
             (fm.get('Point') || []).sort(x => x.properties.date).concat(
                 (fm.get('LineString') || []).sort(x => x.properties.date)).concat(
                     (fm.get('Polygon') || []).sort(x => x.properties.date));
+
         this.items = layerFeatures.map(f => new MarkerItem(f, options.markerItemOptions));
+        emitter.on('marker-item-remove', f => {
+            this.features = this.features.filter(x => x !== f);
+            this.updateDataSource();
+        })
+
+        emitter.on('marker-item-update', f => {
+            this.updateDataSource();
+        })
 
         map.addSource(this.properties.id, {
             type: 'geojson',
@@ -356,9 +385,9 @@ class MarkerLayer {
         const markerItem = new MarkerItem(feature);
         const firstNode = this.itemContainerElement.querySelector(`.${MarkerItem.getGeometryMatchClass(feature)}`)
         if (firstNode)
-        this.itemContainerElement.insertBefore(markerItem.htmlElement, firstNode);
+            this.itemContainerElement.insertBefore(markerItem.htmlElement, firstNode);
         else
-        this.itemContainerElement.append(markerItem.htmlElement);
+            this.itemContainerElement.append(markerItem.htmlElement);
 
         this.features.push(feature);
         this.items.push(markerItem);
