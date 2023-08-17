@@ -512,7 +512,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: max-content;
+    width: 100%;
 }
 
 .jas-ctrl-extend-mobile-contianer .jas-ctrl-extend-container-header{
