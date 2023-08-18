@@ -50,7 +50,7 @@ export default class ExtendControl implements mapboxgl.IControl {
             const contianerHeader = createHtmlElement('div',"jas-ctrl-extend-container-header");
             const {title,closeable} = this.options;
             if(title){
-                const contianerHeaderTitle = createHtmlElement('h3',"jas-ctrl-extend-container-header-title");
+                const contianerHeaderTitle = createHtmlElement('div',"jas-ctrl-extend-container-header-title");
                 contianerHeaderTitle.innerText = title;
                 contianerHeader.append(contianerHeaderTitle);
             }
