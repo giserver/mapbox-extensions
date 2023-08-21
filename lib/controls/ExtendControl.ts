@@ -10,8 +10,9 @@ export interface ExtendControlOptions {
     content: HTMLElement | Array<HTMLElement> | ((map: mapboxgl.Map) => HTMLElement),
     position?: UIPosition,
     mustBe?: "pc" | "mobile",
-    title? : string,
-    closeable? : boolean,
+    title?: string,
+    titleSlot?: HTMLElement,
+    closeable?: boolean,
 
     onChange?(open: boolean): void
 }
@@ -34,7 +35,7 @@ export default class ExtendControl implements mapboxgl.IControl {
 
     onAdd(map: mapboxgl.Map): HTMLElement {
         const isMobile = map.getContainer().clientWidth < this.minWidth;
-        const desktopContainer = createHtmlElement("div", "jas-ctrl-extend-desktop-container", "mapboxgl-ctrl-group" ,this.options.position!);
+        const desktopContainer = createHtmlElement("div", "jas-ctrl-extend-desktop-container", "mapboxgl-ctrl-group", this.options.position!);
         const mobileContainer = createHtmlElement('div', "jas-ctrl-extend-mobile-contianer");
         this.mobileContainer = mobileContainer;
 
@@ -46,22 +47,28 @@ export default class ExtendControl implements mapboxgl.IControl {
             currentContainer = desktopContainer;
         }
 
-        if(this.options.title || this.options.closeable){
-            const contianerHeader = createHtmlElement('div',"jas-ctrl-extend-container-header");
-            const {title,closeable} = this.options;
-            if(title){
-                const contianerHeaderTitle = createHtmlElement('div',"jas-ctrl-extend-container-header-title");
+        if (this.options.title || this.options.closeable || this.options.titleSlot) {
+            const contianerHeader = createHtmlElement('div', "jas-ctrl-extend-container-header");
+            const { title, closeable, titleSlot} = this.options;
+            if (title) {
+                const contianerHeaderTitle = createHtmlElement('div', "jas-ctrl-extend-container-header-title");
                 contianerHeaderTitle.innerText = title;
                 contianerHeader.append(contianerHeaderTitle);
             }
 
-            if(closeable){
-                const contianerHeaderClose = createHtmlElement('div',"jas-ctrl-extend-container-header-close");
+            if(titleSlot){
+                const contianerHeaderTitleSlot = createHtmlElement('div',"jas-ctrl-extend-container-header-title-slot");
+                contianerHeaderTitleSlot.append(titleSlot);
+                contianerHeader.append(contianerHeaderTitleSlot);
+            }
+
+            if (closeable) {
+                const contianerHeaderClose = createHtmlElement('div', "jas-ctrl-extend-container-header-close");
                 contianerHeaderClose.innerHTML = new SvgBuilder('X').create();
-                contianerHeaderClose.addEventListener('click',()=>{
+                contianerHeaderClose.addEventListener('click', () => {
                     this.open = false;
                 });
-                
+
                 contianerHeader.append(contianerHeaderClose);
             }
 

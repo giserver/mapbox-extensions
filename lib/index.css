@@ -525,6 +525,10 @@
     margin-block: 0;
 }
 
+.jas-ctrl-extend-container-header-title-slot{
+    flex: 1;
+}
+
 .jas-ctrl-extend-container-header-close{
     margin-left: auto;
     cursor: pointer;

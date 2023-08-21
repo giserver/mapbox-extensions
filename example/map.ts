@@ -372,10 +372,15 @@ map.on('load', () => {
     map.addControl(new BackToOriginControl());
     map.addControl(doodleControl);
 
+    const content = createHtmlElement("div", "jas-ctrl-measure-mobile-operation-item");
+    content.style.width = '200px';
+    const titleSlot = createHtmlElement('div');
+    titleSlot.innerText = 'slot';
     map.addControl(new ExtendControl({
-        content: createHtmlElement("div", "jas-ctrl-measure-mobile-operation-item"),
+        content,
         closeable:true,
-        title: "这是一个tittle"
+        title: "tittle",
+        titleSlot
     }));
 
     map.addControl(new Measure2Control());
