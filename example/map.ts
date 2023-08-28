@@ -383,7 +383,7 @@ map.on('load', () => {
         titleSlot
     }));
 
-    map.addControl(new Measure2Control());
+    map.addControl(new Measure2Control({position:'top-left'}));
 
     map.addControl(new SwitchLayerControl({
         position: "top-left",

@@ -46,6 +46,7 @@ export interface MeasureControlOptions {
 
     onStart?: () => void;
     onStop?: () => void;
+    onClear?: () => void;
 
     /** 
      * 测量点选项
@@ -114,6 +115,7 @@ export default class MeasureControl implements mapboxgl.IControl {
 
         div.append(this.createButton(new SvgBuilder("clean").create(), () => {
             this.measures.forEach(m => m.measure.clear());
+            this.options.onClear?.call(undefined);
         }));
 
         return div;
@@ -195,7 +197,7 @@ export default class MeasureControl implements mapboxgl.IControl {
     };
 
     private geometryMouseoutHandler = (ev: mapboxgl.MapLayerEventType['mouseout'] & mapboxgl.EventData) => {
-        ev.target.getCanvas().style.cursor = "grab";
+        ev.target.getCanvas().style.cursor = "";
     }
 
     private geometryClickHandler = (ev: mapboxgl.MapLayerEventType['click'] & mapboxgl.EventData) => {

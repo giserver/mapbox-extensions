@@ -75,6 +75,7 @@ export default class Measure2Control implements mapboxgl.IControl {
         const extendControl = new ExtendControl({
             content: extendContent,
             mustBe: "pc",
+            position : this.options.position,
             onChange: open => {
                 if (open) {
                     this.measureMobileControl?.show(true);
