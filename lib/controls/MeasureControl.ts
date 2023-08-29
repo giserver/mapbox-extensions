@@ -69,6 +69,7 @@ export default class MeasureControl implements mapboxgl.IControl {
     private measures = new Map<MeasureType, { measure: MeasureBase, svg: string, controlElement?: HTMLElement | undefined }>();
     private currentMeasure: MeasureBase | undefined;
     private popup = new mapboxgl.Popup({ closeButton: false, className: 'jas-mapbox-popup' });
+    private declare element : HTMLElement;
 
     constructor(private options: MeasureControlOptions = {}) {
         options.horizontal ??= false;
@@ -105,25 +106,26 @@ export default class MeasureControl implements mapboxgl.IControl {
                 this.measures.delete(k);
         })
 
-        const div = createHtmlElement('div', "jas-ctrl-measure", "mapboxgl-ctrl", "mapboxgl-ctrl-group", this.options.horizontal ? "hor" : "ver");
+        this.element = createHtmlElement('div', "jas-ctrl-measure", "mapboxgl-ctrl", "mapboxgl-ctrl-group", this.options.horizontal ? "hor" : "ver");
 
         this.measures.forEach((value, key) => {
             const btn = this.createButton(value.svg, this.createClickMeasureButtonHandler(map, key));
             value.controlElement = btn;
-            div.append(btn);
+            this.element.append(btn);
         })
 
-        div.append(this.createButton(new SvgBuilder("clean").create(), () => {
+        this.element.append(this.createButton(new SvgBuilder("clean").create(), () => {
             this.measures.forEach(m => m.measure.clear());
             this.options.onClear?.call(undefined);
         }));
 
-        return div;
+        return this.element;
     }
 
     onRemove(map: mapboxgl.Map): void {
         this.stop();
         this.measures.forEach(m => m.measure.destroy());
+        this.element.remove();
     }
 
     getDefaultPosition?: (() => string) | undefined;

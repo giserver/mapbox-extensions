@@ -18,10 +18,9 @@ export interface ExtendControlOptions {
 }
 
 export default class ExtendControl implements mapboxgl.IControl {
+    readonly element: HTMLDivElement = createHtmlElement("div", "jas-ctrl-extend", "jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group");
+    private mobileContainer: HTMLDivElement = createHtmlElement('div', "jas-ctrl-extend-mobile-contianer");
     private minWidth = 600;
-    private declare extendBtn: HTMLDivElement;
-    private declare mobileContainer: HTMLDivElement;
-
     private _open: boolean = false;
 
     constructor(private options: ExtendControlOptions) {
@@ -36,14 +35,12 @@ export default class ExtendControl implements mapboxgl.IControl {
     onAdd(map: mapboxgl.Map): HTMLElement {
         const isMobile = map.getContainer().clientWidth < this.minWidth;
         const desktopContainer = createHtmlElement("div", "jas-ctrl-extend-desktop-container", "mapboxgl-ctrl-group", this.options.position!);
-        const mobileContainer = createHtmlElement('div', "jas-ctrl-extend-mobile-contianer");
-        this.mobileContainer = mobileContainer;
 
-        let currentContainer = mobileContainer;
+        let currentContainer = this.mobileContainer;
         if (isMobile && this.options.mustBe !== 'pc')
             desktopContainer.classList.add("jas-ctrl-hidden");
         else {
-            mobileContainer.classList.add("jas-ctrl-hidden");
+            this.mobileContainer.classList.add("jas-ctrl-hidden");
             currentContainer = desktopContainer;
         }
 
@@ -88,43 +85,43 @@ export default class ExtendControl implements mapboxgl.IControl {
         this.appendImage(image_open_wapper, this.options.img1!);
         this.appendImage(image_close_wapper, this.options.img2!);
 
-        map.on('resize', e => {
+        map.on('resize', _ => {
             if (this.options.mustBe) return;
 
             const width = map.getContainer().clientWidth;
             if (width < this.minWidth) {
                 desktopContainer.classList.add("jas-ctrl-hidden");
-                mobileContainer.classList.remove("jas-ctrl-hidden");
+                this.mobileContainer.classList.remove("jas-ctrl-hidden");
 
                 if (desktopContainer.children.length !== 0)
-                    mobileContainer.append(...desktopContainer.children);
+                this.mobileContainer.append(...desktopContainer.children);
             } else {
-                mobileContainer.classList.add("jas-ctrl-hidden");
+                this.mobileContainer.classList.add("jas-ctrl-hidden");
                 desktopContainer.classList.remove("jas-ctrl-hidden");
 
-                if (mobileContainer.children.length !== 0)
-                    desktopContainer.append(...mobileContainer.children);
+                if (this.mobileContainer.children.length !== 0)
+                    desktopContainer.append(...this.mobileContainer.children);
             }
         });
 
-        const extendBtn = createHtmlElement("div", "jas-ctrl-extend", "jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group");
-        this.extendBtn = extendBtn;
-        extendBtn.append(image_open_wapper, image_close_wapper);
-        extendBtn.append(desktopContainer);
-        map.getContainer().append(mobileContainer);
+        this.element.append(image_open_wapper, image_close_wapper);
+        this.element.append(desktopContainer);
+        map.getContainer().append(this.mobileContainer);
 
         // 停止冒泡，防止执行extendBtn click事件
         desktopContainer.addEventListener('click', e => {
             e.stopPropagation();
         });
 
-        extendBtn.addEventListener('click', () => {
+        this.element.addEventListener('click', () => {
             this.open = !this.open;
         });
 
-        return this.extendBtn;
+        return this.element;
     }
     onRemove(map: mapboxgl.Map): void {
+        this.element.remove();
+        this.mobileContainer.remove();
     }
 
     getDefaultPosition() { return this.options.position! };
@@ -137,10 +134,10 @@ export default class ExtendControl implements mapboxgl.IControl {
         if (value === this._open) return;
 
         if (value) {
-            this.extendBtn.classList.add("jas-ctrl-extend-open");
+            this.element.classList.add("jas-ctrl-extend-open");
             this.mobileContainer.classList.add("jas-ctrl-extend-mobile-contianer-active");
         } else {
-            this.extendBtn.classList.remove("jas-ctrl-extend-open");
+            this.element.classList.remove("jas-ctrl-extend-open");
             this.mobileContainer.classList.remove("jas-ctrl-extend-mobile-contianer-active");
         }
 

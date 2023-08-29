@@ -8,7 +8,7 @@ export interface BackToOriginControlOptions {
 
 export default class BackToOriginControl implements IControl {
 
-    private parentElement = createHtmlElement('div', "jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group");
+    readonly element = createHtmlElement('div', "jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group");
 
     /**
      *
@@ -25,18 +25,17 @@ export default class BackToOriginControl implements IControl {
         easeToOptions.pitch ??= map.getPitch();
         easeToOptions.bearing ??= map.getBearing();
 
-        const div = this.parentElement;
-        div.innerHTML = new SvgBuilder('origin').create();
+        this.element.innerHTML = new SvgBuilder('origin').create();
 
-        div.addEventListener('click', e => {
+        this.element.addEventListener('click', e => {
             map.easeTo(this.options.easeToOptions!)
         });
 
-        return div;
+        return this.element;
     }
 
     onRemove(map: Map): void {
-        this.parentElement.remove();
+        this.element.remove();
     }
 
     getDefaultPosition?: (() => string) | undefined;

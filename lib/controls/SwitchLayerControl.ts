@@ -51,6 +51,7 @@ export abstract class SwitchLayerBaseControl implements mapboxgl.IControl {
 }
 
 export default class SwitchLayerControl extends SwitchLayerBaseControl {
+    private declare extendControl : ExtendControl;
 
     /**
      *
@@ -68,7 +69,7 @@ export default class SwitchLayerControl extends SwitchLayerBaseControl {
 
     onAdd(map: mapboxgl.Map): HTMLElement {
 
-        const extend = new ExtendControl({
+        this.extendControl = new ExtendControl({
             img1: this.options.icon || new SvgBuilder('layer').create(),
             position: this.options.position,
             content: map => {
@@ -87,14 +88,19 @@ export default class SwitchLayerControl extends SwitchLayerBaseControl {
                 this.groupContainers = SwitchGroupContainer.appendLayerGroups(map, groups, this.options.layerGroups, this.options);
 
                 close.addEventListener('click', () => {
-                    extend.open = false;
+                    this.extendControl.open = false;
                 })
 
                 return container;
             }
         });
 
-        return extend.onAdd(map);
+        return this.extendControl.onAdd(map);
+    }
+
+    onRemove(map: mapboxgl.Map): void {
+        super.onRemove(map);
+        this.extendControl.onRemove(map);
     }
 
     getDefaultPosition() { return this.options.position! };

@@ -395,6 +395,7 @@ map.on('load', () => {
         layerGroups: {
             '可清除可全选': {
                 uiType: 'SwitchBtn',
+                collapse:true,
                 layers: [{
                     name: "xxx",
                     layer: {

@@ -64,10 +64,9 @@ export interface SwitchMapControlOptions {
 
 
 export default class SwitchMapControl extends SwitchLayerBaseControl {
-
+  private declare element : HTMLElement;
   private alertDivShowAlways = false;
   private declare map : mapboxgl.Map
-
 
   constructor(private options: SwitchMapControlOptions = {}) {
     options.baseOption ??= {};
@@ -112,21 +111,21 @@ export default class SwitchMapControl extends SwitchLayerBaseControl {
       }
     })
 
-    const baseDiv = this.createBaseLayerDiv(map);
+    this.element = this.createBaseLayerDiv(map);
 
     const layerGroups = this.options.extra?.layerGroups;
     if (layerGroups && Object.getOwnPropertyNames(layerGroups).length > 0) {
       if(!isMobile()){
         const { alertDiv, groupsDiv } = this.createGroupLayerAlertDiv();
         this.groupContainers = SwitchGroupContainer.appendLayerGroups(map, groupsDiv, layerGroups, this.options.extra);
-        baseDiv.append(alertDiv);
-        baseDiv.addEventListener('mouseover', e => {
+        this.element.append(alertDiv);
+        this.element.addEventListener('mouseover', e => {
           alertDiv.style.pointerEvents = 'auto';
         });
       }
     }
 
-    return baseDiv;
+    return this.element;
   }
 
   adaptMobile(){
@@ -136,6 +135,11 @@ export default class SwitchMapControl extends SwitchLayerBaseControl {
         ...this.options.extra!,
       }))
     }
+  }
+
+  onRemove(map: mapboxgl.Map): void {
+      super.onRemove(map);
+      this.element.remove();
   }
 
   getDefaultPosition() {

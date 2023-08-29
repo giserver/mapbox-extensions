@@ -377,6 +377,7 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #ccc;
+    min-width: 250px;
 }
 
 .jas-ctrl-switchlayer-container-header-label {

@@ -14,8 +14,11 @@ export type Measure2ControlOptions = MeasureControlOptions & {
 
 export default class Measure2Control implements mapboxgl.IControl {
     private minWidth = 600;
-    private measureControl: MeasureControl | undefined;
-    private measureMobileControl: MeasureMobileUIBase | undefined;
+    private declare measureControl: MeasureControl;
+    private declare measureMobileControl: MeasureMobileUIBase;
+
+    private declare extendControl : ExtendControl;
+
 
     /**
      *
@@ -34,7 +37,7 @@ export default class Measure2Control implements mapboxgl.IControl {
 
         if ((this.options.checkUIWidth && isMobileWidth) || isMobile()) {
             extendContent = createHtmlElement('div', "jas-ctrl-measure", "mapboxgl-ctrl-group", "hor");
-            this.measureMobileControl = new MeasureMobileUIBase(map,mapContainer, mapContainer);
+            this.measureMobileControl = new MeasureMobileUIBase(map, mapContainer, mapContainer);
             this.measureMobileControl.show(false);
 
             const measureLineDiv = createHtmlElement('div', "jas-flex-center", "jas-ctrl-measure-mobile-item");
@@ -72,10 +75,10 @@ export default class Measure2Control implements mapboxgl.IControl {
             extendContent.style.margin = '0';
         }
 
-        const extendControl = new ExtendControl({
+        this.extendControl = new ExtendControl({
             content: extendContent,
             mustBe: "pc",
-            position : this.options.position,
+            position: this.options.position,
             onChange: open => {
                 if (open) {
                     this.measureMobileControl?.show(true);
@@ -87,13 +90,14 @@ export default class Measure2Control implements mapboxgl.IControl {
             img1: new SvgBuilder('measure').create()
         });
 
-        const extendEle = extendControl.onAdd(map);
+        const extendEle = this.extendControl.onAdd(map);
         (extendEle.children[2] as HTMLElement).style.padding = '0';
         return extendEle;
     }
 
     onRemove(map: mapboxgl.Map): void {
-        this.measureControl?.onRemove(map);
+        this.measureControl.onRemove(map);
+        this.extendControl.onRemove(map);
     }
 
     getDefaultPosition() {
