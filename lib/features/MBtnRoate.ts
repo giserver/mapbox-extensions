@@ -231,16 +231,21 @@ class MousePitchHandler extends MouseHandler {
 
 export default class MBtnRoate {
     private mouseRotate: MouseRotateHandler;
-    private mousePitch: MousePitchHandler;
+    private mousePitch?: MousePitchHandler;
     enable = true;
 
     /**
      *
      */
-    constructor(private map: mapboxgl.Map) {
+    constructor(private map: mapboxgl.Map, options:{
+        withPitch? : boolean
+    } = {}) {
+        options.withPitch ??= true;
+
         const element = map.getContainer();
         this.map = map;
         this.mouseRotate = new MouseRotateHandler({ clickTolerance: (map.dragRotate as any)._mouseRotate._clickTolerance });
+        if(options.withPitch)
         this.mousePitch = new MousePitchHandler({ clickTolerance: (map.dragRotate as any)._mousePitch._clickTolerance });
 
         const mousemove = (e: MouseEvent) => {
@@ -249,7 +254,7 @@ export default class MBtnRoate {
 
         const mouseup = (e: MouseEvent) => {
             this.mouseRotate.mouseupWindow(e);
-            this.mousePitch.mouseupWindow(e);
+            this.mousePitch?.mouseupWindow(e);
             offTemp();
         }
 
@@ -272,7 +277,7 @@ export default class MBtnRoate {
 
     private down(e: MouseEvent, point: Point) {
         this.mouseRotate.mousedown(e, point);
-        this.mousePitch.mousedown(e, point);
+        this.mousePitch?.mousedown(e, point);
         DOM.disableDrag();
     }
 
