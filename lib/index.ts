@@ -16,6 +16,8 @@ import SetStyleProxy from "./features/SetStyleProxy";
 import SwitchGroupContainer from "./features/SwitchLayer/SwitchGroupContainer";
 import { SwitchGroupLayers, SwitchLayerItem } from "./features/SwitchLayer/types";
 
+import MBtnRoate from "./features/MBtnRoate";
+
 
 export {
     LayerGroup,
@@ -42,6 +44,8 @@ export {
     SwitchGroupContainer,
     SwitchGroupLayers,
     SwitchLayerItem,
+
+    MBtnRoate
 }
 
 declare module "mapbox-gl" {

@@ -12,6 +12,8 @@ import '../lib/index.css';
 import { createHtmlElement } from '../lib/utils';
 import { LayerGroupsType } from '../lib/features/SwitchLayer/types';
 
+import MBtnRoate from '../lib/features/MBtnRoate'
+
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
 const lightStyle = 'mapbox://styles/mapbox/light-v11';
 let currentStyle = lightStyle;
@@ -28,6 +30,7 @@ const map = new mapboxgl.Map({
 });
 
 const setStyleProxy = new SetStyleProxy(map);
+const mbtnRoate = new MBtnRoate(map);
 
 const layerGroups: LayerGroupsType = {
     '城市规划': {
