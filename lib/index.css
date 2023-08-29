@@ -504,7 +504,6 @@
     transition: 0.2s;
     background-color: #fff;
     position: absolute;
-    z-index: 100;
     padding: 16px 24px;
     pointer-events: none;
 }

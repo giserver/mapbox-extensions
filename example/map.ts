@@ -13,6 +13,7 @@ import { createHtmlElement } from '../lib/utils';
 import { LayerGroupsType } from '../lib/features/SwitchLayer/types';
 
 import MBtnRoate from '../lib/features/MBtnRoate'
+import ExtendControlsWrapper from '../lib/features/ExtendControlsWrapper';
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
 const lightStyle = 'mapbox://styles/mapbox/light-v11';
@@ -81,7 +82,7 @@ const layerGroups: LayerGroupsType = {
             'backgroundImage': './assets/building.png',
         }, {
             name: '水路规划',
-            mutexIdentity:"mutex_test",
+            mutexIdentity: "mutex_test",
             layer: {
                 id: 'fff2',
                 type: 'symbol',
@@ -177,7 +178,7 @@ const layerGroups: LayerGroupsType = {
             active: true,
         }, {
             name: 'fff6',
-            mutexIdentity:"mutex_test",
+            mutexIdentity: "mutex_test",
             layer: {
                 id: 'fff6',
                 type: 'symbol',
@@ -383,20 +384,19 @@ map.on('load', () => {
     titleSlot.innerText = 'slot';
     map.addControl(new ExtendControl({
         content,
-        closeable:true,
+        closeable: true,
         title: "tittle",
         titleSlot
     }));
 
-    map.addControl(new Measure2Control({position:'top-left'}));
-
-    map.addControl(new SwitchLayerControl({
+    const measure2Control = new Measure2Control({ position: 'top-left' });
+    const switchLayerControl = new SwitchLayerControl({
         position: "top-left",
         layerGroups: {
             '可清除可全选': {
                 uiType: 'SwitchBtn',
-                collapse:true,
-                defaultCollapsed : true,
+                collapse: true,
+                defaultCollapsed: true,
                 layers: [{
                     name: "xxx",
                     layer: {
@@ -440,5 +440,10 @@ map.on('load', () => {
                 }]
             }
         }
-    }));
+    });
+
+    map.addControl(measure2Control);
+    map.addControl(switchLayerControl);
+
+    new ExtendControlsWrapper([measure2Control, switchLayerControl.extendControl]);
 })

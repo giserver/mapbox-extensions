@@ -51,7 +51,7 @@ export abstract class SwitchLayerBaseControl implements mapboxgl.IControl {
 }
 
 export default class SwitchLayerControl extends SwitchLayerBaseControl {
-    private declare extendControl : ExtendControl;
+    declare extendControl : ExtendControl;
 
     /**
      *
