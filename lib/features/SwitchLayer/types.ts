@@ -75,6 +75,11 @@ export interface SwitchGroupLayers {
     collapse?: boolean,
 
     /**
+     * 折叠默认值
+     */
+    defaultCollapsed?: boolean,
+
+    /**
      * 切换ui的类型
      */
     uiType?: SwitchButtonType

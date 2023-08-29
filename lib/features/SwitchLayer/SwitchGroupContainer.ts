@@ -41,8 +41,13 @@ export default class SwitchGroupContainer {
         const title = createHtmlElement('div', 'jas-ctrl-switchlayer-group-header-title', 'jas-flex-center');
         const label = createHtmlElement('div');
         label.innerText = name;
-        if (this.options.collapse)
-            title.append(this.createCollapseController(container));
+        if (this.options.collapse) {
+            const collapseElement = this.createCollapseController(container);
+            title.append(collapseElement);
+            if (this.options.defaultCollapsed)
+                collapseElement.click();
+        }
+
         title.append(label)
         header.append(title);
 
