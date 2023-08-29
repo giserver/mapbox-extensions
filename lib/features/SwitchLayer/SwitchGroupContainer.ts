@@ -4,7 +4,8 @@ import ImgTxtSwitchLayerButton from "./ImgTxtSwitchLayerButton";
 import SwitchLayerButton from "./SwitchLayerButton";
 import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
 import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions, SwitchGroupLayers, SwitchLayerItem } from "./types";
-import emitter from "../../events";
+import mitt, { Emitter } from "mitt";
+import { SwitchLayerEventType } from "../../events";
 
 export default class SwitchGroupContainer {
 
@@ -14,7 +15,10 @@ export default class SwitchGroupContainer {
     /**
      *
      */
-    constructor(private map: Map, readonly name: string, readonly options: SwitchGroupLayers, readonly extraOptions: SelectAndClearAllOptions & ShowToTopOptions) {
+    constructor(map: Map,
+        readonly name: string,
+        readonly options: SwitchGroupLayers,
+        readonly extraOptions: SelectAndClearAllOptions & ShowToTopOptions & { emitter: Emitter<SwitchLayerEventType> }) {
         this.element = createHtmlElement('div', 'jas-ctrl-switchlayer-group');
 
         const container = createHtmlElement('div', 'jas-ctrl-switchlayer-group-container', options.uiType === "SwitchBtn" ? 'one-col' : 'mul-col');
@@ -96,6 +100,7 @@ export default class SwitchGroupContainer {
 
         const allLayers = new Array<SwitchLayerItem>();
         const groupContainers = new Array<SwitchGroupContainer>();
+        const emitter = mitt<SwitchLayerEventType>();
 
         for (let groupName in layerGroups) {
             const { layers, mutex } = layerGroups[groupName];
@@ -123,7 +128,7 @@ export default class SwitchGroupContainer {
         })
 
         for (let groupName in layerGroups) {
-            const groupContainer = new SwitchGroupContainer(map, groupName, layerGroups[groupName], options);
+            const groupContainer = new SwitchGroupContainer(map, groupName, layerGroups[groupName], { ...options, emitter });
             container.append(groupContainer.element);
             groupContainers.push(groupContainer);
         }
@@ -165,7 +170,7 @@ export default class SwitchGroupContainer {
 
             if (lBtn.id === id) {
                 lBtn.changeChecked(value, true);
-                emitter.emit('layer-visible-changed', { btn: lBtn });
+                gc.extraOptions.emitter.emit('layer-visible-changed', { btn: lBtn });
             }
         }
     }

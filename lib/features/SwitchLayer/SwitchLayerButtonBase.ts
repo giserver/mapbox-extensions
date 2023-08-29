@@ -1,7 +1,6 @@
 import { Map } from "mapbox-gl";
 import SwitchGroupContainer from "./SwitchGroupContainer";
 import { SwitchLayerItem } from "./types";
-import emitter from "../../events";
 
 export default abstract class SwitchLayerButtonBase {
 
@@ -9,13 +8,17 @@ export default abstract class SwitchLayerButtonBase {
     protected readonly token = "checked";
     readonly element: HTMLElement;
 
-    constructor(private map: Map, public readonly options: SwitchLayerItem, public readonly container: SwitchGroupContainer) {
+    constructor(
+        private map: Map,
+        public readonly options: SwitchLayerItem,
+        public readonly container: SwitchGroupContainer) {
+
         const { container: c, button: b } = this.createHtmlElement();
         this.element = c;
 
         b.addEventListener('click', () => {
             this.changeChecked(undefined, true);
-            emitter.emit("layer-visible-changed", { btn: this });
+            container.extraOptions.emitter.emit("layer-visible-changed", { btn: this });
         });
 
         this._checked = this.options.active === true;

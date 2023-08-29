@@ -78,6 +78,7 @@ const layerGroups: LayerGroupsType = {
             'backgroundImage': './assets/building.png',
         }, {
             name: '水路规划',
+            mutexIdentity:"mutex_test",
             layer: {
                 id: 'fff2',
                 type: 'symbol',
@@ -173,6 +174,7 @@ const layerGroups: LayerGroupsType = {
             active: true,
         }, {
             name: 'fff6',
+            mutexIdentity:"mutex_test",
             layer: {
                 id: 'fff6',
                 type: 'symbol',
