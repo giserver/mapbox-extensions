@@ -2,7 +2,7 @@
 [![npm](https://img.shields.io/npm/v/mapbox-extensions)](https://www.npmjs.com/package/mapbox-extensions)  
 mapboxgl controls : measure、switch map、switch layers、doodle、back ...
 ## DEMO
-[examples](https://cocaine-coder.github.io/mapbox-extensions/example-dist/)
+[examples](https://giserver.github.io/mapbox-extensions/example-dist/)
 ## usage   
 ### CDN 
 ``` html
