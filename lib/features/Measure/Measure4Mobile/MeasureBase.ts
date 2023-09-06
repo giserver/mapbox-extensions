@@ -134,6 +134,15 @@ export default abstract class MeasureBase {
         this.updateDataSource();
     }
 
+    remove(){
+        this.map.removeLayer(this.sourceId);
+        this.map.removeLayer(this.pointSourceId);
+        this.map.removeLayer(this.symbolSourceId);
+
+        this.map.removeSource(this.sourceId);
+        this.map.removeSource(this.pointSourceId);
+    }
+
     /**
      *  更新数据源
      * 

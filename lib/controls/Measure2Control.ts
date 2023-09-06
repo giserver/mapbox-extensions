@@ -13,8 +13,8 @@ export type Measure2ControlOptions = MeasureControlOptions & {
 }
 
 export default class Measure2Control extends AbstractExtendControl {
-    private declare measureControl: MeasureControl;
-    private declare measureMobileControl: MeasureMobileUIBase;
+    private measureControl: MeasureControl | undefined;
+    private measureMobileControl: MeasureMobileUIBase | undefined;
 
     /**
      *
@@ -99,6 +99,7 @@ export default class Measure2Control extends AbstractExtendControl {
 
     onRemove(map: mapboxgl.Map): void {
         super.onRemove(map);
-        this.measureControl.onRemove(map);
+        this.measureControl?.onRemove(map);
+        this.measureMobileControl?.onRemove();
     }
 }

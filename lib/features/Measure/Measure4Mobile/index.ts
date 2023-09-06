@@ -20,7 +20,7 @@ interface MeasureConfig {
 
 export class MeasureMobileUIBase {
 
-    protected declare currentMeasure: MeasureBase;
+    protected currentMeasure: MeasureBase | undefined;
     readonly measuresMap = new Map<MeasureType, MeasureConfig>();
 
     private crosshairDiv: HTMLElement;
@@ -43,20 +43,20 @@ export class MeasureMobileUIBase {
         revokeDiv.innerHTML = new SvgBuilder('revoke').create();
         revokeDiv.innerHTML += `<div>撤销</div>`;
         revokeDiv.addEventListener('click', () => {
-            this.currentMeasure.revokePoint();
+            this.currentMeasure?.revokePoint();
         });
 
         const finishDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-btn");
         finishDiv.innerHTML = new SvgBuilder('finish').create();
         finishDiv.innerHTML += `<div>完成</div>`;
         finishDiv.addEventListener('click', () => {
-            this.currentMeasure.finish();
+            this.currentMeasure?.finish();
         })
 
         const addPointDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-add-point", "jas-flex-center");
         addPointDiv.innerHTML = "<div>定点</div>"
         addPointDiv.addEventListener('click', () => {
-            this.currentMeasure.addPoint(this.getCurrentPosition(this.map));
+            this.currentMeasure?.addPoint(this.getCurrentPosition(this.map));
         })
 
         operationDiv.appendChild(revokeDiv);
@@ -111,6 +111,16 @@ export class MeasureMobileUIBase {
         const y = this.crosshairDiv.getBoundingClientRect().top + this.crosshairDiv.clientHeight / 2 - map.getContainer().getBoundingClientRect().top;
 
         return map.unproject([x, y]);
+    }
+
+    onRemove(){
+        this.crosshairDiv.remove();
+        this.operationDiv.remove();
+
+        this.currentMeasure?.stop();
+        this.measuresMap.forEach(m=>{
+            m.measure.remove();
+        });
     }
 }
 
