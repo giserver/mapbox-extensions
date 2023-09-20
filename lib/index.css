@@ -441,7 +441,9 @@
     display: grid;
     gap: 20px 38px;
     min-width: 226px;
-    padding: 0 4px;
+    padding-left: 15px;
+    box-sizing: border-box;
+    color: #555;
 }
 
 .jas-ctrl-switchlayer-group-container-hidden {
