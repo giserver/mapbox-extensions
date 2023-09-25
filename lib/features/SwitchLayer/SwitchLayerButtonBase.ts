@@ -1,6 +1,6 @@
 import { Map } from "mapbox-gl";
 import SwitchGroupContainer from "./SwitchGroupContainer";
-import { SwitchLayerItem } from "./types";
+import { SwitchLayerItem, getLayerIds } from "./types";
 
 export default abstract class SwitchLayerButtonBase {
 
@@ -30,9 +30,7 @@ export default abstract class SwitchLayerButtonBase {
     }
 
     get id() {
-        return this.options.layer instanceof Array ?
-            this.options.layer.map(x => x.id).join('&') :
-            this.options.layer.id;
+        return getLayerIds(this.options.layer).join('&');
     }
 
     changeChecked(value?: boolean, ease?: boolean) {
@@ -50,15 +48,16 @@ export default abstract class SwitchLayerButtonBase {
         }
 
         // layer visibility change
-        const layers = this.options.layer instanceof Array ? this.options.layer : [this.options.layer];
-        layers.forEach(layer => {
-            this.map.setLayoutProperty(layer.id, 'visibility', this.checked ? 'visible' : 'none');
-        })
+        const ids = getLayerIds(this.options.layer);
+        //const layers = this.options.layer instanceof Array ? this.options.layer : [this.options.layer];
+        ids.forEach(id => {
+            this.map.setLayoutProperty(id, 'visibility', this.checked ? 'visible' : 'none');
+        });
 
         if (this.checked) {
             if (!this.options.fixed && this.container.extraOptions.showToTop) {
-                layers.forEach(l => {
-                    this.map.moveLayer(l.id, this.container.extraOptions.topLayerId)
+                ids.forEach(id => {
+                    this.map.moveLayer(id, this.container.extraOptions.topLayerId)
                 })
             }
 

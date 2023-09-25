@@ -1,7 +1,7 @@
 import mapboxgl from "mapbox-gl";
 import { createHtmlElement } from "../utils";
 import ExtendControl, { UIPosition } from "./ExtendControl";
-import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions } from "../features/SwitchLayer/types";
+import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions, getLayerIds } from "../features/SwitchLayer/types";
 import SwitchGroupContainer from "../features/SwitchLayer/SwitchGroupContainer";
 import SvgBuilder from "../svg";
 
@@ -10,7 +10,7 @@ export interface SwitchLayerOptions extends SelectAndClearAllOptions, ShowToTopO
      * 图标
      */
     icon?: string | SVGElement,
-    
+
     /**
      * 名称 ：默认'图层'
      */
@@ -32,13 +32,9 @@ export abstract class SwitchLayerBaseControl implements mapboxgl.IControl {
     onRemove(map: mapboxgl.Map): void {
         this.groupContainers.forEach(gc => {
             gc.layerBtns.forEach(lb => {
-                const layer = lb.options.layer;
-
-                if (layer instanceof Array) {
-                    layer.forEach(l => map.removeLayer(l.id));
-                } else {
-                    map.removeLayer(layer.id);
-                }
+                getLayerIds(lb.options.layer).forEach(l=>{
+                    map.removeLayer(l);
+                });
             })
         });
     }
@@ -51,7 +47,7 @@ export abstract class SwitchLayerBaseControl implements mapboxgl.IControl {
 }
 
 export default class SwitchLayerControl extends SwitchLayerBaseControl {
-    declare extendControl : ExtendControl;
+    declare extendControl: ExtendControl;
 
     /**
      *

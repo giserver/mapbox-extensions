@@ -1,6 +1,37 @@
-import { AnyLayer, EaseToOptions } from "mapbox-gl";
+import mapboxgl, { AnyLayer, EaseToOptions } from "mapbox-gl";
 
 type SwitchButtonType = "ImgTxtBtn" | "SwitchBtn";
+
+export type CustomLayerType = AnyLayer | AnyLayer[] | string | string[];
+
+export function getLayerIds(layer: CustomLayerType) {
+    const result = new Array<string>();
+    if (layer instanceof Array) {
+        layer.forEach(l => {
+            result.push(typeof l === 'string' ? l : l.id);
+        });
+    } else {
+        result.push(typeof layer === 'string' ? layer : layer.id);
+    }
+
+    return result;
+}
+
+export function getLayers(layer: CustomLayerType) {
+    const layers = new Array<mapboxgl.AnyLayer>();
+
+    if (layer instanceof Array) {
+        layer.forEach(l => {
+            if (typeof l !== 'string')
+                layers.push(l);
+        })
+    } else {
+        if (typeof layer !== 'string')
+            layers.push(layer);
+    }
+
+    return layers;
+}
 
 export interface SwitchLayerItem {
 
@@ -12,7 +43,7 @@ export interface SwitchLayerItem {
     /**
      * 图层
      */
-    layer: AnyLayer | AnyLayer[],
+    layer: CustomLayerType,
 
     /**
      * 是否固定 始终不移动

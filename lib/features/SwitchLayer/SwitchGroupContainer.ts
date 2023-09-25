@@ -3,7 +3,7 @@ import { createHtmlElement, orderBy } from "../../utils";
 import ImgTxtSwitchLayerButton from "./ImgTxtSwitchLayerButton";
 import SwitchLayerButton from "./SwitchLayerButton";
 import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
-import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions, SwitchGroupLayers, SwitchLayerItem } from "./types";
+import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions, SwitchGroupLayers, SwitchLayerItem, getLayers } from "./types";
 import mitt, { Emitter } from "mitt";
 import { SwitchLayerEventType } from "../../events";
 
@@ -126,10 +126,9 @@ export default class SwitchGroupContainer {
 
         orderBy(allLayers, l => l.zoom!);
         allLayers.forEach(l => {
-            if (l.layer instanceof Array)
-                l.layer.forEach(x => map.addLayer(x));
-            else
-                map.addLayer(l.layer);
+            getLayers(l.layer).forEach(l=>{
+                map.addLayer(l);
+            });
         })
 
         for (let groupName in layerGroups) {
