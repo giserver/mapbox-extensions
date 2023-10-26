@@ -4,20 +4,20 @@ import { Dict } from './utils';
 
 import MeasureControl, { MeasureControlOptions } from "./controls/MeasureControl";
 import Measure4Mobile, { Measure4MobileOptions } from "./features/Measure/Measure4Mobile";
-import Measure2Control,{ Measure2ControlOptions } from "./controls/Measure2Control";
+import Measure2Control, { Measure2ControlOptions } from "./controls/Measure2Control";
 
 import SwitchMapControl, { SwitchMapControlOptions, SwitchMapExtraInfo } from "./controls/SwitchMapControl";
 import SwitchLayerControl, { SwitchLayerOptions } from "./controls/SwitchLayerControl";
 import BackToOriginControl, { BackToOriginControlOptions } from "./controls/BackToOriginControl";
 import DoodleControl, { DoodleControlOptions } from "./controls/DoodleControl";
-import ExtendControl, { ExtendControlOptions } from "./controls/ExtendControl";
+import ExtendControl, { ExtendControlOptions, AbstractExtendControl } from "./controls/ExtendControl";
 
 import SetStyleProxy from "./features/SetStyleProxy";
 import SwitchGroupContainer from "./features/SwitchLayer/SwitchGroupContainer";
 import { SwitchGroupLayers, SwitchLayerItem } from "./features/SwitchLayer/types";
 
+import ExtendControlsWrapper from './features/ExtendControlsWrapper';
 import MBtnRoate from "./features/MBtnRoate";
-
 
 export {
     LayerGroup,
@@ -28,6 +28,7 @@ export {
     BackToOriginControl,
     DoodleControl,
     ExtendControl,
+    AbstractExtendControl,
     Measure4Mobile,
     SetStyleProxy,
 
@@ -45,6 +46,7 @@ export {
     SwitchGroupLayers,
     SwitchLayerItem,
 
+    ExtendControlsWrapper,
     MBtnRoate
 }
 
