@@ -101,6 +101,10 @@
     transition: left 0.3s;
 }
 
+.jas-switch-button-txt {
+    font-weight: 500;
+}
+
 /* #endregion */
 
 /* #region image-text-switch 自定义的图片文字开关 */
@@ -135,6 +139,7 @@
 .jas-img-txt-switch-button-txt {
     text-align: center;
     font-size: 12px;
+    font-weight: 500;
     line-height: 16px;
     margin-top: 4px;
 }
@@ -324,7 +329,7 @@
     z-index: 10;
     pointer-events: none;
     padding: 16px 24px;
-    min-width: 247px;
+    min-width: 265px;
 }
 
 .jas-ctrl-switchmap .jas-ctrl-switchmap-alert {
@@ -377,7 +382,7 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #ccc;
-    min-width: 250px;
+    min-width: 265px;
 }
 
 .jas-ctrl-switchlayer-container-header-label {
@@ -413,6 +418,10 @@
     margin-bottom: 16px;
 }
 
+.jas-ctrl-switchlayer-group-header-title {
+    cursor: pointer;
+}
+
 .jas-ctrl-switchlayer-group-header-title-collapse {
     margin-right: 6px;
 }
@@ -420,8 +429,7 @@
 .jas-ctrl-switchlayer-group-header-controls {
     display: flex;
     align-items: center;
-    font-weight: 400;
-    font-size: 8px;
+    font-size: 12px;
     margin-right: 4px;
 }
 
@@ -440,7 +448,7 @@
 .jas-ctrl-switchlayer-group-container {
     display: grid;
     gap: 20px 38px;
-    min-width: 226px;
+    min-width: 241px;
     padding-left: 15px;
     box-sizing: border-box;
     color: #555;
@@ -510,28 +518,28 @@
     pointer-events: none;
 }
 
-.jas-ctrl-extend-container-header{
+.jas-ctrl-extend-container-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
 }
 
-.jas-ctrl-extend-mobile-contianer .jas-ctrl-extend-container-header{
+.jas-ctrl-extend-mobile-contianer .jas-ctrl-extend-container-header {
     width: 100% !important;
 }
 
-.jas-ctrl-extend-container-header-title{
+.jas-ctrl-extend-container-header-title {
     font-size: 16px;
     font-weight: 500;
     margin-block: 0;
 }
 
-.jas-ctrl-extend-container-header-title-slot{
+.jas-ctrl-extend-container-header-title-slot {
     flex: 1;
 }
 
-.jas-ctrl-extend-container-header-close{
+.jas-ctrl-extend-container-header-close {
     margin-left: auto;
     cursor: pointer;
 }

@@ -42,7 +42,12 @@ export default class SwitchGroupContainer {
         const label = createHtmlElement('div');
         label.innerText = name;
         if (this.options.collapse) {
-            const collapseElement = this.createCollapseController(container);
+            const collapseElement = createHtmlElement('div', "jas-collapse-arrow", "jas-collapse-active", "jas-ctrl-switchlayer-group-header-title-collapse");
+
+            title.addEventListener('click', e => {
+                container.classList.toggle("jas-ctrl-switchlayer-group-container-hidden");
+                collapseElement.classList.toggle("jas-collapse-active");
+            });
             title.append(collapseElement);
             if (this.options.defaultCollapsed)
                 collapseElement.click();
@@ -86,17 +91,6 @@ export default class SwitchGroupContainer {
         return header;
     }
 
-    private createCollapseController(container: HTMLElement) {
-        const element = createHtmlElement('div', "jas-collapse-arrow", "jas-collapse-active", "jas-ctrl-switchlayer-group-header-title-collapse");
-
-        element.addEventListener('click', e => {
-            container.classList.toggle("jas-ctrl-switchlayer-group-container-hidden");
-            element.classList.toggle("jas-collapse-active");
-        });
-
-        return element;
-    }
-
     static appendLayerGroups(
         map: mapboxgl.Map,
         container: HTMLElement,
@@ -126,7 +120,7 @@ export default class SwitchGroupContainer {
 
         orderBy(allLayers, l => l.zoom!);
         allLayers.forEach(l => {
-            getLayers(l.layer).forEach(l=>{
+            getLayers(l.layer).forEach(l => {
                 map.addLayer(l);
             });
         })

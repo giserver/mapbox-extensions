@@ -250,7 +250,7 @@ const layerGroups: LayerGroupsType = {
             'backgroundImage': '',
             active: true
         }, {
-            name: 'fff10',
+            name: '测试7',
             layer: [
                 {
                     id: 'fff11',
@@ -263,7 +263,7 @@ const layerGroups: LayerGroupsType = {
                                 type: 'Point',
                                 coordinates: [120.64, 31.2]
                             },
-                            properties: { name: 'fff7' }
+                            properties: { name: '测试7' }
                         }
                     },
                     layout: {

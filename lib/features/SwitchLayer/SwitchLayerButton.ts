@@ -2,6 +2,7 @@ import { Map } from "mapbox-gl";
 import SwitchGroupContainer from "./SwitchGroupContainer";
 import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
 import { SwitchLayerItem } from "./types";
+import { createHtmlElement } from "../../utils";
 
 export default class SwitchLayerButton extends SwitchLayerButtonBase {
     private declare inputEle: HTMLInputElement;
@@ -25,11 +26,10 @@ export default class SwitchLayerButton extends SwitchLayerButtonBase {
         switchButton.style.justifyContent = 'space-between';
         switchButton.style.alignItems = 'center';
 
-        const inputEle = document.createElement('input');
-        inputEle.classList.add("jas-switch", "jas-switch-anim");
+        const inputEle = createHtmlElement('input',"jas-switch", "jas-switch-anim");
         inputEle.setAttribute("type", "checkbox");
 
-        const txtEle = document.createElement('div');
+        const txtEle = createHtmlElement('div','jas-switch-button-txt')
         txtEle.innerText = this.options.name;
 
         switchButton.append(txtEle, inputEle);
