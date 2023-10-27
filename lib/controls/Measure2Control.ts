@@ -30,7 +30,7 @@ export default class Measure2Control extends AbstractExtendControl {
             img1: new SvgBuilder('measure').create() });
     }
 
-    createContent(): ExtendControlContentType {
+    protected createContent(): ExtendControlContentType {
 
         this.emitter.on('openChange', open => {
             if (open) {
