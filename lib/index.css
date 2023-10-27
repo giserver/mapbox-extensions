@@ -377,21 +377,8 @@
     position: relative;
 }
 
-.jas-ctrl-switchlayer-container-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #ccc;
+.jas-ctrl-switchlayer-container{
     min-width: 265px;
-}
-
-.jas-ctrl-switchlayer-container-header-label {
-    font-size: 16px;
-    font-weight: 500;
-}
-
-.jas-ctrl-switchlayer-container-header-close {
-    cursor: pointer;
 }
 
 .jas-ctrl-switchlayer-container-groups {

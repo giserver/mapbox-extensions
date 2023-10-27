@@ -32,7 +32,7 @@ export abstract class SwitchLayerBaseControl implements mapboxgl.IControl {
     onRemove(map: mapboxgl.Map): void {
         this.groupContainers.forEach(gc => {
             gc.layerBtns.forEach(lb => {
-                getLayerIds(lb.options.layer).forEach(l=>{
+                getLayerIds(lb.options.layer).forEach(l => {
                     map.removeLayer(l);
                 });
             })
@@ -68,25 +68,14 @@ export default class SwitchLayerControl extends SwitchLayerBaseControl {
         this.extendControl = new ExtendControl({
             img1: this.options.icon || new SvgBuilder('layer').create(),
             position: this.options.position,
+            title: this.options.name,
+            closeable: true,
             content: map => {
                 const container = createHtmlElement('div', "jas-ctrl-switchlayer-container");
-
-                const header = createHtmlElement('div', "jas-ctrl-switchlayer-container-header");
-                const label = createHtmlElement('div', "jas-ctrl-switchlayer-container-header-label");
-                label.innerText = this.options.name!;
-                const close = createHtmlElement('div', "jas-ctrl-switchlayer-container-header-close");
-                close.innerHTML = new SvgBuilder('X').create();
-                header.append(label, close);
-
                 const groups = createHtmlElement('div', 'jas-ctrl-switchlayer-container-groups', 'jas-ctrl-custom-scrollbar');
-                container.append(header, groups);
+                container.append(groups);
 
                 this.groupContainers = SwitchGroupContainer.appendLayerGroups(map, groups, this.options.layerGroups, this.options);
-
-                close.addEventListener('click', () => {
-                    this.extendControl.open = false;
-                })
-
                 return container;
             }
         });

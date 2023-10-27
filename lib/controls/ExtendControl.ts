@@ -35,7 +35,7 @@ export abstract class AbstractExtendControl implements mapboxgl.IControl {
         this.options.img2 ??= this.options.position.endsWith("right") ? svg_extend_right : svg_extend_left;
     }
 
-    abstract createContent(): ExtendControlContentType;
+    protected abstract createContent(): ExtendControlContentType;
 
     onAdd(map: mapboxgl.Map): HTMLElement {
 
@@ -120,10 +120,13 @@ export abstract class AbstractExtendControl implements mapboxgl.IControl {
         desktopContainer.addEventListener('click', e => {
             e.stopPropagation();
         });
-
         this.element.addEventListener('click', () => {
             this.open = !this.open;
         });
+
+        // 设置title
+        this.element.title = this.options.title || "";
+        desktopContainer.title = "";
 
         return this.element;
     }
