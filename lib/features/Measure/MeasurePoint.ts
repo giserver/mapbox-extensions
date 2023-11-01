@@ -22,7 +22,7 @@ export default class MeasurePoint extends MeasureBase {
      */
     constructor(map: Map, private options: MeasurePointOptions = {}) {
         options.createText ??= (lng: number, lat: number) => `${lng.toFixed(4)} , ${lat.toFixed(4)}`;
-        super(map);
+        super(map,options);
     }
 
     protected onInit(): void {

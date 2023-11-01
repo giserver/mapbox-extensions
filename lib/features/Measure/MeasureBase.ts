@@ -1,16 +1,24 @@
 import { GeoJSONSource, Map } from 'mapbox-gl'
 import { createUUID } from '../../utils';
 import LayerGroup from '../LayerGroup';
+import Tip from '../Tip';
 
-export type MeasureType = 'Point' | 'LineString' | 'Polygon'
+export type MeasureType = 'Point' | 'LineString' | 'Polygon';
+
+export type TipOptions = {
+    message_before_drawing: string,
+    message_drawing: string
+}
 
 export interface MeasureOptions<G extends GeoJSON.Geometry> {
     onDrawed?: (id: string, geometry: G) => void;
+    tip?: TipOptions
 }
 
 export default abstract class MeasureBase {
     readonly abstract type: MeasureType;
     readonly layerGroup: LayerGroup;
+    readonly tip?: Tip;
 
     protected geojson: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {
         'type': 'FeatureCollection',
@@ -23,19 +31,25 @@ export default abstract class MeasureBase {
     };
 
     /**
-     * 是否正在绘制图形
-     */
-    protected _isDrawing = false;
-
-    /**
      * 每一个测量模式的唯一id
      * 作为测量动态数据源的id
      * 可以在创建图层时作为图层id（或计算图层id）
      */
     readonly id: string
 
+    /**
+     * 是否正在绘制图形
+     */
+    private _isDrawing = false;
+
     get isDrawing() {
         return this._isDrawing;
+    }
+
+    protected set isDrawing(value: boolean) {
+        this._isDrawing = value;
+        if(this.ops.tip)
+            this.tip?.resetContent(_ => value ? this.ops.tip!.message_drawing : this.ops.tip!.message_before_drawing);
     }
 
     /**
@@ -58,7 +72,9 @@ export default abstract class MeasureBase {
      */
     protected abstract onStop(): void;
 
-    constructor(protected map: Map) {
+    constructor(protected map: Map, private ops: { tip?: TipOptions }) {
+        if (ops.tip)
+            this.tip = new Tip({ map, getContent: _ => ops.tip!.message_before_drawing });
         this.id = createUUID();
         this.layerGroup = new LayerGroup(this.id, map);
 
@@ -92,6 +108,7 @@ export default abstract class MeasureBase {
         this.map.doubleClickZoom.disable();
         this.layerGroup.moveTo();
         this.onStart();
+        this.tip?.start();
     }
 
     /**
@@ -102,6 +119,7 @@ export default abstract class MeasureBase {
         this.map.getCanvas().style.cursor = 'grab';
         this.map.doubleClickZoom.enable();
         this.onStop();
+        this.tip?.stop();
     }
 
     /**
@@ -133,6 +151,9 @@ export default abstract class MeasureBase {
      * todo : 暂时没有想好怎么实现
      */
     destroy() {
+        // 停止测量
+        this.stop();
+
         // 清除数据
         this.clear();
 

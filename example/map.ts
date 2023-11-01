@@ -389,7 +389,14 @@ map.on('load', () => {
         titleSlot
     }));
 
-    const measure2Control = new Measure2Control({ position: 'top-left' });
+    const measure2Control = new Measure2Control({
+        position: 'top-left', measureLineStringOptions: {
+            tip: {
+                message_drawing: "单击继续, 右击后退, 双击完成测量",
+                message_before_drawing: `<div style="background-color:#ccc;color:red">单击开始测量</div>`
+            }
+        }
+    });
     const switchLayerControl = new SwitchLayerControl({
         position: "top-left",
         layerGroups: {

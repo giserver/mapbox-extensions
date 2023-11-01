@@ -377,7 +377,7 @@
     position: relative;
 }
 
-.jas-ctrl-switchlayer-container{
+.jas-ctrl-switchlayer-container {
     min-width: 265px;
 }
 
@@ -592,6 +592,11 @@
 }
 
 /* #endregion */
+
+.jas-ctrl-tip {
+    position: absolute;
+    transform: translate(12px, 12px);
+}
 
 @media screen and (min-width:600px) {}
 

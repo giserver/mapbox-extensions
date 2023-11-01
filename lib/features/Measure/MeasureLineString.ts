@@ -44,7 +44,7 @@ export default class MeasureLineString extends MeasureBase {
         options.showCenterText ??= true;
         options.createText ??= (length: number) => length > 1 ? `${length.toFixed(3)}km` : `${(length * 1000).toFixed(2)}m`;
 
-        super(map);
+        super(map, options);
     }
 
     protected onInit(): void {
@@ -117,7 +117,7 @@ export default class MeasureLineString extends MeasureBase {
         let distance = "0";
 
         // 判断是否已经落笔
-        if (this._isDrawing) {
+        if (this.isDrawing) {
             const lastPoint = this.currentLine.coordinates[this.currentLine.coordinates.length - 2];
             if (!lastPoint) // 防止双击
                 return;
@@ -142,7 +142,7 @@ export default class MeasureLineString extends MeasureBase {
             })
 
         } else {
-            this._isDrawing = true;
+            this.isDrawing = true;
             const id = createUUID();
             this.geojson.features.push({
                 type: 'Feature',
@@ -179,7 +179,7 @@ export default class MeasureLineString extends MeasureBase {
 
     private onMapDoubleClickHandler = (e: MapMouseEvent & EventData) => {
         // 结束绘制
-        this._isDrawing = false;
+        this.isDrawing = false;
 
         this.map.off('mousemove', this.onMouseMoveHandler);
         this.map.off('contextmenu', this.onRightClickHandler);

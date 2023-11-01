@@ -49,7 +49,7 @@ export default class MeasurePolygon extends MeasureBase {
         options.createLengthText ??= (length: number) => length > 1 ?
             `${length.toFixed(3)}km` :
             `${(length * 1000).toFixed(2)}m`;
-        super(map);
+        super(map,options);
     }
 
     protected onInit(): void {
@@ -133,14 +133,14 @@ export default class MeasurePolygon extends MeasureBase {
         const point = [e.lngLat.lng, e.lngLat.lat];
 
         // 判断是否已经落笔
-        if (this._isDrawing) {
+        if (this.isDrawing) {
             const coords = this.currentPolygon.coordinates[0];
             if (coords.length > 2)
                 coords.pop(); //删除第一个点
             coords.push(point);
             coords.push(coords[0]);
         } else {
-            this._isDrawing = true;
+            this.isDrawing = true;
             const id = createUUID();
             this.geojson.features.push({
                 type: 'Feature',
@@ -162,7 +162,7 @@ export default class MeasurePolygon extends MeasureBase {
     };
 
     private onMapDoubleClickHandler = (e: MapMouseEvent & EventData) => {
-        this._isDrawing = false;
+        this.isDrawing = false;
         this.map.off('mousemove', this.onMouseMoveHandler);
         this.map.off('contextmenu', this.onRightClickHandler);
 
