@@ -36,6 +36,9 @@ export interface MeasurePolygonOptions extends MeasureOptions<GeoJSON.Polygon> {
 }
 
 export default class MeasurePolygon extends MeasureBase {
+    private currentMeasurePoint: GeoJSON.Feature | undefined;
+    private moveTimer: NodeJS.Timer | undefined;
+
     type: MeasureType = 'Polygon';
 
     /**
@@ -49,7 +52,7 @@ export default class MeasurePolygon extends MeasureBase {
         options.createLengthText ??= (length: number) => length > 1 ?
             `${length.toFixed(3)}km` :
             `${(length * 1000).toFixed(2)}m`;
-        super(map,options);
+        super(map, options);
     }
 
     protected onInit(): void {
@@ -158,7 +161,9 @@ export default class MeasurePolygon extends MeasureBase {
             this.map.on('contextmenu', this.onRightClickHandler);
         }
 
+        this.calMeasurePoint();
         this.updateGeometryDataSource();
+        this.updatePointDataSource();
     };
 
     private onMapDoubleClickHandler = (e: MapMouseEvent & EventData) => {
@@ -172,32 +177,23 @@ export default class MeasurePolygon extends MeasureBase {
         coords.pop();
         if (coords.length < 3) {
             this.geojson.features.pop();
+            this.geojsonPoint.features.pop();
         } else {
             // 添加第一个点 (闭合)
             coords.push(coords[0]);
 
-            // 在中心点添加标注
-            const center = centroid(this.currentPolygon);
-            const area = this.options.createText!(turfArea(this.currentFeature));
-            const length = this.options.createLengthText!(turfLength(this.currentFeature));
-            center.id = this.currentFeature.id;
-            center.properties = {
-                area,
-                length,
-                id: this.currentFeature.id
-            };
-
-            this.geojsonPoint.features.push(center);
+            this.calMeasurePoint();
             this.options.onDrawed?.call(this, this.currentFeature.id!.toString(), this.currentPolygon);
         }
 
         (this.map.getSource(this.id + "_line_addion") as mapboxgl.GeoJSONSource).setData({
             type: 'FeatureCollection',
-            features:[]
-        })
+            features: []
+        });
 
         this.updateGeometryDataSource();
         this.updatePointDataSource();
+        this.currentMeasurePoint = undefined;
     };
 
     private onMouseMoveHandler = (e: MapMouseEvent & EventData) => {
@@ -225,6 +221,14 @@ export default class MeasurePolygon extends MeasureBase {
             coords.push(coords[0]);
 
         this.updateGeometryDataSource();
+
+        if (this.moveTimer)
+            clearTimeout(this.moveTimer);
+        this.moveTimer = setTimeout(() => {
+            this.moveTimer = undefined;
+            this.calMeasurePoint();
+            this.updatePointDataSource();
+        }, 50);
     }
 
     private onRightClickHandler = (e: MapMouseEvent & EventData) => {
@@ -237,6 +241,8 @@ export default class MeasurePolygon extends MeasureBase {
         this.onMouseMoveHandler(e); // 调用鼠标移动事件，重新建立动态线
 
         this.updateGeometryDataSource();
+
+        this.calMeasurePoint();
         this.updatePointDataSource();
     }
 
@@ -246,5 +252,26 @@ export default class MeasurePolygon extends MeasureBase {
 
     private get currentPolygon() {
         return this.currentFeature.geometry as GeoJSON.Polygon;
+    }
+
+    private calMeasurePoint() {
+        // 在中心点添加标注
+        const center = centroid(this.currentPolygon);
+        const area = this.options.createText!(turfArea(this.currentFeature));
+        const length = this.options.createLengthText!(turfLength(this.currentFeature));
+        center.id = this.currentFeature.id;
+        center.properties = {
+            area,
+            length,
+            id: this.currentFeature.id
+        };
+
+        if (this.currentMeasurePoint) {
+            this.currentMeasurePoint.geometry = center.geometry;
+            this.currentMeasurePoint.properties = center.properties;
+        } else {
+            this.currentMeasurePoint = center;
+            this.geojsonPoint.features.push(center);
+        }
     }
 }
