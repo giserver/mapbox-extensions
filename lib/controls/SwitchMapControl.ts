@@ -1,9 +1,9 @@
 import mapboxgl from "mapbox-gl";
+import { dom, validator } from 'wheater';
 import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions } from "../features/SwitchLayer/types";
-import { changeSvgColor, createHtmlElement, isMobile } from "../utils";
 import SwitchLayerControl, { SwitchLayerBaseControl } from "./SwitchLayerControl";
 import SwitchGroupContainer from "../features/SwitchLayer/SwitchGroupContainer";
-import SvgBuilder from '../svg'
+import SvgBuilder from '../common/svg'
 import { UIPosition } from "./ExtendControl";
 
 //#region img_satellite & img_base
@@ -64,9 +64,9 @@ export interface SwitchMapControlOptions {
 
 
 export default class SwitchMapControl extends SwitchLayerBaseControl {
-  private declare element : HTMLElement;
+  private declare element: HTMLElement;
   private alertDivShowAlways = false;
-  private declare map : mapboxgl.Map
+  private declare map: mapboxgl.Map
 
   constructor(private options: SwitchMapControlOptions = {}) {
     options.baseOption ??= {};
@@ -97,7 +97,7 @@ export default class SwitchMapControl extends SwitchLayerBaseControl {
 
   onAdd(map: mapboxgl.Map): HTMLElement {
     this.map = map;
-    
+
     map.addLayer({
       id: "mapbox-satellite",
       type: "raster",
@@ -115,7 +115,7 @@ export default class SwitchMapControl extends SwitchLayerBaseControl {
 
     const layerGroups = this.options.extra?.layerGroups;
     if (layerGroups && Object.getOwnPropertyNames(layerGroups).length > 0) {
-      if(!isMobile()){
+      if (!validator.os.isMobile()) {
         const { alertDiv, groupsDiv } = this.createGroupLayerAlertDiv();
         this.groupContainers = SwitchGroupContainer.appendLayerGroups(map, groupsDiv, layerGroups, this.options.extra);
         this.element.append(alertDiv);
@@ -128,18 +128,18 @@ export default class SwitchMapControl extends SwitchLayerBaseControl {
     return this.element;
   }
 
-  adaptMobile(){
-    if(isMobile()){
+  adaptMobile() {
+    if (validator.os.isMobile()) {
       this.map.addControl(new SwitchLayerControl({
-        'layerGroups' : this.options.extra!.layerGroups!,
+        'layerGroups': this.options.extra!.layerGroups!,
         ...this.options.extra!,
       }))
     }
   }
 
   onRemove(map: mapboxgl.Map): void {
-      super.onRemove(map);
-      this.element.remove();
+    super.onRemove(map);
+    this.element.remove();
   }
 
   getDefaultPosition() {
@@ -153,10 +153,10 @@ export default class SwitchMapControl extends SwitchLayerBaseControl {
    */
   private createBaseLayerDiv(map: mapboxgl.Map) {
     // 创建按钮
-    const div = createHtmlElement('div', "jas-ctrl-switchmap", "mapboxgl-ctrl");
+    const div = dom.createHtmlElement('div', ["jas-ctrl-switchmap", "mapboxgl-ctrl"]);
 
     // 创建文字
-    const text_div = createHtmlElement('div', "jas-ctrl-switchmap-text")
+    const text_div = dom.createHtmlElement('div', ["jas-ctrl-switchmap-text"]);
     div.append(text_div);
 
     const changeDiv = (option: SwitchMapItemOption) => {
@@ -188,33 +188,40 @@ export default class SwitchMapControl extends SwitchLayerBaseControl {
   }
 
   private createGroupLayerAlertDiv(): { alertDiv: HTMLDivElement, groupsDiv: HTMLDivElement } {
-    const alertDiv = createHtmlElement('div', "jas-ctrl-switchmap-alert", "mapboxgl-ctrl-group");
+
+    const headerDiv = dom.createHtmlElement('div',
+      ["jas-ctrl-switchmap-alert-header"],
+      [
+        dom.createHtmlElement('div', [], [this.options.extra?.name || ""]),
+        dom.createHtmlElement('div',
+          ['jas-ctrl-switchmap-alert-header-nail'],
+          [new SvgBuilder("nail").create('svg')], {
+          onClick: (_, t) => {
+            this.alertDivShowAlways = !this.alertDivShowAlways;
+            t.classList.toggle('active');
+            const svg = t.children[0] as SVGAElement;
+            for (let i = 0; i < svg.children.length; i++) {
+              const path = svg.children[i];
+              const attr = path.attributes.getNamedItem("fill");
+              if (attr)
+                attr.value = this.alertDivShowAlways ? this.options.extra!.nailActiveColor! : '#2D3742';
+            }
+          }
+        })
+      ]);
+
+    const groupsDiv = dom.createHtmlElement('div', ["jas-ctrl-switchmap-alert-container", "jas-ctrl-custom-scrollbar"]);
+
+    const alertDiv = dom.createHtmlElement('div', ["jas-ctrl-switchmap-alert", "mapboxgl-ctrl-group"], [headerDiv, groupsDiv]);
 
     alertDiv.addEventListener('click', e => {
-      e.stopPropagation()
+      e.stopPropagation();
     })
 
     alertDiv.addEventListener('mouseout', e => {
       if (!this.alertDivShowAlways)
         alertDiv.style.pointerEvents = 'none';
-    })
-
-    const headerDiv = createHtmlElement('div', "jas-ctrl-switchmap-alert-header");
-    headerDiv.innerHTML = `<div>${this.options.extra?.name}</div>`;
-    const nailDiv = createHtmlElement('div', 'jas-ctrl-switchmap-alert-header-nail');
-    nailDiv.innerHTML = new SvgBuilder("nail").create();
-    headerDiv.append(nailDiv);
-
-    nailDiv.addEventListener('click', () => {
-      this.alertDivShowAlways = !this.alertDivShowAlways;
-      nailDiv.classList.toggle('active');
-      changeSvgColor(nailDiv.children[0] as SVGAElement, this.alertDivShowAlways ? this.options.extra!.nailActiveColor! : '#2D3742');
     });
-
-    const groupsDiv = createHtmlElement('div', "jas-ctrl-switchmap-alert-container", "jas-ctrl-custom-scrollbar");
-
-    alertDiv.append(headerDiv);
-    alertDiv.append(groupsDiv);
 
     return { alertDiv, groupsDiv };
   }

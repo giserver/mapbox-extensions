@@ -1,11 +1,17 @@
 import { Map } from "mapbox-gl";
-import { createHtmlElement, orderBy } from "../../utils";
+import { dom } from 'wheater';
+import mitt, { Emitter } from "mitt";
 import ImgTxtSwitchLayerButton from "./ImgTxtSwitchLayerButton";
 import SwitchLayerButton from "./SwitchLayerButton";
 import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
 import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions, SwitchGroupLayers, SwitchLayerItem, getLayers } from "./types";
-import mitt, { Emitter } from "mitt";
-import { SwitchLayerEventType } from "../../events";
+
+export type SwitchLayerEventType = {
+    "layer-visible-changed": {
+        btn: SwitchLayerButtonBase;
+    };
+};
+
 
 export default class SwitchGroupContainer {
 
@@ -13,39 +19,49 @@ export default class SwitchGroupContainer {
     readonly element: HTMLElement;
 
     /**
-     *
+     * 创建图层组面板
      */
     constructor(map: Map,
         readonly name: string,
         readonly options: SwitchGroupLayers,
         readonly extraOptions: SelectAndClearAllOptions & ShowToTopOptions & { emitter: Emitter<SwitchLayerEventType> }) {
-        this.element = createHtmlElement('div', 'jas-ctrl-switchlayer-group');
 
-        const container = createHtmlElement('div', 'jas-ctrl-switchlayer-group-container', options.uiType === "SwitchBtn" ? 'one-col' : 'mul-col');
+        const container = dom.createHtmlElement('div',
+            ['jas-ctrl-switchlayer-group-container', options.uiType === "SwitchBtn" ? 'one-col' : 'mul-col'],
+            this.options.layers.map(layer => {
+                const btn = options.uiType === "SwitchBtn" ?
+                    new SwitchLayerButton(map, layer, this) :
+                    new ImgTxtSwitchLayerButton(map, layer, this);
 
-        this.options.layers.forEach(layer => {
-            const btn = options.uiType === "SwitchBtn" ?
-                new SwitchLayerButton(map, layer, this) :
-                new ImgTxtSwitchLayerButton(map, layer, this);
+                this.layerBtns.push(btn);
+                return btn.element;
+            })
+        );
 
-            this.layerBtns.push(btn);
-            container.append(btn.element);
+        const header = this.createHeader(name, () => {
+            container.classList.toggle("jas-ctrl-switchlayer-group-container-hidden");
         });
 
-        this.element.append(this.createHeader(name, container));
-        this.element.append(container);
+        this.element = dom.createHtmlElement('div',
+            ['jas-ctrl-switchlayer-group'],
+            [header, container]
+        );
     }
 
-    private createHeader(name: string, container: HTMLElement) {
-        const header = createHtmlElement('div', 'jas-ctrl-switchlayer-group-header');
-        const title = createHtmlElement('div', 'jas-ctrl-switchlayer-group-header-title', 'jas-flex-center');
-        const label = createHtmlElement('div');
-        label.innerText = name;
+    private createHeader(name: string, onTitleClick?: () => void) {
+        const header = dom.createHtmlElement('div', ['jas-ctrl-switchlayer-group-header']);
+        const title = dom.createHtmlElement('div', ['jas-ctrl-switchlayer-group-header-title', 'jas-flex-center']);
+        const label = dom.createHtmlElement('div', [], [name]);
+
+        //#region  折叠、标题
+
+        // 添加折叠按钮
         if (this.options.collapse) {
-            const collapseElement = createHtmlElement('div', "jas-collapse-arrow", "jas-collapse-active", "jas-ctrl-switchlayer-group-header-title-collapse");
+            const collapseElement = dom.createHtmlElement('div',
+                ["jas-collapse-arrow", "jas-collapse-active", "jas-ctrl-switchlayer-group-header-title-collapse"]);
 
             title.addEventListener('click', e => {
-                container.classList.toggle("jas-ctrl-switchlayer-group-container-hidden");
+                onTitleClick?.call(undefined);
                 collapseElement.classList.toggle("jas-collapse-active");
             });
             title.append(collapseElement);
@@ -53,17 +69,22 @@ export default class SwitchGroupContainer {
                 collapseElement.click();
         }
 
+        // 添加标题
         title.append(label)
         header.append(title);
 
         if (this.options.mutex || !this.extraOptions.selectAndClearAll)
             return header;
 
-        const controls = createHtmlElement('div', "jas-ctrl-switchlayer-group-header-controls");
+        //#endregion
 
+        //#region 清空 全选
+        const suffixControls = dom.createHtmlElement('div', ["jas-ctrl-switchlayer-group-header-controls"]);
+
+        // 添加全选组件
         // 当没有互斥时可以添加全选控件
         if (this.options.layers.every(x => !x.mutex)) {
-            const selectAll = createHtmlElement('div', "jas-ctrl-switchlayer-group-header-controls-item");
+            const selectAll = dom.createHtmlElement('div', ["jas-ctrl-switchlayer-group-header-controls-item"]);
             selectAll.innerText = this.extraOptions.selectAllLabel!;
             selectAll.addEventListener('click', () => {
                 this.layerBtns.forEach(btn => {
@@ -71,24 +92,29 @@ export default class SwitchGroupContainer {
                         btn.changeChecked(true);
                 })
             })
-            controls.append(selectAll);
-            const split = createHtmlElement('div', "jas-ctrl-switchlayer-group-header-controls-split");
+            suffixControls.append(selectAll);
+            const split = dom.createHtmlElement('div', ["jas-ctrl-switchlayer-group-header-controls-split"]);
             split.innerText = "|";
-            controls.append(split);
+            suffixControls.append(split);
         }
 
-        const clearAll = createHtmlElement('div', "jas-ctrl-switchlayer-group-header-controls-item");
-        clearAll.innerText = this.extraOptions.clearAllLabel!;
-        clearAll.addEventListener('click', () => {
-            this.layerBtns.forEach(btn => {
-                if (btn.checked)
-                    btn.changeChecked(false);
-            })
-        });
-        controls.append(clearAll);
+        // 添加清除组件
+        suffixControls.append(dom.createHtmlElement('div',
+            ["jas-ctrl-switchlayer-group-header-controls-item"],
+            [this.extraOptions.clearAllLabel!],
+            {
+                onClick: () => {
+                    this.layerBtns.forEach(btn => {
+                        if (btn.checked)
+                            btn.changeChecked(false);
+                    })
+                }
+            }
+        ));
 
-        header.append(controls);
+        header.append(suffixControls);
         return header;
+        //#endregion
     }
 
     static appendLayerGroups(
@@ -118,12 +144,13 @@ export default class SwitchGroupContainer {
             })
         }
 
-        orderBy(allLayers, l => l.zoom!);
-        allLayers.forEach(l => {
-            getLayers(l.layer).forEach(l => {
-                map.addLayer(l);
+        allLayers
+            .sort((a, b) => a.zoom! - b.zoom!)
+            .forEach(l => {
+                getLayers(l.layer).forEach(l => {
+                    map.addLayer(l);
+                });
             });
-        })
 
         for (let groupName in layerGroups) {
             const groupContainer = new SwitchGroupContainer(map, groupName, layerGroups[groupName], { ...options, emitter });

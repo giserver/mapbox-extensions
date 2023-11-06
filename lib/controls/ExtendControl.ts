@@ -1,6 +1,6 @@
 import mapboxgl from "mapbox-gl";
-import { createHtmlElement } from "../utils";
-import SvgBuilder from '../svg'
+import { dom } from 'wheater';
+import SvgBuilder from '../common/svg'
 import mitt from "mitt";
 
 export type UIPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
@@ -19,8 +19,8 @@ export interface ExtendControlOptions {
 }
 
 export abstract class AbstractExtendControl implements mapboxgl.IControl {
-    readonly element: HTMLDivElement = createHtmlElement("div", "jas-ctrl-extend", "jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group");
-    readonly mobileContainer: HTMLDivElement = createHtmlElement('div', "jas-ctrl-extend-mobile-contianer");
+    readonly element: HTMLDivElement = dom.createHtmlElement("div", ["jas-ctrl-extend", "jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group"]);
+    readonly mobileContainer: HTMLDivElement = dom.createHtmlElement('div', ["jas-ctrl-extend-mobile-contianer"]);
     readonly emitter = mitt<{ "openChange": boolean }>();
 
     protected readonly minWidth = 600;
@@ -40,7 +40,7 @@ export abstract class AbstractExtendControl implements mapboxgl.IControl {
     onAdd(map: mapboxgl.Map): HTMLElement {
 
         const isMobile = map.getContainer().clientWidth < this.minWidth;
-        const desktopContainer = createHtmlElement("div", "jas-ctrl-extend-desktop-container", "mapboxgl-ctrl-group", this.options.position!);
+        const desktopContainer = dom.createHtmlElement("div", ["jas-ctrl-extend-desktop-container", "mapboxgl-ctrl-group", this.options.position!]);
 
         let currentContainer = this.mobileContainer;
         if (isMobile && this.options.mustBe !== 'pc')
@@ -51,28 +51,24 @@ export abstract class AbstractExtendControl implements mapboxgl.IControl {
         }
 
         if (this.options.title || this.options.closeable || this.options.titleSlot) {
-            const contianerHeader = createHtmlElement('div', "jas-ctrl-extend-container-header");
             const { title, closeable, titleSlot } = this.options;
+            const contianerHeader = dom.createHtmlElement('div', ["jas-ctrl-extend-container-header"]);
             if (title) {
-                const contianerHeaderTitle = createHtmlElement('div', "jas-ctrl-extend-container-header-title");
-                contianerHeaderTitle.innerText = title;
-                contianerHeader.append(contianerHeaderTitle);
+                contianerHeader.append(dom.createHtmlElement('div', ["jas-ctrl-extend-container-header-title"], [title]));
             }
 
             if (titleSlot) {
-                const contianerHeaderTitleSlot = createHtmlElement('div', "jas-ctrl-extend-container-header-title-slot");
-                contianerHeaderTitleSlot.append(titleSlot);
-                contianerHeader.append(contianerHeaderTitleSlot);
+                contianerHeader.append(dom.createHtmlElement('div', ["jas-ctrl-extend-container-header-title-slot"], [titleSlot]));
             }
 
             if (closeable) {
-                const contianerHeaderClose = createHtmlElement('div', "jas-ctrl-extend-container-header-close");
-                contianerHeaderClose.innerHTML = new SvgBuilder('X').create();
-                contianerHeaderClose.addEventListener('click', () => {
-                    this.open = false;
-                });
-
-                contianerHeader.append(contianerHeaderClose);
+                contianerHeader.append(dom.createHtmlElement('div',
+                    ["jas-ctrl-extend-container-header-close"],
+                    [new SvgBuilder('X').create('svg')], {
+                    onClick: () => {
+                        this.open = false;
+                    }
+                }));
             }
 
             currentContainer.append(contianerHeader);
@@ -87,9 +83,8 @@ export abstract class AbstractExtendControl implements mapboxgl.IControl {
         else
             currentContainer.append(content);
 
-        const image_open_wapper = createHtmlElement('div', "jas-ctrl-extend-img-open");
-        const image_close_wapper = createHtmlElement('div', "jas-ctrl-extend-img-close");
-
+        const image_open_wapper = dom.createHtmlElement('div', ["jas-ctrl-extend-img-open"]);
+        const image_close_wapper = dom.createHtmlElement('div', ["jas-ctrl-extend-img-close"]);
         this.appendImage(image_open_wapper, this.options.img1!);
         this.appendImage(image_close_wapper, this.options.img2!);
 
@@ -115,17 +110,16 @@ export abstract class AbstractExtendControl implements mapboxgl.IControl {
         this.element.append(image_open_wapper, image_close_wapper);
         this.element.append(desktopContainer);
         map.getContainer().append(this.mobileContainer);
-
-        // 停止冒泡，防止执行extendBtn click事件
-        desktopContainer.addEventListener('click', e => {
-            e.stopPropagation();
-        });
+        
         this.element.addEventListener('click', () => {
             this.open = !this.open;
         });
-
-        // 设置title
         this.element.title = this.options.title || "";
+
+        // 停止冒泡
+        desktopContainer.addEventListener('click', e => {
+            e.stopPropagation();
+        });
         desktopContainer.title = "";
 
         return this.element;

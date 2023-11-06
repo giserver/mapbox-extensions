@@ -1,5 +1,5 @@
 import { Map } from "mapbox-gl";
-import { createHtmlElement } from '../../utils';
+import { dom } from 'wheater';
 import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
 import { SwitchLayerItem } from "./types";
 import SwitchGroupContainer from "./SwitchGroupContainer";
@@ -26,18 +26,16 @@ export default class ImgTxtSwitchLayerButton extends SwitchLayerButtonBase {
     }
 
     protected createHtmlElement() {
-        const imgTxtButton = createHtmlElement('div', "jas-img-txt-switch-button");
-        const imgDiv = createHtmlElement('div', "jas-img-txt-switch-button-img");
-        const txtDiv = createHtmlElement('div', "jas-img-txt-switch-button-txt");
-        txtDiv.innerText = this.options.name;
-
+        this.imgDiv = dom.createHtmlElement('div', ["jas-img-txt-switch-button-img"]);
         if (this.options.backgroundImage) {
-            imgDiv.style.backgroundImage = `url('${this.options.backgroundImage}')`;
+            this.imgDiv.style.backgroundImage = `url('${this.options.backgroundImage}')`;
         }
 
-        imgTxtButton.append(imgDiv, txtDiv);
-
-        this.imgDiv = imgDiv;
+        const imgTxtButton = dom.createHtmlElement('div',
+            ["jas-img-txt-switch-button"],
+            [this.imgDiv, dom.createHtmlElement('div', ["jas-img-txt-switch-button-txt"], [this.options.name])]
+        );
+        
         return { container: imgTxtButton, button: imgTxtButton };
     }
 }

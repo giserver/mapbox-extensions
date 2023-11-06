@@ -1,6 +1,6 @@
 import { EaseToOptions, IControl, Map } from "mapbox-gl";
-import { createHtmlElement } from "../utils";
-import SvgBuilder from '../svg';
+import { dom } from 'wheater';
+import SvgBuilder from '../common/svg';
 
 export interface BackToOriginControlOptions {
     easeToOptions?: EaseToOptions
@@ -8,7 +8,7 @@ export interface BackToOriginControlOptions {
 
 export default class BackToOriginControl implements IControl {
 
-    readonly element = createHtmlElement('div', "jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group");
+    readonly element = dom.createHtmlElement('div', ["jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group"]);
 
     /**
      *

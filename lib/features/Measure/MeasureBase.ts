@@ -1,5 +1,5 @@
-import { GeoJSONSource, Map } from 'mapbox-gl'
-import { createUUID } from '../../utils';
+import mapboxgl from 'mapbox-gl'
+import { creator } from 'wheater';
 import LayerGroup from '../LayerGroup';
 import Tip from '../Tip';
 
@@ -48,7 +48,7 @@ export default abstract class MeasureBase {
 
     protected set isDrawing(value: boolean) {
         this._isDrawing = value;
-        if(this.ops.tip)
+        if (this.ops.tip)
             this.tip?.resetContent(_ => value ? this.ops.tip!.message_drawing : this.ops.tip!.message_before_drawing);
     }
 
@@ -72,10 +72,10 @@ export default abstract class MeasureBase {
      */
     protected abstract onStop(): void;
 
-    constructor(protected map: Map, private ops: { tip?: TipOptions }) {
+    constructor(protected map: mapboxgl.Map, private ops: { tip?: TipOptions }) {
         if (ops.tip)
             this.tip = new Tip({ map, getContent: _ => ops.tip!.message_before_drawing });
-        this.id = createUUID();
+        this.id = creator.uuid();
         this.layerGroup = new LayerGroup(this.id, map);
 
         const init = () => {
@@ -168,7 +168,7 @@ export default abstract class MeasureBase {
     * 更新绘制图形的数据
     */
     protected updateGeometryDataSource() {
-        const source = this.map.getSource(this.id) as GeoJSONSource;
+        const source = this.map.getSource(this.id) as mapboxgl.GeoJSONSource;
         source && source.setData(this.geojson);
     }
 
@@ -176,7 +176,7 @@ export default abstract class MeasureBase {
      * 更新点状数据
      */
     protected updatePointDataSource() {
-        const source = this.map.getSource(this.pointSourceId) as GeoJSONSource;
+        const source = this.map.getSource(this.pointSourceId) as mapboxgl.GeoJSONSource;
         source && source.setData(this.geojsonPoint);
     }
 

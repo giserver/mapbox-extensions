@@ -1,11 +1,11 @@
 import mapboxgl from "mapbox-gl";
+import { dom } from 'wheater';
 import centroid from '@turf/centroid';
 import MeasureBase, { MeasureType } from "../features/Measure/MeasureBase";
 import MeasurePoint, { MeasurePointOptions } from "../features/Measure/MeasurePoint";
 import MeasureLineString, { MeasureLineStringOptions } from "../features/Measure/MeasureLineString";
 import MeasurePolygon, { MeasurePolygonOptions } from "../features/Measure/MeasurePolygon";
-import { copyToClipboard, createHtmlElement } from "../utils";
-import SvgBuilder from '../svg';
+import SvgBuilder from '../common/svg';
 
 export interface MeasureControlOptions {
 
@@ -69,7 +69,7 @@ export default class MeasureControl implements mapboxgl.IControl {
     private measures = new Map<MeasureType, { measure: MeasureBase, svg: string, controlElement?: HTMLElement | undefined }>();
     private currentMeasure: MeasureBase | undefined;
     private popup = new mapboxgl.Popup({ closeButton: false, className: 'jas-mapbox-popup' });
-    private declare element : HTMLElement;
+    private declare element: HTMLElement;
 
     constructor(private options: MeasureControlOptions = {}) {
         options.horizontal ??= false;
@@ -106,7 +106,8 @@ export default class MeasureControl implements mapboxgl.IControl {
                 this.measures.delete(k);
         })
 
-        this.element = createHtmlElement('div', "jas-ctrl-measure", "mapboxgl-ctrl", "mapboxgl-ctrl-group", this.options.horizontal ? "hor" : "ver");
+        this.element = dom.createHtmlElement('div',
+            ["jas-ctrl-measure", "mapboxgl-ctrl", "mapboxgl-ctrl-group", this.options.horizontal ? "hor" : "ver"]);
 
         this.measures.forEach((value, key) => {
             const btn = this.createButton(value.svg, this.createClickMeasureButtonHandler(map, key));
@@ -170,7 +171,7 @@ export default class MeasureControl implements mapboxgl.IControl {
     }
 
     private createButton(svg: string, onclick: () => void) {
-        const div = createHtmlElement('div', 'jas-btn-hover', 'jas-flex-center', 'jas-ctrl-measure-item');
+        const div = dom.createHtmlElement('div', ['jas-btn-hover', 'jas-flex-center', 'jas-ctrl-measure-item']);
         div.innerHTML += svg;
         div.onclick = onclick;
         return div;
@@ -222,7 +223,7 @@ export default class MeasureControl implements mapboxgl.IControl {
                     copyBtn.addEventListener('click', e => {
                         const geometry = JSON.stringify(pf.geometry);
                         this.options.onGeometryCopy?.call(this, geometry);
-                        copyToClipboard(geometry);
+                        dom.copyToClipboard(geometry);
                     });
 
                     cleanBtn.addEventListener('click', e => {

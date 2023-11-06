@@ -1,12 +1,12 @@
-import mapboxgl, { Map, EventData, MapMouseEvent, CirclePaint, SymbolPaint, SymbolLayout } from "mapbox-gl";
-import { createUUID } from "../../utils";
+import mapboxgl from "mapbox-gl";
+import { creator } from 'wheater';
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
 export interface MeasurePointOptions extends MeasureOptions<GeoJSON.Point> {
 
-    circlePaintBuilder?: (paint: CirclePaint) => void;
-    symbolLayoutBuilder?: (layout: SymbolLayout) => void;
-    symbolPaintBuilder?: (paint: SymbolPaint) => void;
+    circlePaintBuilder?: (paint: mapboxgl.CirclePaint) => void;
+    symbolLayoutBuilder?: (layout: mapboxgl.SymbolLayout) => void;
+    symbolPaintBuilder?: (paint: mapboxgl.SymbolPaint) => void;
 
     /**
      * 文字创建
@@ -20,9 +20,9 @@ export default class MeasurePoint extends MeasureBase {
     /**
      *
      */
-    constructor(map: Map, private options: MeasurePointOptions = {}) {
+    constructor(map: mapboxgl.Map, private options: MeasurePointOptions = {}) {
         options.createText ??= (lng: number, lat: number) => `${lng.toFixed(4)} , ${lat.toFixed(4)}`;
-        super(map,options);
+        super(map, options);
     }
 
     protected onInit(): void {
@@ -74,8 +74,8 @@ export default class MeasurePoint extends MeasureBase {
 
     }
 
-    private onMapClickHandle = (e: MapMouseEvent & EventData) => {
-        const id = createUUID();
+    private onMapClickHandle = (e: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
+        const id = creator.uuid();
         this.geojson.features.push({
             type: 'Feature',
             id,

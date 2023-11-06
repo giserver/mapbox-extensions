@@ -1,5 +1,5 @@
-import { createUUID } from '../../../utils';
 import mapboxgl from 'mapbox-gl';
+import {creator} from 'wheater';
 
 
 /**
@@ -34,14 +34,14 @@ export default abstract class MeasureBase {
 
     constructor(protected map: mapboxgl.Map) {
 
-        this.sourceId = createUUID()
-        this.pointSourceId = createUUID()
-        this.symbolSourceId = createUUID()
+        this.sourceId = creator.uuid();
+        this.pointSourceId = creator.uuid();
+        this.symbolSourceId = creator.uuid();
 
         this.map.addSource(this.sourceId, {
             type: 'geojson',
             data: this.geojson
-        })
+        });
         this.map.addSource(this.pointSourceId, {
             type: 'geojson',
             data: this.geojsonPoint

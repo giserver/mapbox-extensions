@@ -1,6 +1,6 @@
 import turfLength from "@turf/length";
 import { MapMouseEvent, EventData, Map, LinePaint, CirclePaint, SymbolPaint, SymbolLayout } from "mapbox-gl";
-import { createUUID } from "../../utils";
+import {creator} from 'wheater';
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
 export interface MeasureLineStringOptions extends MeasureOptions<GeoJSON.LineString> {
@@ -143,7 +143,7 @@ export default class MeasureLineString extends MeasureBase {
 
         } else {
             this.isDrawing = true;
-            const id = createUUID();
+            const id = creator.uuid();
             this.geojson.features.push({
                 type: 'Feature',
                 id,

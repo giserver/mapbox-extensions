@@ -1,9 +1,9 @@
 import mapboxgl from 'mapbox-gl'
-import { createHtmlElement } from '../../../utils';
+import { dom } from 'wheater';
 import MeasureBase from './MeasureBase';
 import MeasureLineString from './MeasureLineString';
 import MeasurePolygon from './MeasurePolygon';
-import SvgBuilder from '../../../svg';
+import SvgBuilder from '../../../common/svg';
 
 export type MeasureType = 'LineString' | 'Polygon';
 
@@ -29,7 +29,7 @@ export class MeasureMobileUIBase {
     /**
      *
      */
-    constructor(protected map:mapboxgl.Map, private operationContainer: HTMLElement, private crosshairContainer: HTMLElement) {
+    constructor(protected map: mapboxgl.Map, private operationContainer: HTMLElement, private crosshairContainer: HTMLElement) {
         this.operationDiv = this.createOperationUI();
         operationContainer.append(this.operationDiv);
         this.crosshairDiv = this.createCrosshairUI();
@@ -37,37 +37,43 @@ export class MeasureMobileUIBase {
     }
 
     private createOperationUI() {
-        const operationDiv = createHtmlElement('div', 'jas-ctrl-measure-mobile-operation');
+        const revokeDiv = dom.createHtmlElement('div',
+            ["jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-btn"],
+            [new SvgBuilder('revoke').create('svg'), dom.createHtmlElement('div', [], ['撤销'])],
+            {
+                onClick: () => {
+                    this.currentMeasure?.revokePoint();
+                }
+            });
 
-        const revokeDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-btn");
-        revokeDiv.innerHTML = new SvgBuilder('revoke').create();
-        revokeDiv.innerHTML += `<div>撤销</div>`;
-        revokeDiv.addEventListener('click', () => {
-            this.currentMeasure?.revokePoint();
-        });
+        const finishDiv = dom.createHtmlElement('div',
+            ["jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-btn"],
+            [new SvgBuilder('finish').create('svg'), dom.createHtmlElement('div', [], ['完成'])],
+            {
+                onClick: () => {
+                    this.currentMeasure?.finish();
+                }
+            }
+        );
 
-        const finishDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-btn");
-        finishDiv.innerHTML = new SvgBuilder('finish').create();
-        finishDiv.innerHTML += `<div>完成</div>`;
-        finishDiv.addEventListener('click', () => {
-            this.currentMeasure?.finish();
-        })
+        const addPointDiv = dom.createHtmlElement('div',
+            ["jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-add-point", "jas-flex-center"],
+            [dom.createHtmlElement('div', [], ['定点'])],
+            {
+                onClick: () => {
+                    this.currentMeasure?.addPoint(this.getCurrentPosition(this.map))
+                }
+            }
+        );
 
-        const addPointDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-add-point", "jas-flex-center");
-        addPointDiv.innerHTML = "<div>定点</div>"
-        addPointDiv.addEventListener('click', () => {
-            this.currentMeasure?.addPoint(this.getCurrentPosition(this.map));
-        })
-
-        operationDiv.appendChild(revokeDiv);
-        operationDiv.appendChild(addPointDiv);
-        operationDiv.appendChild(finishDiv);
-
-        return operationDiv;
+        return dom.createHtmlElement('div',
+            ['jas-ctrl-measure-mobile-operation'],
+            [revokeDiv, addPointDiv, finishDiv]
+        )
     }
 
     private createCrosshairUI() {
-        const div = createHtmlElement('div', "jas-ctrl-measure-mobile-crosshair");
+        const div = dom.createHtmlElement('div', ["jas-ctrl-measure-mobile-crosshair"]);
         div.innerHTML = new SvgBuilder('crosshair').create();
         return div;
     }
@@ -113,12 +119,12 @@ export class MeasureMobileUIBase {
         return map.unproject([x, y]);
     }
 
-    onRemove(){
+    onRemove() {
         this.crosshairDiv.remove();
         this.operationDiv.remove();
 
         this.currentMeasure?.stop();
-        this.measuresMap.forEach(m=>{
+        this.measuresMap.forEach(m => {
             m.measure.remove();
         });
     }
@@ -161,9 +167,9 @@ export default class Measure4Mobile extends MeasureMobileUIBase {
         options.defaultType ??= "LineString";
 
         const parentDiv = typeof container === "string" ? document.getElementById(container)! : container;
-        const containerWapper = createHtmlElement('div');
+        const containerWapper = dom.createHtmlElement('div');
 
-        super(map,containerWapper, containerWapper);
+        super(map, containerWapper, containerWapper);
 
         containerWapper.append(this.createMeasureSwitchUI());
         parentDiv.append(containerWapper)
@@ -184,9 +190,9 @@ export default class Measure4Mobile extends MeasureMobileUIBase {
 
     private createMeasureSwitchUI() {
 
-        const measureSwitchDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-switch");
+        const measureSwitchDiv = dom.createHtmlElement('div', ["jas-ctrl-measure-mobile-switch"]);
 
-        const measureLineStringDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-switch-item");
+        const measureLineStringDiv = dom.createHtmlElement('div', ["jas-ctrl-measure-mobile-switch-item"]);
         measureLineStringDiv.innerHTML = this.img_line;
         measureLineStringDiv.addEventListener('click', () => {
             this.changeMeasureType('LineString');
@@ -196,7 +202,7 @@ export default class Measure4Mobile extends MeasureMobileUIBase {
             measureDiv: measureLineStringDiv
         });
 
-        const measurePolygonDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-switch-item");
+        const measurePolygonDiv = dom.createHtmlElement('div', ["jas-ctrl-measure-mobile-switch-item"]);
         measurePolygonDiv.innerHTML = this.img_polygon;
         measurePolygonDiv.addEventListener('click', () => {
             this.changeMeasureType('Polygon');
@@ -206,7 +212,7 @@ export default class Measure4Mobile extends MeasureMobileUIBase {
             measureDiv: measurePolygonDiv
         });
 
-        const clearDiv = createHtmlElement('div', "jas-ctrl-measure-mobile-switch-item");
+        const clearDiv = dom.createHtmlElement('div', ["jas-ctrl-measure-mobile-switch-item"]);
         clearDiv.innerHTML = this.img_clean;
         clearDiv.addEventListener('click', () => {
             this.clear();

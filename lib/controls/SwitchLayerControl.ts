@@ -1,9 +1,9 @@
 import mapboxgl from "mapbox-gl";
-import { createHtmlElement } from "../utils";
+import { dom } from 'wheater';
 import ExtendControl, { UIPosition } from "./ExtendControl";
 import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions, getLayerIds } from "../features/SwitchLayer/types";
 import SwitchGroupContainer from "../features/SwitchLayer/SwitchGroupContainer";
-import SvgBuilder from "../svg";
+import SvgBuilder from "../common/svg";
 
 export interface SwitchLayerOptions extends SelectAndClearAllOptions, ShowToTopOptions {
     /**
@@ -71,12 +71,9 @@ export default class SwitchLayerControl extends SwitchLayerBaseControl {
             title: this.options.name,
             closeable: true,
             content: map => {
-                const container = createHtmlElement('div', "jas-ctrl-switchlayer-container");
-                const groups = createHtmlElement('div', 'jas-ctrl-switchlayer-container-groups', 'jas-ctrl-custom-scrollbar');
-                container.append(groups);
-
+                const groups = dom.createHtmlElement('div', ['jas-ctrl-switchlayer-container-groups', 'jas-ctrl-custom-scrollbar']);
                 this.groupContainers = SwitchGroupContainer.appendLayerGroups(map, groups, this.options.layerGroups, this.options);
-                return container;
+                return dom.createHtmlElement('div', ["jas-ctrl-switchlayer-container"], [groups]);
             }
         });
 

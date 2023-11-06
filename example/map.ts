@@ -9,7 +9,7 @@ import SwitchLayerControl from '../lib/controls/SwitchLayerControl';
 import { ExtendControl, SetStyleProxy } from '../lib';
 
 import '../lib/index.css';
-import { createHtmlElement } from '../lib/utils';
+import { dom } from 'wheater';
 import { LayerGroupsType } from '../lib/features/SwitchLayer/types';
 
 import MBtnRoate from '../lib/features/MBtnRoate'
@@ -378,9 +378,9 @@ map.on('load', () => {
     map.addControl(new BackToOriginControl());
     map.addControl(doodleControl);
 
-    const content = createHtmlElement("div", "jas-ctrl-measure-mobile-operation-item");
+    const content = dom.createHtmlElement("div", ["jas-ctrl-measure-mobile-operation-item"]);
     content.style.width = '200px';
-    const titleSlot = createHtmlElement('div');
+    const titleSlot = dom.createHtmlElement('div');
     titleSlot.innerText = 'slot';
     map.addControl(new ExtendControl({
         content,

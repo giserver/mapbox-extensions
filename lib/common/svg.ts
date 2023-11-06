@@ -164,15 +164,15 @@ export default class SvgBuilder<T extends keyof (typeof SvgTemplateInfoMapper)> 
     }
 
     create(type?: "string"): string
-    create(type?: "svg"): SVGElement
-    create(type?: "string" | "svg"): string | SVGElement {
+    create(type?: "svg"): Node
+    create(type?: "string" | "svg"): string | Node {
         const svgString = this.svgTemplate
             .replace("{w}", this.width.toString())
             .replace("{h}", this.height.toString());
 
         if (type === 'svg') {
             const p = document.createElement('div');
-            p.innerText = svgString;
+            p.innerHTML = svgString;
             return p.firstChild as SVGElement;
         }
 

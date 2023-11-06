@@ -1,12 +1,12 @@
 import mapboxgl from "mapbox-gl";
-import { createHtmlElement } from "../utils";
+import { dom } from 'wheater';
 
 export default class {
 
-    private element = createHtmlElement('div', 'jas-ctrl-tip');
+    private element = dom.createHtmlElement('div', ['jas-ctrl-tip']);
     private eventShow: keyof mapboxgl.MapLayerEventType;
     private eventHide: keyof mapboxgl.MapLayerEventType;
-    private declare lngLat : mapboxgl.LngLatLike;
+    private declare lngLat: mapboxgl.LngLatLike;
 
     /**
      *
@@ -20,7 +20,7 @@ export default class {
         this.eventHide = this.options.layer ? 'mouseleave' : 'mouseout';
     }
 
-    resetContent(getContent:(event: mapboxgl.MapLayerMouseEvent) => string | HTMLElement){
+    resetContent(getContent: (event: mapboxgl.MapLayerMouseEvent) => string | HTMLElement) {
         this.options.getContent = getContent;
     }
 

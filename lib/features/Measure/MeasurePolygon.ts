@@ -1,27 +1,27 @@
 import centroid from '@turf/centroid';
 import turfArea from '@turf/area';
 import turfLength from '@turf/length';
-import mapboxgl, { EventData, FillPaint, LinePaint, Map, MapMouseEvent, SymbolLayout, SymbolPaint } from "mapbox-gl";
-import { createUUID } from '../../utils';
+import mapboxgl from "mapbox-gl";
+import { creator } from 'wheater';
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
 export interface MeasurePolygonOptions extends MeasureOptions<GeoJSON.Polygon> {
 
-    polygonPaintBuilder?(paint: FillPaint): void,
-    outlinePaintBuilder?(paint: LinePaint): void;
+    polygonPaintBuilder?(paint: mapboxgl.FillPaint): void,
+    outlinePaintBuilder?(paint: mapboxgl.LinePaint): void;
 
 
     /**
      * 外部设置label layout 
      * @param layout 
      */
-    labelLayoutBuilder?(layout: SymbolLayout): void;
+    labelLayoutBuilder?(layout: mapboxgl.SymbolLayout): void;
 
     /**
      * 外部设置label Paint 
      * @param paint 
      */
-    labelPaintBuilder?(paint: SymbolPaint): void;
+    labelPaintBuilder?(paint: mapboxgl.SymbolPaint): void;
 
 
     /**
@@ -44,7 +44,7 @@ export default class MeasurePolygon extends MeasureBase {
     /**
      *
      */
-    constructor(map: Map, private options: MeasurePolygonOptions = {}) {
+    constructor(map: mapboxgl.Map, private options: MeasurePolygonOptions = {}) {
         options.createText ??= (area: number) => area > 1000000 ?
             `${(area / 1000000).toFixed(4)}km²` :
             `${area.toFixed(4)}m²`;
@@ -56,7 +56,7 @@ export default class MeasurePolygon extends MeasureBase {
     }
 
     protected onInit(): void {
-        const polyonPaint: FillPaint = {
+        const polyonPaint: mapboxgl.FillPaint = {
             'fill-color': "#fbb03b",
             'fill-opacity': 0.2
         };
@@ -69,7 +69,7 @@ export default class MeasurePolygon extends MeasureBase {
             paint: polyonPaint
         });
 
-        const outlinePaint: LinePaint = {
+        const outlinePaint: mapboxgl.LinePaint = {
             "line-color": "#fbb03b",
             "line-width": 4
         };
@@ -96,14 +96,14 @@ export default class MeasurePolygon extends MeasureBase {
             paint: outlinePaint
         });
 
-        const labelLayout: SymbolLayout = {
+        const labelLayout: mapboxgl.SymbolLayout = {
             'text-field': ['format',
                 ['concat', "面积 : ", ['get', 'area']], {}, '\n', {}, '\n', {},
                 ['concat', "周长 : ", ['get', 'length']], {}],
             'text-size': 16,
             'text-justify': 'left'
         }
-        const labelPaint: SymbolPaint = {
+        const labelPaint: mapboxgl.SymbolPaint = {
             'text-color': "#000000",
             "text-halo-color": '#ffffff',
             "text-halo-width": 2
@@ -132,7 +132,7 @@ export default class MeasurePolygon extends MeasureBase {
         this.map.off('dblclick', this.onMapDoubleClickHandler);
     }
 
-    private onMapClickHandler = (e: MapMouseEvent & EventData) => {
+    private onMapClickHandler = (e: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
         const point = [e.lngLat.lng, e.lngLat.lat];
 
         // 判断是否已经落笔
@@ -144,7 +144,7 @@ export default class MeasurePolygon extends MeasureBase {
             coords.push(coords[0]);
         } else {
             this.isDrawing = true;
-            const id = createUUID();
+            const id = creator.uuid();
             this.geojson.features.push({
                 type: 'Feature',
                 id,
@@ -166,7 +166,7 @@ export default class MeasurePolygon extends MeasureBase {
         this.updatePointDataSource();
     };
 
-    private onMapDoubleClickHandler = (e: MapMouseEvent & EventData) => {
+    private onMapDoubleClickHandler = (e: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
         this.isDrawing = false;
         this.map.off('mousemove', this.onMouseMoveHandler);
         this.map.off('contextmenu', this.onRightClickHandler);
@@ -196,7 +196,7 @@ export default class MeasurePolygon extends MeasureBase {
         this.currentMeasurePoint = undefined;
     };
 
-    private onMouseMoveHandler = (e: MapMouseEvent & EventData) => {
+    private onMouseMoveHandler = (e: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
         const point = [e.lngLat.lng, e.lngLat.lat];
         const coords = this.currentPolygon.coordinates[0];
 
@@ -231,7 +231,7 @@ export default class MeasurePolygon extends MeasureBase {
         }, 50);
     }
 
-    private onRightClickHandler = (e: MapMouseEvent & EventData) => {
+    private onRightClickHandler = (e: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
         const coords = this.currentPolygon.coordinates[0];
 
         if (coords.length === 2)  // 只存在第一个点和动态点则不进行删除操作
