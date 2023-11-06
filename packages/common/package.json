@@ -1,0 +1,27 @@
+{
+    "name": "@mapbox-extensions/common",
+    "version": "1.0.0",
+    "description": "",
+    "type": "module",
+    "main": "./src/index.js",
+    "types": "./types/index.d.ts",
+    "files": [
+      "src",
+      "types"
+    ],
+    "scripts": {
+    },
+    "dependencies": {
+    },
+    "devDependencies": {
+    },
+    "peerDependencies": {
+    },
+    "publishConfig": {
+      "access": "public",
+      "registry": "https://registry.npmjs.org/"
+    },
+    "repository": "",
+    "license": "MIT",
+    "buildOptions":{}
+  }
