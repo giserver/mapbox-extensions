@@ -1,9 +1,8 @@
 import mapboxgl from "mapbox-gl";
+import mitt from "mitt";
 import { dom } from 'wheater';
 import SvgBuilder from '../common/svg'
-import mitt from "mitt";
-
-export type UIPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+import { UIPosition } from "../common/types";
 
 export type ExtendControlContentType = HTMLElement | Array<HTMLElement> | ((map: mapboxgl.Map) => HTMLElement);
 

@@ -44,6 +44,134 @@
     cursor: pointer;
 }
 
+.jas-btn {
+    border: 0 !important;
+    cursor: pointer !important;
+    padding: 4px 10px !important;
+    border-radius: 4px !important;
+    width: fit-content !important;
+}
+
+.jas-btn-confirm {
+    color: #fff;
+    background-color: #1677FF;
+}
+
+.jas-btn-active {
+    color: #fff;
+    background-color: #1677FF !important;
+}
+
+.jas-btn-default {
+    border: 1px solid #ddd !important;
+    box-sizing: border-box;
+}
+
+.jas-custom-color-picker{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.jas-custom-color-item{
+    cursor: pointer;
+    margin-right: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 20px;
+    width: 20px;
+}
+
+/* #region modal */
+.jas-modal {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 9999;
+
+    display: flex;
+    justify-content: center;
+
+    background-color: #00000055
+}
+
+.jas-modal-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+
+    padding: 16px 24px;
+    border-radius: 4px;
+    width: fit-content;
+    min-width: 200px;
+    height: fit-content;
+    background-color: #fefefe;
+
+    margin-top: 10%;
+}
+
+.jas-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.jas-modal-header-title {
+    font-weight: 500;
+}
+
+.jas-modal-foot {
+    display: flex;
+    justify-content: end;
+    column-gap: 10px;
+    margin-top: 24px;
+}
+
+.jas-modal-content-edit {
+    /* display: ; */
+    /* grid-template-columns: auto auto;
+    gap: 10px;
+    align-items: center; */
+    max-height: 400px;
+    overflow: auto;
+    font-size: 14px;
+}
+
+.jas-modal-content-edit-header {
+    color: #666;
+    margin-top: 16px;
+    font-weight: bold;
+}
+
+.jas-modal-content-edit-divBorder {
+    border: 1px solid #ccc;
+    padding: 16px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.jas-modal-content-edit-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.jas-modal-content-edit-item>label {
+    width: 80px;
+}
+
+.jas-modal-content-edit-item>select,
+.jas-modal-content-edit-item>input,
+.jas-modal-content-edit-item>div {
+    flex: 1
+}
+
+/* #endregion */
+
 /* #region switch 控件 */
 .jas-switch {
     width: 44px;
@@ -589,6 +717,115 @@
 
 .jas-ctrl-extend-mobile-contianer-active {
     transform: translateY(0);
+}
+
+/* #endregion */
+
+/* #region marker */
+.jas-ctrl-marker {
+    min-width: 300px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.jas-ctrl-marker-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.jas-ctrl-marker-btns-container {
+    column-gap: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.jas-ctrl-marker-item-btn {
+    height: 29px;
+    width: 29px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.jas-ctrl-marker-item-btn:hover {
+    background-color: #ccc;
+}
+
+.jas-ctrl-marker-data {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+.jas-ctrl-marker-layer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+}
+
+.jas-ctrl-marker-layer-header:hover {
+    background-color: #f2f2f2;
+}
+
+.jas-ctrl-marker-headre-search {
+    width: fit-content;
+}
+
+.jas-ctrl-marker-headre-search>input {
+    width: 120px;
+}
+
+.jas-ctrl-marker-layer-header-content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: normal !important;
+}
+
+.jas-ctrl-marker-suffix {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+}
+
+.jas-ctrl-marker-suffix>div {
+    cursor: pointer;
+}
+
+.jas-ctrl-marker-item-container {
+    height: 20px;
+    font-size: 14px;
+    padding: 5px;
+    line-height: normal !important;
+    display: flex;
+    justify-content: space-between;
+}
+
+.jas-ctrl-marker-item-container:hover {
+    background-color: #f2f2f2;
+}
+
+.jas-ctrl-marker-item-container-content {
+    cursor: pointer;
+    flex: 1;
+    margin-left: 5px;
+}
+
+
+.jas-marker-edit-input.text,
+.jas-marker-edit-input.number,
+.jas-marker-edit-select {
+    outline-style: none;
+    border: 1px solid #EEE;
+    border-radius: 4px;
+    padding: 8px 8px;
 }
 
 /* #endregion */

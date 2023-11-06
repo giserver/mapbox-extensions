@@ -6,6 +6,7 @@ import SwitchMapControl from '../lib/controls/SwitchMapControl';
 import BackToOriginControl from '../lib/controls/BackToOriginControl';
 import DoodleControl from '../lib/controls/DoodleControl';
 import SwitchLayerControl from '../lib/controls/SwitchLayerControl';
+import MarkerControl from '../lib/controls/MarkerControl';
 import { ExtendControl, SetStyleProxy } from '../lib';
 
 import '../lib/index.css';
@@ -451,6 +452,8 @@ map.on('load', () => {
 
     map.addControl(measure2Control);
     map.addControl(switchLayerControl);
+
+    map.addControl(new MarkerControl());
 
     new ExtendControlsWrapper([measure2Control, switchLayerControl.extendControl]);
 })
