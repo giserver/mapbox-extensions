@@ -44,6 +44,10 @@ interface ILanguageOptions {
     line: string,
     outline: string,
     polygon: string,
+
+    edit_graph: string,
+    area: string,
+    length: string
 }
 
 const zh: ILanguageOptions = {
@@ -89,7 +93,11 @@ const zh: ILanguageOptions = {
     pointIcon: '图标',
     line: "线",
     outline: "轮廓线",
-    polygon: '面'
+    polygon: '面',
+
+    edit_graph: '编辑图形',
+    area: '面积',
+    length: '长度'
 }
 
 const en: ILanguageOptions = {
@@ -135,7 +143,11 @@ const en: ILanguageOptions = {
     pointIcon: 'point icon',
     line: "line",
     outline: "outline",
-    polygon: 'polygon'
+    polygon: 'polygon',
+
+    edit_graph: 'edit graph',
+    area: 'area',
+    length: 'length'
 }
 
 const lang = zh;

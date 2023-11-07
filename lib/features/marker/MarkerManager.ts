@@ -1,6 +1,8 @@
 import mapboxgl from "mapbox-gl";
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
+import mLength from '@turf/length';
+import mArea from '@turf/area';
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { dom, array, creator, deep } from 'wheater';
 import { svg, language } from "../../common";
@@ -32,6 +34,7 @@ export interface MarkerManagerOptions {
     drawAfterOffset?: [number, number],
     layerOptions?: MarkerLayerOptions,
     firstFeatureStyleConfig?(style: Omit<GeometryStyle, "pointIcon">): void,
+    showMeasureData?: boolean
 }
 
 export default class MarkerManager {
@@ -478,6 +481,19 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
             map.easeTo({ center });
             const content = item.createSuffixElement({ editGeometry: true });
 
+            let extraMeasrueName = "";
+            let extraMeasrueValue = "";
+            if (feature.geometry.type === 'LineString') {
+                extraMeasrueName = lang.length;
+                extraMeasrueValue = `${mLength(feature).toFixed(2)}`;
+            } else if (feature.geometry.type === 'Polygon') {
+                extraMeasrueName = lang.area;
+                extraMeasrueValue = `${mArea(feature).toFixed(2)}`;
+            }
+            content.append(dom.createHtmlElement('div',
+                ['jas-ctrl-marker-item-extra-info'],
+                [`${extraMeasrueName} : ${extraMeasrueValue}`]));
+
             const popup = new mapboxgl.Popup({
                 closeOnClick: true,
                 closeButton: false
@@ -488,8 +504,7 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
 
             content.addEventListener('click', () => {
                 popup.remove();
-            })
-
+            });
         });
 
         this.nameElement.innerText = properties.name;
@@ -774,9 +789,6 @@ class MarkerItem extends AbstractLinkP<MarkerLayer> {
     }
 
     private createSuffixEdit() {
-        const div = dom.createHtmlElement('div');
-        div.title = lang.editItem;
-
         const update = () => {
             // 更新地图
             this.parent.updateDataSource();
@@ -784,111 +796,120 @@ class MarkerItem extends AbstractLinkP<MarkerLayer> {
             this.reName(this.feature.properties.name);
         }
 
-        div.append(new SvgBuilder('edit').resize(17, 17).create('svg'));
-        div.addEventListener('click', () => {
-            const offset = this.parent.parent.options.drawAfterOffset;
-            const orgCenter = this.map.getCenter();
-            const center = centroid(this.feature as any);
-            this.map.easeTo({
-                center: center.geometry.coordinates as [number, number],
-                'offset': offset
-            });
+        const div = dom.createHtmlElement('div', [],
+            [new SvgBuilder('edit').resize(17, 17).create('svg')], {
+            onClick: () => {
+                const offset = this.parent.parent.options.drawAfterOffset;
+                const orgCenter = this.map.getCenter();
+                const center = centroid(this.feature as any);
+                this.map.easeTo({
+                    center: center.geometry.coordinates as [number, number],
+                    'offset': offset
+                });
 
-            createFeaturePropertiesEditModal(this.feature, {
-                layers: [],
-                mode: 'update',
-                onConfirm: () => {
-                    // 外部更新
-                    this.options.onUpdate?.call(undefined, this.feature);
-                    update();
-                    this.map.easeTo({ center: orgCenter });
-                },
-                onCancel: () => {
-                    this.map.easeTo({ center: orgCenter });
-                },
-                onPropChange: () => {
-                    update();
-                }
-            })
+                createFeaturePropertiesEditModal(this.feature, {
+                    layers: [],
+                    mode: 'update',
+                    onConfirm: () => {
+                        // 外部更新
+                        this.options.onUpdate?.call(undefined, this.feature);
+                        update();
+                        this.map.easeTo({ center: orgCenter });
+                    },
+                    onCancel: () => {
+                        this.map.easeTo({ center: orgCenter });
+                    },
+                    onPropChange: () => {
+                        update();
+                    }
+                })
+            }
         });
+
+        div.title = lang.editItem;
+
         return div;
     }
 
     private createSuffixEditGeometry() {
-        const div = dom.createHtmlElement('div');
-        div.append(new SvgBuilder('remake').resize(17, 17).create('svg'));
-        div.addEventListener('click', () => {
+        const div = dom.createHtmlElement('div', [], [
+            new SvgBuilder('remake').resize(17, 17).create('svg')
+        ], {
+            onClick: () => {
 
-            // 删除当前图形
-            const index = this.parent.items.indexOf(this);
-            this.parent.items.splice(index, 1);
-            this.parent.updateDataSource();
+                // 删除当前图形
+                const index = this.parent.items.indexOf(this);
+                this.parent.items.splice(index, 1);
+                this.parent.updateDataSource();
 
-            // 编辑器重置数据
-            const geoEditor = this.parent.parent.geoEditor;
-            geoEditor.set({ type: 'FeatureCollection', "features": [this.feature] });
-            if (this.feature.geometry.type === 'Point')
-                geoEditor.changeMode('simple_select', { featureIds: [this.feature.id!.toString()] })
-            else
-                geoEditor.changeMode('direct_select', { featureId: this.feature.id!.toString() });
+                // 编辑器重置数据
+                const geoEditor = this.parent.parent.geoEditor;
+                geoEditor.set({ type: 'FeatureCollection', "features": [this.feature] });
+                if (this.feature.geometry.type === 'Point')
+                    geoEditor.changeMode('simple_select', { featureIds: [this.feature.id!.toString()] })
+                else
+                    geoEditor.changeMode('direct_select', { featureId: this.feature.id!.toString() });
 
-            const handleSelectChange = (e: any) => {
-                // 当前选择图形失去选择状态 完成修改
-                if (e.features.length === 0) {
-                    const cFeature = geoEditor.get(this.feature.id!.toString())!;
+                const handleSelectChange = (e: any) => {
+                    // 当前选择图形失去选择状态 完成修改
+                    if (e.features.length === 0) {
+                        const cFeature = geoEditor.get(this.feature.id!.toString())!;
 
-                    // 若发生改变
-                    if (!deep.equal(cFeature.geometry, this.feature.geometry)) {
-                        this.feature.geometry = cFeature.geometry;
-                        this.options.onUpdate?.call(undefined, this.feature);
+                        // 若发生改变
+                        if (!deep.equal(cFeature.geometry, this.feature.geometry)) {
+                            this.feature.geometry = cFeature.geometry;
+                            this.options.onUpdate?.call(undefined, this.feature);
+                            this.parent.updateDataSource();
+                        }
+
+                        // 删除编辑数据
+                        this.map.off('draw.selectionchange', handleSelectChange);
+                        geoEditor.changeMode('draw_point');
+                        geoEditor.deleteAll();
+
+                        // 恢复元数据
+                        this.parent.items.push(this);
                         this.parent.updateDataSource();
                     }
-
-                    // 删除编辑数据
-                    this.map.off('draw.selectionchange', handleSelectChange);
-                    geoEditor.changeMode('draw_point');
-                    geoEditor.deleteAll();
-
-                    // 恢复元数据
-                    this.parent.items.push(this);
-                    this.parent.updateDataSource();
                 }
-            }
 
-            this.map.on('draw.selectionchange', handleSelectChange);
+                this.map.on('draw.selectionchange', handleSelectChange);
+            }
         });
+
+        div.title = lang.edit_graph;
 
         return div;
     }
 
     private createSuffixExport() {
-        const div = dom.createHtmlElement('div');
-        div.title = lang.exportItem;
-
-        div.append(new SvgBuilder('export').resize(15, 15).create('svg'));
-
-        div.addEventListener('click', () => {
-            createExportModal(this.feature.properties.name, this.feature);
+        const div = dom.createHtmlElement('div', [],
+            [new SvgBuilder('export').resize(15, 15).create('svg')], {
+            onClick: () => {
+                createExportModal(this.feature.properties.name, this.feature);
+            }
         });
+
+        div.title = lang.exportItem;
 
         return div;
     }
 
     private createSuffixDel() {
-        const div = dom.createHtmlElement('div');
-        div.title = lang.deleteItem;
-
-        div.append(new SvgBuilder('delete').resize(15, 15).create('svg'));
-
-        div.addEventListener('click', () => {
-            createConfirmModal({
-                title: lang.deleteItem,
-                content: this.feature.properties.name,
-                onConfirm: () => {
-                    this.remove();
-                }
-            });
+        const div = dom.createHtmlElement('div', [],
+            [new SvgBuilder('delete').resize(15, 15).create('svg')], {
+            onClick: () => {
+                createConfirmModal({
+                    title: lang.deleteItem,
+                    content: this.feature.properties.name,
+                    onConfirm: () => {
+                        this.remove();
+                    }
+                });
+            }
         });
+
+        div.title = lang.deleteItem;
 
         return div;
     }
