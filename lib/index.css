@@ -67,13 +67,13 @@
     box-sizing: border-box;
 }
 
-.jas-custom-color-picker{
+.jas-custom-color-picker {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.jas-custom-color-item{
+.jas-custom-color-item {
     cursor: pointer;
     margin-right: 4px;
     border: 1px solid #ccc;
@@ -797,6 +797,12 @@
 
 .jas-ctrl-marker-suffix>div {
     cursor: pointer;
+    line-height: 0;
+    padding: 4px;
+}
+
+.jas-ctrl-marker-suffix>div:hover {
+    background-color: #ccc;
 }
 
 .jas-ctrl-marker-item-container {

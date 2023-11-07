@@ -480,6 +480,7 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
 
             const popup = new mapboxgl.Popup({
                 closeOnClick: true,
+                closeButton: false
             })
                 .setLngLat(center)
                 .setDOMContent(content)
