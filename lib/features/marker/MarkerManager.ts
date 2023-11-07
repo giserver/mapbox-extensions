@@ -37,7 +37,7 @@ export interface MarkerManagerOptions {
 export default class MarkerManager {
     private readonly layerContainer: HTMLElement;
 
-    readonly htmlElement = dom.createHtmlElement('div', ['jas-ctrl-marker']);
+    readonly htmlElement;
     readonly extendHeaderSlot = dom.createHtmlElement('div');
 
     readonly markerLayers: MarkerLayer[] = [];
@@ -141,6 +141,10 @@ export default class MarkerManager {
             }
         });
 
+        //#region 图形编辑器
+
+        //防止MapboxDraw内部自动修改doubleClickZoom
+        map.doubleClickZoom.disable();
         // 创建编辑器
         this.geoEditor = new MapboxDraw({
             controls: {
@@ -167,6 +171,7 @@ export default class MarkerManager {
             }
         }
         MapboxDraw.modes.simple_select.onTrash = function (this, _) { }
+        //#endregion
 
         // 图层通过时间排序、创建图层、图层初始设置不可见
         const values = array.groupBy(options.featureCollection.features, f => f.properties.layerId);
@@ -177,14 +182,14 @@ export default class MarkerManager {
         this.setGeometryVisible(false);
 
         // 装载html
-        this.layerContainer = dom.createHtmlElement('div', ['jas-ctrl-marker-data']);
-        this.layerContainer.append(...this.markerLayers.map(x => x.htmlElement));
+        this.htmlElement = dom.createHtmlElement('div', ['jas-ctrl-marker']);
+        this.layerContainer = dom.createHtmlElement('div', ['jas-ctrl-marker-data'], this.markerLayers.map(x => x.htmlElement));
 
-        const header = dom.createHtmlElement('div', ['jas-ctrl-marker-header']);
-        header.append(
+        const header = dom.createHtmlElement('div', ['jas-ctrl-marker-header'], [
             this.createHeaderSearch(),
             this.createHeaderAddLayer(),
-            this.createHeaderDrawBtn());
+            this.createHeaderDrawBtn()
+        ]);
 
         this.htmlElement.append(header, this.layerContainer);
     }
