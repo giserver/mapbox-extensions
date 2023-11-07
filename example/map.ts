@@ -11,7 +11,7 @@ import { ExtendControl, SetStyleProxy } from '../lib';
 
 import '../lib/index.css';
 import { dom } from 'wheater';
-import { LayerGroupsType } from '../lib/features/SwitchLayer/types';
+import { LayerGroupsType } from '../lib/features/switch-layer/types';
 
 import MBtnRoate from '../lib/features/MBtnRoate'
 import ExtendControlsWrapper from '../lib/features/ExtendControlsWrapper';

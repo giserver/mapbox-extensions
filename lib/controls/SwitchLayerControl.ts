@@ -3,8 +3,8 @@ import { dom } from 'wheater';
 import { UIPosition } from "../common/types";
 import SvgBuilder from "../common/svg";
 import ExtendControl from "./ExtendControl";
-import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions, getLayerIds } from "../features/SwitchLayer/types";
-import SwitchGroupContainer from "../features/SwitchLayer/SwitchGroupContainer";
+import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions, getLayerIds } from "../features/switch-layer/types";
+import SwitchGroupContainer from "../features/switch-layer/SwitchGroupContainer";
 
 export interface SwitchLayerOptions extends SelectAndClearAllOptions, ShowToTopOptions {
     /**

@@ -2,9 +2,9 @@ import mapboxgl from "mapbox-gl";
 import { dom, validator } from 'wheater';
 import SvgBuilder from '../common/svg'
 import { UIPosition } from "../common/types";
-import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions } from "../features/SwitchLayer/types";
+import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions } from "../features/switch-layer/types";
 import SwitchLayerControl, { SwitchLayerBaseControl } from "./SwitchLayerControl";
-import SwitchGroupContainer from "../features/SwitchLayer/SwitchGroupContainer";
+import SwitchGroupContainer from "../features/switch-layer/SwitchGroupContainer";
 
 
 //#region img_satellite & img_base

@@ -4,9 +4,9 @@ import SvgBuilder from "../common/svg";
 import { UIPosition } from "../common/types";
 import MeasureControl, { MeasureControlOptions } from "./MeasureControl";
 import { AbstractExtendControl, ExtendControlContentType } from "./ExtendControl";
-import { MeasureMobileUIBase } from "../features/Measure/Measure4Mobile";
-import MeasureLineString from "../features/Measure/Measure4Mobile/MeasureLineString";
-import MeasurePolygon from "../features/Measure/Measure4Mobile/MeasurePolygon";
+import { MeasureMobileUIBase } from "../features/measure/mobile";
+import MeasureLineString from "../features/measure/mobile/MeasureLineString";
+import MeasurePolygon from "../features/measure/mobile/MeasurePolygon";
 
 
 export type Measure2ControlOptions = MeasureControlOptions & {

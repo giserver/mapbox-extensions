@@ -3,7 +3,7 @@ import { Dict } from "./common/types";
 import LayerGroup from './features/LayerGroup'
 
 import MeasureControl, { MeasureControlOptions } from "./controls/MeasureControl";
-import Measure4Mobile, { Measure4MobileOptions } from "./features/Measure/Measure4Mobile";
+import Measure4Mobile, { Measure4MobileOptions } from "./features/measure/mobile";
 import Measure2Control, { Measure2ControlOptions } from "./controls/Measure2Control";
 
 import SwitchMapControl, { SwitchMapControlOptions, SwitchMapExtraInfo } from "./controls/SwitchMapControl";
@@ -12,9 +12,11 @@ import BackToOriginControl, { BackToOriginControlOptions } from "./controls/Back
 import DoodleControl, { DoodleControlOptions } from "./controls/DoodleControl";
 import ExtendControl, { ExtendControlOptions, AbstractExtendControl } from "./controls/ExtendControl";
 
+import MarkerControl, { MarkerControlOptions, createGiserverMarkerManagerOptions } from "./controls/MarkerControl";
+
 import SetStyleProxy from "./features/SetStyleProxy";
-import SwitchGroupContainer from "./features/SwitchLayer/SwitchGroupContainer";
-import { SwitchGroupLayers, SwitchLayerItem } from "./features/SwitchLayer/types";
+import SwitchGroupContainer from "./features/switch-layer/SwitchGroupContainer";
+import { SwitchGroupLayers, SwitchLayerItem } from "./features/switch-layer/types";
 
 import ExtendControlsWrapper from './features/ExtendControlsWrapper';
 import MBtnRoate from "./features/MBtnRoate";
@@ -23,13 +25,14 @@ export {
     LayerGroup,
     MeasureControl,
     Measure2Control,
+    Measure4Mobile,
     SwitchMapControl,
     SwitchLayerControl,
     BackToOriginControl,
     DoodleControl,
     ExtendControl,
     AbstractExtendControl,
-    Measure4Mobile,
+    MarkerControl,
     SetStyleProxy,
 
     MeasureControlOptions,
@@ -41,6 +44,8 @@ export {
     BackToOriginControlOptions,
     DoodleControlOptions,
     ExtendControlOptions,
+    MarkerControlOptions,
+    createGiserverMarkerManagerOptions,
 
     SwitchGroupContainer,
     SwitchGroupLayers,

@@ -1,10 +1,10 @@
 import mapboxgl from "mapbox-gl";
 import { dom } from 'wheater';
 import centroid from '@turf/centroid';
-import MeasureBase, { MeasureType } from "../features/Measure/MeasureBase";
-import MeasurePoint, { MeasurePointOptions } from "../features/Measure/MeasurePoint";
-import MeasureLineString, { MeasureLineStringOptions } from "../features/Measure/MeasureLineString";
-import MeasurePolygon, { MeasurePolygonOptions } from "../features/Measure/MeasurePolygon";
+import MeasureBase, { MeasureType } from "../features/measure/MeasureBase";
+import MeasurePoint, { MeasurePointOptions } from "../features/measure/MeasurePoint";
+import MeasureLineString, { MeasureLineStringOptions } from "../features/measure/MeasureLineString";
+import MeasurePolygon, { MeasurePolygonOptions } from "../features/measure/MeasurePolygon";
 import SvgBuilder from '../common/svg';
 
 export interface MeasureControlOptions {
