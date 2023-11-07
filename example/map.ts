@@ -1,18 +1,15 @@
-import '../lib';
+
 import mapboxgl from 'mapbox-gl';
-import MeasureControl from '../lib/controls/MeasureControl';
-import Measure2Control from '../lib/controls/Measure2Control';
-import SwitchMapControl from '../lib/controls/SwitchMapControl';
-import BackToOriginControl from '../lib/controls/BackToOriginControl';
-import DoodleControl from '../lib/controls/DoodleControl';
-import SwitchLayerControl from '../lib/controls/SwitchLayerControl';
-import MarkerControl from '../lib/controls/MarkerControl';
-import { ExtendControl, SetStyleProxy } from '../lib';
-
-import '../lib/index.css';
 import { dom } from 'wheater';
-import { LayerGroupsType } from '../lib/features/switch-layer/types';
 
+import {
+    MeasureControl, Measure2Control, SwitchMapControl, BackToOriginControl, DoodleControl,
+    SwitchLayerControl, MarkerControl, ExtendControl, SetStyleProxy
+} from '../lib';
+import '../lib';
+import '../lib/index.css';
+
+import { LayerGroupsType } from '../lib/features/switch-layer/types';
 import MBtnRoate from '../lib/features/MBtnRoate'
 import ExtendControlsWrapper from '../lib/features/ExtendControlsWrapper';
 

@@ -154,4 +154,4 @@ function change(l?: Partial<ILanguageOptions>) {
     }
 }
 
-export { lang, zh, en, reset, change, ILanguageOptions }; 
+export { lang, zh, en, reset, change, ILanguageOptions };

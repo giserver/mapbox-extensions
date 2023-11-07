@@ -220,7 +220,7 @@ const SvgTemplateInfoMapper = {
     }
 } as const
 
-export default class SvgBuilder<T extends keyof (typeof SvgTemplateInfoMapper)> {
+export class SvgBuilder<T extends keyof (typeof SvgTemplateInfoMapper)> {
     private svgTemplate: string;
     private width: number;
     private height: number;

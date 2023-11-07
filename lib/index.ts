@@ -1,51 +1,17 @@
 import { Map, AnyLayer, AnySourceData } from "mapbox-gl";
 import { Dict } from "./common/types";
 import LayerGroup from './features/LayerGroup'
-
-import MeasureControl, { MeasureControlOptions } from "./controls/MeasureControl";
-import Measure4Mobile, { Measure4MobileOptions } from "./features/measure/mobile";
-import Measure2Control, { Measure2ControlOptions } from "./controls/Measure2Control";
-
-import SwitchMapControl, { SwitchMapControlOptions, SwitchMapExtraInfo } from "./controls/SwitchMapControl";
-import SwitchLayerControl, { SwitchLayerOptions } from "./controls/SwitchLayerControl";
-import BackToOriginControl, { BackToOriginControlOptions } from "./controls/BackToOriginControl";
-import DoodleControl, { DoodleControlOptions } from "./controls/DoodleControl";
-import ExtendControl, { ExtendControlOptions, AbstractExtendControl } from "./controls/ExtendControl";
-
-import MarkerControl, { MarkerControlOptions, createGiserverMarkerManagerOptions } from "./controls/MarkerControl";
-
 import SetStyleProxy from "./features/SetStyleProxy";
 import SwitchGroupContainer from "./features/switch-layer/SwitchGroupContainer";
 import { SwitchGroupLayers, SwitchLayerItem } from "./features/switch-layer/types";
-
 import ExtendControlsWrapper from './features/ExtendControlsWrapper';
 import MBtnRoate from "./features/MBtnRoate";
 
+export * from './controls';
+
 export {
     LayerGroup,
-    MeasureControl,
-    Measure2Control,
-    Measure4Mobile,
-    SwitchMapControl,
-    SwitchLayerControl,
-    BackToOriginControl,
-    DoodleControl,
-    ExtendControl,
-    AbstractExtendControl,
-    MarkerControl,
     SetStyleProxy,
-
-    MeasureControlOptions,
-    Measure4MobileOptions,
-    Measure2ControlOptions,
-    SwitchMapControlOptions,
-    SwitchMapExtraInfo,
-    SwitchLayerOptions,
-    BackToOriginControlOptions,
-    DoodleControlOptions,
-    ExtendControlOptions,
-    MarkerControlOptions,
-    createGiserverMarkerManagerOptions,
 
     SwitchGroupContainer,
     SwitchGroupLayers,

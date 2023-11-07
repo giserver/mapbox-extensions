@@ -1,12 +1,12 @@
 import { EaseToOptions, IControl, Map } from "mapbox-gl";
 import { dom } from 'wheater';
-import SvgBuilder from '../common/svg';
+import { svg } from '../common';
 
 export interface BackToOriginControlOptions {
     easeToOptions?: EaseToOptions
 }
 
-export default class BackToOriginControl implements IControl {
+export class BackToOriginControl implements IControl {
 
     readonly element = dom.createHtmlElement('div', ["jas-flex-center", "jas-one-button-mapbox", "mapboxgl-ctrl", "mapboxgl-ctrl-group"]);
 
@@ -25,7 +25,7 @@ export default class BackToOriginControl implements IControl {
         easeToOptions.pitch ??= map.getPitch();
         easeToOptions.bearing ??= map.getBearing();
 
-        this.element.innerHTML = new SvgBuilder('origin').create();
+        this.element.innerHTML = new svg.SvgBuilder('origin').create();
 
         this.element.addEventListener('click', e => {
             map.easeTo(this.options.easeToOptions!)

@@ -1,11 +1,13 @@
 import { deep, dom } from 'wheater';
-import SvgBuilder from "../../common/svg";
-import { lang } from '../../common/lang';
-import DragBox from "../../common/drag";
+import { svg, language, drag } from '../../common';
 import { ExportGeoJsonType, MarkerFeatureType, MarkerLayerProperties } from "./types";
 import { getMapMarkerSpriteImages } from "./symbol-icon";
 import Exporter from "./exporter/Exporter";
 import { export_converters } from "./exporter/ExportConverter";
+
+const { SvgBuilder } = svg;
+const { lang } = language;
+const { DragBox } = drag;
 
 export interface ModalOptions {
     content: HTMLElement | string,

@@ -1,17 +1,16 @@
-import { dom } from 'wheater';
-import { createConfirmModal, createExportModal, createFeaturePropertiesEditModal, createMarkerLayerEditModel } from "./Modal";
-import SvgBuilder from "../../common/svg";
-import { array, creator, deep } from 'wheater';
-import { GeometryStyle, MarkerFeatrueProperties, MarkerFeatureType, MarkerLayerProperties } from "./types";
-import DrawManager from "./DrawMarker";
 import mapboxgl from "mapbox-gl";
-import LayerGroup from "../LayerGroup";
-
-import { lang } from '../../common/lang';
-
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import { dom, array, creator, deep } from 'wheater';
+import { svg, language } from "../../common";
+import LayerGroup from "../LayerGroup";
+import { createConfirmModal, createExportModal, createFeaturePropertiesEditModal, createMarkerLayerEditModel } from "./Modal";
+import { GeometryStyle, MarkerFeatrueProperties, MarkerFeatureType, MarkerLayerProperties } from "./types";
+import DrawManager from "./DrawMarker";
+
+const { lang } = language;
+const { SvgBuilder } = svg;
 
 interface MarkerItemOptions {
     onCreate?(feature: MarkerFeatureType): void,

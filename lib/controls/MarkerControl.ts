@@ -1,15 +1,13 @@
 import mapboxgl from "mapbox-gl";
 import * as wheater from 'wheater';
-import { UIPosition } from "../common/types";
-import SvgBuilder from "../common/svg";
-import { lang, reset, change, ILanguageOptions } from '../common/lang';
+import { svg, types, language, ILanguageOptions } from "../common";
 import { AbstractExtendControl } from '../controls/ExtendControl';
 import MarkerManager, { MarkerManagerOptions } from "../features/marker/MarkerManager";
 import { getMapMarkerSpriteImages } from "../features/marker/symbol-icon";
 
 export interface MarkerControlOptions {
     icon?: string | SVGElement
-    position?: UIPosition,
+    position?: types.UIPosition,
     markerOptions?: MarkerManagerOptions,
     resetLang?: ILanguageOptions,
     changeLang?: Partial<ILanguageOptions>
@@ -89,7 +87,7 @@ export async function createGiserverMarkerManagerOptions(url: string, tenantId: 
     }
 }
 
-export default class MarkerControl extends AbstractExtendControl {
+export class MarkerControl extends AbstractExtendControl {
     private declare _markerManager: MarkerManager;
 
     get markerManager() {
@@ -100,16 +98,16 @@ export default class MarkerControl extends AbstractExtendControl {
      *
      */
     constructor(private ops: MarkerControlOptions = {}) {
-        ops.icon ??= new SvgBuilder('flag').create();
+        ops.icon ??= new svg.SvgBuilder('flag').create();
         ops.position ??= 'top-right';
         ops.markerOptions ??= {};
         ops.markerOptions.drawAfterOffset ??= ops.position.endsWith("right") ? [-400, 0] : [400, 0];
 
-        reset(ops.resetLang);
-        change(ops.changeLang);
+        language.reset(ops.resetLang);
+        language.change(ops.changeLang);
 
         super({
-            title: lang.title,
+            title: language.lang.title,
             closeable: true,
             ...ops,
             img1: ops.icon

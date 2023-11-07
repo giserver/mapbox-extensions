@@ -1,4 +1,4 @@
-export default function DragBox(drag: HTMLElement) {
+export function DragBox(drag: HTMLElement) {
   let initX = 0;
   let initY = 0;
   let isDrag = false;

@@ -1,8 +1,7 @@
 import mapboxgl from "mapbox-gl";
 import mitt from "mitt";
 import { dom } from 'wheater';
-import SvgBuilder from '../common/svg'
-import { UIPosition } from "../common/types";
+import { svg, types } from '../common'
 
 export type ExtendControlContentType = HTMLElement | Array<HTMLElement> | ((map: mapboxgl.Map) => HTMLElement);
 
@@ -10,7 +9,7 @@ export interface ExtendControlOptions {
     img1?: string | SVGElement,
     img2?: string | SVGAElement,
     content: ExtendControlContentType,
-    position?: UIPosition,
+    position?: types.UIPosition,
     mustBe?: "pc" | "mobile",
     title?: string,
     titleSlot?: HTMLElement,
@@ -27,8 +26,8 @@ export abstract class AbstractExtendControl implements mapboxgl.IControl {
 
     constructor(private options: Omit<ExtendControlOptions, "content">) {
         this.options.position ??= "top-right";
-        const svg_extend_left = new SvgBuilder('extend_left').create();
-        const svg_extend_right = new SvgBuilder('extend_right').create();
+        const svg_extend_left = new svg.SvgBuilder('extend_left').create();
+        const svg_extend_right = new svg.SvgBuilder('extend_right').create();
 
         this.options.img1 ??= this.options.position.endsWith("right") ? svg_extend_left : svg_extend_right;
         this.options.img2 ??= this.options.position.endsWith("right") ? svg_extend_right : svg_extend_left;
@@ -63,7 +62,7 @@ export abstract class AbstractExtendControl implements mapboxgl.IControl {
             if (closeable) {
                 contianerHeader.append(dom.createHtmlElement('div',
                     ["jas-ctrl-extend-container-header-close"],
-                    [new SvgBuilder('X').create('svg')], {
+                    [new svg.SvgBuilder('X').create('svg')], {
                     onClick: () => {
                         this.open = false;
                     }
@@ -109,7 +108,7 @@ export abstract class AbstractExtendControl implements mapboxgl.IControl {
         this.element.append(image_open_wapper, image_close_wapper);
         this.element.append(desktopContainer);
         map.getContainer().append(this.mobileContainer);
-        
+
         this.element.addEventListener('click', () => {
             this.open = !this.open;
         });
@@ -167,7 +166,7 @@ export abstract class AbstractExtendControl implements mapboxgl.IControl {
     }
 }
 
-export default class ExtendControl extends AbstractExtendControl {
+export class ExtendControl extends AbstractExtendControl {
 
     constructor(private ops: ExtendControlOptions) {
         super(ops);

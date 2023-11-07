@@ -1,8 +1,9 @@
 import mapboxgl from "mapbox-gl";
 import { dom } from 'wheater';
-import { UIPosition } from "../common/types";
-import SvgBuilder from "../common/svg";
-import ExtendControl from "./ExtendControl";
+import { svg, types } from "../common";
+
+import { ExtendControl } from ".";
+
 import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions, getLayerIds } from "../features/switch-layer/types";
 import SwitchGroupContainer from "../features/switch-layer/SwitchGroupContainer";
 
@@ -21,7 +22,7 @@ export interface SwitchLayerOptions extends SelectAndClearAllOptions, ShowToTopO
     /**
      * 组件位置
      */
-    position?: UIPosition
+    position?: types.UIPosition
 }
 
 
@@ -47,7 +48,7 @@ export abstract class SwitchLayerBaseControl implements mapboxgl.IControl {
     }
 }
 
-export default class SwitchLayerControl extends SwitchLayerBaseControl {
+export class SwitchLayerControl extends SwitchLayerBaseControl {
     declare extendControl: ExtendControl;
 
     /**
@@ -67,7 +68,7 @@ export default class SwitchLayerControl extends SwitchLayerBaseControl {
     onAdd(map: mapboxgl.Map): HTMLElement {
 
         this.extendControl = new ExtendControl({
-            img1: this.options.icon || new SvgBuilder('layer').create(),
+            img1: this.options.icon || new svg.SvgBuilder('layer').create(),
             position: this.options.position,
             title: this.options.name,
             closeable: true,

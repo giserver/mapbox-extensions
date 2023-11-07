@@ -1,11 +1,15 @@
 import mapboxgl from "mapbox-gl";
 import { dom } from 'wheater';
 import centroid from '@turf/centroid';
+
+import { svg } from '../common';
+
 import MeasureBase, { MeasureType } from "../features/measure/MeasureBase";
 import MeasurePoint, { MeasurePointOptions } from "../features/measure/MeasurePoint";
 import MeasureLineString, { MeasureLineStringOptions } from "../features/measure/MeasureLineString";
 import MeasurePolygon, { MeasurePolygonOptions } from "../features/measure/MeasurePolygon";
-import SvgBuilder from '../common/svg';
+
+const { SvgBuilder } = svg;
 
 export interface MeasureControlOptions {
 
@@ -64,7 +68,7 @@ export interface MeasureControlOptions {
     measurePolygonOptions?: MeasurePolygonOptions;
 }
 
-export default class MeasureControl implements mapboxgl.IControl {
+export class MeasureControl implements mapboxgl.IControl {
 
     private measures = new Map<MeasureType, { measure: MeasureBase, svg: string, controlElement?: HTMLElement | undefined }>();
     private currentMeasure: MeasureBase | undefined;

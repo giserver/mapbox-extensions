@@ -1,20 +1,19 @@
 import mapboxgl from "mapbox-gl";
 import { dom, validator } from 'wheater';
-import SvgBuilder from "../common/svg";
-import { UIPosition } from "../common/types";
-import MeasureControl, { MeasureControlOptions } from "./MeasureControl";
-import { AbstractExtendControl, ExtendControlContentType } from "./ExtendControl";
+import { svg, types } from "../common";
+import { MeasureControl, MeasureControlOptions, AbstractExtendControl, ExtendControlContentType } from '.';
 import { MeasureMobileUIBase } from "../features/measure/mobile";
 import MeasureLineString from "../features/measure/mobile/MeasureLineString";
 import MeasurePolygon from "../features/measure/mobile/MeasurePolygon";
 
+const { SvgBuilder } = svg;
 
 export type Measure2ControlOptions = MeasureControlOptions & {
-    position?: UIPosition,
+    position?: types.UIPosition,
     checkUIWidth?: boolean
 }
 
-export default class Measure2Control extends AbstractExtendControl {
+export class Measure2Control extends AbstractExtendControl {
     private measureControl: MeasureControl | undefined;
     private measureMobileControl: MeasureMobileUIBase | undefined;
 

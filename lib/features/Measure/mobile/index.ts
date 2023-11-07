@@ -1,9 +1,11 @@
 import mapboxgl from 'mapbox-gl'
 import { dom } from 'wheater';
+import { svg } from '../../../common';
+
 import MeasureBase from './MeasureBase';
 import MeasureLineString from './MeasureLineString';
 import MeasurePolygon from './MeasurePolygon';
-import SvgBuilder from '../../../common/svg';
+
 
 export type MeasureType = 'LineString' | 'Polygon';
 
@@ -39,7 +41,7 @@ export class MeasureMobileUIBase {
     private createOperationUI() {
         const revokeDiv = dom.createHtmlElement('div',
             ["jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-btn"],
-            [new SvgBuilder('revoke').create('svg'), dom.createHtmlElement('div', [], ['撤销'])],
+            [new svg.SvgBuilder('revoke').create('svg'), dom.createHtmlElement('div', [], ['撤销'])],
             {
                 onClick: () => {
                     this.currentMeasure?.revokePoint();
@@ -48,7 +50,7 @@ export class MeasureMobileUIBase {
 
         const finishDiv = dom.createHtmlElement('div',
             ["jas-ctrl-measure-mobile-operation-item", "jas-ctrl-measure-mobile-operation-btn"],
-            [new SvgBuilder('finish').create('svg'), dom.createHtmlElement('div', [], ['完成'])],
+            [new svg.SvgBuilder('finish').create('svg'), dom.createHtmlElement('div', [], ['完成'])],
             {
                 onClick: () => {
                     this.currentMeasure?.finish();
@@ -74,7 +76,7 @@ export class MeasureMobileUIBase {
 
     private createCrosshairUI() {
         const div = dom.createHtmlElement('div', ["jas-ctrl-measure-mobile-crosshair"]);
-        div.innerHTML = new SvgBuilder('crosshair').create();
+        div.innerHTML = new svg.SvgBuilder('crosshair').create();
         return div;
     }
 
