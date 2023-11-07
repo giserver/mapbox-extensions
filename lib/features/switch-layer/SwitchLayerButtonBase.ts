@@ -1,6 +1,5 @@
 import { Map } from "mapbox-gl";
-import SwitchGroupContainer from "./SwitchGroupContainer";
-import { SwitchLayerItem, getLayerIds } from "./types";
+import { SwitchGroupContainer, SwitchLayerItem, getLayerIds } from ".";
 
 export default abstract class SwitchLayerButtonBase {
 

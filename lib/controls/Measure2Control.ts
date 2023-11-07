@@ -2,9 +2,7 @@ import mapboxgl from "mapbox-gl";
 import { dom, validator } from 'wheater';
 import { svg, types } from "../common";
 import { MeasureControl, MeasureControlOptions, AbstractExtendControl, ExtendControlContentType } from '.';
-import { MeasureMobileUIBase } from "../features/measure/mobile";
-import MeasureLineString from "../features/measure/mobile/MeasureLineString";
-import MeasurePolygon from "../features/measure/mobile/MeasurePolygon";
+import { MeasureMobileUIBase ,MeasureLineString4Mobile,MeasurePolygon4Mobile} from "../features/measure";
 
 const { SvgBuilder } = svg;
 
@@ -61,7 +59,7 @@ export class Measure2Control extends AbstractExtendControl {
 
 
                 this.measureMobileControl.measuresMap.set('LineString', {
-                    measure: new MeasureLineString(map),
+                    measure: new MeasureLineString4Mobile(map),
                     measureDiv: dom.createHtmlElement('div',
                         ["jas-flex-center", "jas-ctrl-measure-mobile-item"],
                         [new SvgBuilder('line').create('svg')],
@@ -70,7 +68,7 @@ export class Measure2Control extends AbstractExtendControl {
                 });
 
                 this.measureMobileControl.measuresMap.set('Polygon', {
-                    measure: new MeasurePolygon(map),
+                    measure: new MeasurePolygon4Mobile(map),
                     measureDiv: dom.createHtmlElement('div',
                         ["jas-flex-center", "jas-ctrl-measure-mobile-item"],
                         [new SvgBuilder('polygon').create('svg')],

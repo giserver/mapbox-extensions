@@ -6,12 +6,10 @@ import {
     MeasureControl, Measure2Control, SwitchMapControl, BackToOriginControl, DoodleControl,
     SwitchLayerControl, MarkerControl, ExtendControl, SetStyleProxy
 } from '../lib';
-import '../lib';
 import '../lib/index.css';
 
-import { LayerGroupsType } from '../lib/features/switch-layer/types';
-import MBtnRoate from '../lib/features/MBtnRoate'
-import ExtendControlsWrapper from '../lib/features/ExtendControlsWrapper';
+import { LayerGroupsType } from '../lib/features/switch-layer';
+import { MBtnRoate, ExtendControlsWrapper } from '../lib/features'
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
 const lightStyle = 'mapbox://styles/mapbox/light-v11';

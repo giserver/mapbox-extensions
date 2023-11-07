@@ -1,10 +1,17 @@
 import { Map } from "mapbox-gl";
 import { dom } from 'wheater';
 import mitt, { Emitter } from "mitt";
-import ImgTxtSwitchLayerButton from "./ImgTxtSwitchLayerButton";
-import SwitchLayerButton from "./SwitchLayerButton";
-import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
-import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions, SwitchGroupLayers, SwitchLayerItem, getLayers } from "./types";
+import {
+    SwitchLayerButtonBase,
+    ImgTxtSwitchLayerButton,
+    SwitchLayerButton,
+    LayerGroupsType,
+    SelectAndClearAllOptions,
+    ShowToTopOptions,
+    SwitchGroupLayers,
+    SwitchLayerItem,
+    getLayers
+} from ".";
 
 export type SwitchLayerEventType = {
     "layer-visible-changed": {

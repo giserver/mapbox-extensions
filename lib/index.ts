@@ -1,24 +1,14 @@
 import { Map, AnyLayer, AnySourceData } from "mapbox-gl";
 import { Dict } from "./common/types";
-import LayerGroup from './features/LayerGroup'
-import SetStyleProxy from "./features/SetStyleProxy";
-import SwitchGroupContainer from "./features/switch-layer/SwitchGroupContainer";
-import { SwitchGroupLayers, SwitchLayerItem } from "./features/switch-layer/types";
-import ExtendControlsWrapper from './features/ExtendControlsWrapper';
-import MBtnRoate from "./features/MBtnRoate";
+import { LayerGroup, SetStyleProxy } from './features'
+import { SwitchGroupLayers, SwitchLayerItem, SwitchGroupContainer } from "./features/switch-layer";
 
 export * from './controls';
-
+export * from './features';
 export {
-    LayerGroup,
-    SetStyleProxy,
-
     SwitchGroupContainer,
     SwitchGroupLayers,
     SwitchLayerItem,
-
-    ExtendControlsWrapper,
-    MBtnRoate
 }
 
 declare module "mapbox-gl" {

@@ -1,8 +1,6 @@
 import { Map } from "mapbox-gl";
 import { dom } from 'wheater';
-import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
-import { SwitchLayerItem } from "./types";
-import SwitchGroupContainer from "./SwitchGroupContainer";
+import {SwitchLayerButtonBase, SwitchLayerItem, SwitchGroupContainer } from ".";
 
 export default class ImgTxtSwitchLayerButton extends SwitchLayerButtonBase {
 
@@ -35,7 +33,7 @@ export default class ImgTxtSwitchLayerButton extends SwitchLayerButtonBase {
             ["jas-img-txt-switch-button"],
             [this.imgDiv, dom.createHtmlElement('div', ["jas-img-txt-switch-button-txt"], [this.options.name])]
         );
-        
+
         return { container: imgTxtButton, button: imgTxtButton };
     }
 }

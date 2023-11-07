@@ -1,8 +1,6 @@
 import { Map } from "mapbox-gl";
 import { dom } from 'wheater';
-import SwitchGroupContainer from "./SwitchGroupContainer";
-import SwitchLayerButtonBase from "./SwitchLayerButtonBase";
-import { SwitchLayerItem } from "./types";
+import { SwitchLayerButtonBase, SwitchGroupContainer, SwitchLayerItem } from ".";
 
 export default class SwitchLayerButton extends SwitchLayerButtonBase {
     private declare inputEle: HTMLInputElement;

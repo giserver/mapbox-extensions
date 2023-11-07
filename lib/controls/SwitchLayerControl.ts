@@ -1,11 +1,8 @@
 import mapboxgl from "mapbox-gl";
 import { dom } from 'wheater';
 import { svg, types } from "../common";
-
 import { ExtendControl } from ".";
-
-import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions, getLayerIds } from "../features/switch-layer/types";
-import SwitchGroupContainer from "../features/switch-layer/SwitchGroupContainer";
+import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions, getLayerIds, SwitchGroupContainer } from "../features/switch-layer";
 
 export interface SwitchLayerOptions extends SelectAndClearAllOptions, ShowToTopOptions {
     /**
