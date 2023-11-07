@@ -1,5 +1,5 @@
-
 import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { dom } from 'wheater';
 
 import {
