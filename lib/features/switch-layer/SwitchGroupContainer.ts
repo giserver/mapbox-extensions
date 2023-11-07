@@ -5,7 +5,7 @@ import {
     SwitchLayerButtonBase,
     ImgTxtSwitchLayerButton,
     SwitchLayerButton,
-    LayerGroupsType,
+    SwitchLayerGroupsType,
     SelectAndClearAllOptions,
     ShowToTopOptions,
     SwitchGroupLayers,
@@ -127,7 +127,7 @@ export default class SwitchGroupContainer {
     static appendLayerGroups(
         map: mapboxgl.Map,
         container: HTMLElement,
-        layerGroups: LayerGroupsType,
+        layerGroups: SwitchLayerGroupsType,
         options: SelectAndClearAllOptions & ShowToTopOptions = {}) {
 
         const allLayers = new Array<SwitchLayerItem>();

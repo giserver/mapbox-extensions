@@ -2,7 +2,7 @@ import mapboxgl from "mapbox-gl";
 import { dom } from 'wheater';
 import { svg, types } from "../common";
 import { ExtendControl } from ".";
-import { LayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions, getLayerIds, SwitchGroupContainer } from "../features/switch-layer";
+import { SwitchLayerGroupsType, SelectAndClearAllOptions, ShowToTopOptions, getLayerIds, SwitchGroupContainer } from "../features/switch-layer";
 
 export interface SwitchLayerOptions extends SelectAndClearAllOptions, ShowToTopOptions {
     /**
@@ -14,7 +14,7 @@ export interface SwitchLayerOptions extends SelectAndClearAllOptions, ShowToTopO
      * 名称 ：默认'图层'
      */
     name?: string,
-    layerGroups: LayerGroupsType,
+    layerGroups: SwitchLayerGroupsType,
 
     /**
      * 组件位置

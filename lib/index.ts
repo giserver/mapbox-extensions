@@ -1,15 +1,12 @@
 import { Map, AnyLayer, AnySourceData } from "mapbox-gl";
 import { Dict } from "./common/types";
 import { LayerGroup, SetStyleProxy } from './features'
-import { SwitchGroupLayers, SwitchLayerItem, SwitchGroupContainer } from "./features/switch-layer";
 
 export * from './controls';
 export * from './features';
-export {
-    SwitchGroupContainer,
-    SwitchGroupLayers,
-    SwitchLayerItem,
-}
+
+export * from './features/measure';
+export * from './features/switch-layer';
 
 declare module "mapbox-gl" {
     export interface Map {

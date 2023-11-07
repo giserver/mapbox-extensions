@@ -3,13 +3,10 @@ import mapboxgl from 'mapbox-gl';
 import { dom } from 'wheater';
 
 import {
-    MeasureControl, Measure2Control, SwitchMapControl, BackToOriginControl, DoodleControl,
-    SwitchLayerControl, MarkerControl, ExtendControl, SetStyleProxy
+    MeasureControl, Measure2Control, SwitchMapControl, BackToOriginControl, DoodleControl, SwitchLayerControl, MarkerControl, ExtendControl,
+    SetStyleProxy, MBtnRoate, ExtendControlsWrapper, SwitchLayerGroupsType
 } from '../lib';
 import '../lib/index.css';
-
-import { LayerGroupsType } from '../lib/features/switch-layer';
-import { MBtnRoate, ExtendControlsWrapper } from '../lib/features'
 
 const darkStyle = "mapbox://styles/mapbox/dark-v10";
 const lightStyle = 'mapbox://styles/mapbox/light-v11';
@@ -29,7 +26,7 @@ const map = new mapboxgl.Map({
 const setStyleProxy = new SetStyleProxy(map);
 const mbtnRoate = new MBtnRoate(map);
 
-const layerGroups: LayerGroupsType = {
+const layerGroups: SwitchLayerGroupsType = {
     '城市规划': {
         uiType: 'SwitchBtn',
         mutex: true,

@@ -150,4 +150,4 @@ export interface ShowToTopOptions {
     topLayerId?: string;
 }
 
-export type LayerGroupsType = Record<string, SwitchGroupLayers>;
+export type SwitchLayerGroupsType = Record<string, SwitchGroupLayers>;
