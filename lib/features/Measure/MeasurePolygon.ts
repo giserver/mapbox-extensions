@@ -254,8 +254,20 @@ export default class MeasurePolygon extends MeasureBase {
         return this.currentFeature.geometry as GeoJSON.Polygon;
     }
 
+    /**
+     * 在中心点添加标注
+     * @returns 
+     */
     private calMeasurePoint() {
-        // 在中心点添加标注
+        // 防止计算错误
+        if (this.currentPolygon.coordinates[0].length < 2) {
+            if (this.currentMeasurePoint) {
+                this.currentMeasurePoint.properties!['area'] = 0;
+            }
+
+            return;
+        };
+
         const center = centroid(this.currentPolygon);
         const area = this.options.createText!(turfArea(this.currentFeature));
         const length = this.options.createLengthText!(turfLength(this.currentFeature));
