@@ -201,11 +201,13 @@ export default class MeasurePolygon extends MeasureBase {
         const coords = this.currentPolygon.coordinates[0];
 
         if (coords.length === 2) {
-            (this.map.getSource(this.id + "_line_addion") as mapboxgl.GeoJSONSource).setData({
-                type: 'Feature',
-                geometry: { type: 'LineString', coordinates: coords },
-                properties: {}
-            })
+            setTimeout(() => {
+                (this.map.getSource(this.id + "_line_addion") as mapboxgl.GeoJSONSource).setData({
+                    type: 'Feature',
+                    geometry: { type: 'LineString', coordinates: coords },
+                    properties: {}
+                })
+            }, 50);
         }
 
         if (coords.length > 1)
@@ -234,16 +236,27 @@ export default class MeasurePolygon extends MeasureBase {
     private onRightClickHandler = (e: mapboxgl.MapMouseEvent & mapboxgl.EventData) => {
         const coords = this.currentPolygon.coordinates[0];
 
-        if (coords.length === 2)  // 只存在第一个点和动态点则不进行删除操作
-            return;
+        console.log(coords);
 
-        coords.pop();
-        this.onMouseMoveHandler(e); // 调用鼠标移动事件，重新建立动态线
+        if (coords.length === 2) {// 只存在第一个点和动态点则删除当前图形，进行下一次绘制
+            this.map.off('mousemove', this.onMouseMoveHandler);
+            this.map.off('contextmenu', this.onRightClickHandler);
+            this.isDrawing = false;
+            this.geojson.features.pop();
+            this.geojsonPoint.features.pop();
+            (this.map.getSource(this.id + "_line_addion") as mapboxgl.GeoJSONSource).setData({
+                type: 'FeatureCollection',
+                features: []
+            });
+            this.currentMeasurePoint = undefined;
 
-        this.updateGeometryDataSource();
-
-        this.calMeasurePoint();
-        this.updatePointDataSource();
+            this.updateGeometryDataSource();
+            this.updatePointDataSource();
+        } else {
+            coords.pop();
+            if(coords.length === 3) coords.pop(); // 辅助线 _line_addion 更新
+            this.onMouseMoveHandler(e); // 调用鼠标移动事件，重新建立动态线
+        }
     }
 
     private get currentFeature() {
@@ -259,6 +272,8 @@ export default class MeasurePolygon extends MeasureBase {
      * @returns 
      */
     private calMeasurePoint() {
+        if (!this.currentFeature) return;
+
         // 防止计算错误
         if (this.currentPolygon.coordinates[0].length < 2) {
             if (this.currentMeasurePoint) {
