@@ -1,6 +1,8 @@
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { dom } from 'wheater';
+import calLength from '@turf/length';
+import calArea from '@turf/area';
 
 import {
     MeasureControl, Measure2Control, SwitchMapControl, BackToOriginControl, DoodleControl, SwitchLayerControl, MarkerControl, ExtendControl,
@@ -445,7 +447,32 @@ map.on('load', () => {
     map.addControl(measure2Control);
     map.addControl(switchLayerControl);
 
-    map.addControl(new MarkerControl());
+    map.addControl(new MarkerControl({
+        markerOptions: {
+            layerOptions: {
+                extraInfo: f => {
+                    const g = f.geometry;
+                    if (g.type === 'LineString' || g.type === 'MultiLineString') {
+                        let length = calLength(f, { units: 'meters' });
+                        let units = 'm';
+                        if (length > 1000) {
+                            length = length / 1000;
+                            units = 'km';
+                        }
+                        return `长度 : ${length.toFixed(2)} ${units}`;
+                    } else if (g.type === 'Polygon' || g.type === 'MultiPolygon') {
+                        let area = calArea(f);
+                        let units = 'm²';
+                        if (area > 1000000) {
+                            area = area / 1000000;
+                            units = 'km²';
+                        }
+                        return `面积 : ${area.toFixed(2)} ${units}`
+                    }
+                }
+            }
+        }
+    }));
 
     new ExtendControlsWrapper([measure2Control, switchLayerControl.extendControl]);
 })

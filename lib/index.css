@@ -792,16 +792,16 @@
 .jas-ctrl-marker-suffix {
     display: flex;
     align-items: center;
-    column-gap: 5px;
+    column-gap: 4px;
 }
 
-.jas-ctrl-marker-suffix>div:not(:last-child) {
+.jas-ctrl-marker-suffix-item {
     cursor: pointer;
     line-height: 0;
     padding: 4px;
 }
 
-.jas-ctrl-marker-suffix>div:not(:last-child):hover {
+.jas-ctrl-marker-suffix-item:hover {
     background-color: #ccc;
 }
 

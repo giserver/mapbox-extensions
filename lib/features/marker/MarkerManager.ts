@@ -1,8 +1,6 @@
 import mapboxgl from "mapbox-gl";
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
-import mLength from '@turf/length';
-import mArea from '@turf/area';
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { dom, array, creator, deep } from 'wheater';
 import { svg, language } from "../../common";
@@ -25,7 +23,9 @@ interface MarkerLayerOptions {
     onRemove?(properties: MarkerLayerProperties): void,
     onRename?(properties: MarkerLayerProperties): void,
 
-    markerItemOptions?: MarkerItemOptions
+    markerItemOptions?: MarkerItemOptions,
+
+    extraInfo?(feature: GeoJSON.Feature): string | Node | undefined,
 }
 
 export interface MarkerManagerOptions {
@@ -33,8 +33,7 @@ export interface MarkerManagerOptions {
     featureCollection?: GeoJSON.FeatureCollection<GeoJSON.Geometry, MarkerFeatrueProperties>,
     drawAfterOffset?: [number, number],
     layerOptions?: MarkerLayerOptions,
-    firstFeatureStyleConfig?(style: Omit<GeometryStyle, "pointIcon">): void,
-    showMeasureData?: boolean
+    firstFeatureStyleConfig?(style: Omit<GeometryStyle, "pointIcon">): void
 }
 
 export default class MarkerManager {
@@ -481,18 +480,13 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
             map.easeTo({ center });
             const content = item.createSuffixElement({ editGeometry: true });
 
-            let extraMeasrueName = "";
-            let extraMeasrueValue = "";
-            if (feature.geometry.type === 'LineString') {
-                extraMeasrueName = lang.length;
-                extraMeasrueValue = `${mLength(feature).toFixed(2)}`;
-            } else if (feature.geometry.type === 'Polygon') {
-                extraMeasrueName = lang.area;
-                extraMeasrueValue = `${mArea(feature).toFixed(2)}`;
+            if (options.extraInfo) {
+                const info = options.extraInfo(feature);
+                if (info)
+                    content.append(dom.createHtmlElement('div',
+                        ['jas-ctrl-marker-item-extra-info'],
+                        [info]));
             }
-            content.append(dom.createHtmlElement('div',
-                ['jas-ctrl-marker-item-extra-info'],
-                [`${extraMeasrueName} : ${extraMeasrueValue}`]));
 
             const popup = new mapboxgl.Popup({
                 closeOnClick: true,
@@ -598,7 +592,7 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
     }
 
     private createSuffixExport() {
-        const exp = dom.createHtmlElement('div');
+        const exp = dom.createHtmlElement('div', ["jas-ctrl-marker-suffix-item"]);
         exp.innerHTML = new SvgBuilder('export').resize(15, 15).create();
         exp.title = lang.exportItem;
 
@@ -620,7 +614,7 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
     }
 
     private createSuffixEdit() {
-        const edit = dom.createHtmlElement('div');
+        const edit = dom.createHtmlElement('div', ["jas-ctrl-marker-suffix-item"]);
         edit.innerHTML = new SvgBuilder('edit').resize(18, 18).create();
         edit.title = lang.editItem;
         edit.addEventListener('click', () => {
@@ -636,7 +630,7 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
     }
 
     private createSuffixDel() {
-        const del = dom.createHtmlElement('div');
+        const del = dom.createHtmlElement('div', ["jas-ctrl-marker-suffix-item"]);
         del.innerHTML = new SvgBuilder('delete').resize(15, 15).create();
         del.title = lang.deleteItem;
 
@@ -665,7 +659,7 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
         const eye = svgBuilder.create();
         const uneye = svgBuilder.change('uneye').create();
 
-        const visible = dom.createHtmlElement('div');
+        const visible = dom.createHtmlElement('div', ["jas-ctrl-marker-suffix-item"]);
         visible.innerHTML = eye;
 
         visible.addEventListener('click', () => {
@@ -796,7 +790,7 @@ class MarkerItem extends AbstractLinkP<MarkerLayer> {
             this.reName(this.feature.properties.name);
         }
 
-        const div = dom.createHtmlElement('div', [],
+        const div = dom.createHtmlElement('div', ["jas-ctrl-marker-suffix-item"],
             [new SvgBuilder('edit').resize(17, 17).create('svg')], {
             onClick: () => {
                 const offset = this.parent.parent.options.drawAfterOffset;
@@ -832,7 +826,7 @@ class MarkerItem extends AbstractLinkP<MarkerLayer> {
     }
 
     private createSuffixEditGeometry() {
-        const div = dom.createHtmlElement('div', [], [
+        const div = dom.createHtmlElement('div', ["jas-ctrl-marker-suffix-item"], [
             new SvgBuilder('remake').resize(17, 17).create('svg')
         ], {
             onClick: () => {
@@ -883,7 +877,7 @@ class MarkerItem extends AbstractLinkP<MarkerLayer> {
     }
 
     private createSuffixExport() {
-        const div = dom.createHtmlElement('div', [],
+        const div = dom.createHtmlElement('div', ["jas-ctrl-marker-suffix-item"],
             [new SvgBuilder('export').resize(15, 15).create('svg')], {
             onClick: () => {
                 createExportModal(this.feature.properties.name, this.feature);
@@ -896,7 +890,7 @@ class MarkerItem extends AbstractLinkP<MarkerLayer> {
     }
 
     private createSuffixDel() {
-        const div = dom.createHtmlElement('div', [],
+        const div = dom.createHtmlElement('div', ["jas-ctrl-marker-suffix-item"],
             [new SvgBuilder('delete').resize(15, 15).create('svg')], {
             onClick: () => {
                 createConfirmModal({
