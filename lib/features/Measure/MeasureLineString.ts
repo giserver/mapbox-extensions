@@ -1,6 +1,6 @@
 import turfLength from "@turf/length";
 import { MapMouseEvent, EventData, Map, LinePaint, CirclePaint, SymbolPaint, SymbolLayout } from "mapbox-gl";
-import {creator} from 'wheater';
+import { creator } from 'wheater';
 import MeasureBase, { MeasureOptions, MeasureType } from "./MeasureBase";
 
 export interface MeasureLineStringOptions extends MeasureOptions<GeoJSON.LineString> {
@@ -218,13 +218,18 @@ export default class MeasureLineString extends MeasureBase {
     }
 
     private onRightClickHandler = (e: MapMouseEvent & EventData) => {
-        if (this.currentLine.coordinates.length === 2)  // 只存在第一个点和动态点则不进行删除操作
-            return;
-
-        this.currentLine.coordinates.pop();
-        this.onMouseMoveHandler(e); // 调用鼠标移动事件，重新建立动态线
-        this.geojsonPoint.features.pop();  // 去掉端点
-        this.geojsonPoint.features.pop();  // 去掉中点
+        if (this.currentLine.coordinates.length === 2) { // 只存在第一个点和动态点则不进行删除操作
+            this.isDrawing = false;
+            this.geojson.features.pop();
+            this.geojsonPoint.features.pop();
+            this.map.off('mousemove', this.onMouseMoveHandler);
+            this.map.off('contextmenu', this.onRightClickHandler);
+        }else{
+            this.currentLine.coordinates.pop();
+            this.onMouseMoveHandler(e); // 调用鼠标移动事件，重新建立动态线
+            this.geojsonPoint.features.pop();  // 去掉端点
+            this.geojsonPoint.features.pop();  // 去掉中点
+        }
 
         this.updateGeometryDataSource();
         this.updatePointDataSource();
