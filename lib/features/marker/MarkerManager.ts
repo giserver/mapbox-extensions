@@ -291,7 +291,8 @@ export default class MarkerManager {
                 l.items.forEach(m => {
                     const isHit = m.feature.properties.name.includes(value);
                     m.setUIVisible(isHit);
-                    hitCount++;
+                    if (isHit)
+                        hitCount++;
                 });
                 l.setUIVisible(hitCount > 0);
                 l.collapse(hitCount === 0)

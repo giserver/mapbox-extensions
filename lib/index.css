@@ -1,5 +1,5 @@
 .jas-ctrl-hidden {
-    display: none;
+    display: none !important;
 }
 
 .jas-ctrl-custom-scrollbar::-webkit-scrollbar {
@@ -826,6 +826,7 @@
     line-height: normal !important;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .jas-ctrl-marker-item-container:hover {
