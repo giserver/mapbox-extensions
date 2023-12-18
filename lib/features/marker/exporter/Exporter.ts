@@ -15,6 +15,6 @@ export default class Exporter {
     }
 
     export(fileName: string, geojson: ExportGeoJsonType) {
-        download(fileName, this.converter.convert(geojson));
+        download(fileName + `.${this.converter.type}`, this.converter.convert(geojson));
     }
 }
