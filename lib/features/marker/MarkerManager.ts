@@ -482,7 +482,7 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
             const content = item.createSuffixElement({ editGeometry: true });
 
             if (options.extraInfo) {
-                const info = options.extraInfo(feature);
+                const info = options.extraInfo(item.feature);
                 if (info)
                     content.append(dom.createHtmlElement('div',
                         ['jas-ctrl-marker-item-extra-info'],
