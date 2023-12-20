@@ -1,6 +1,7 @@
 .github/
 .vscode/
 example/
+example-dist/
 lib/
 doc/
 node_modules/
