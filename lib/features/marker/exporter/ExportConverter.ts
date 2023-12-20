@@ -5,6 +5,7 @@ import centroid from '@turf/centroid';
 
 import { ExportGeoJsonType, MarkerFeatrueProperties } from '../types';
 import { coordConverter } from '../../../common/proj';
+import { lang } from '../../../common/lang';
 
 
 export type FileType = 'dxf' | 'kml' | 'geojson' | 'csv';
@@ -19,6 +20,10 @@ export class DxfConverter implements IExportConverter {
 
     convert(geojson: ExportGeoJsonType): string {
         const dxf = new DxfWriter();
+        dxf.addLayer(lang.nameText, Colors.White);
+        dxf.addLayer(lang.point, Colors.White);
+        dxf.addLayer(lang.line, Colors.White);
+        dxf.addLayer(lang.polygon, Colors.White);
 
         const featrues = geojson.type === "Feature" ? [geojson] : geojson.features;
         featrues.forEach(f => {
@@ -65,7 +70,8 @@ export class DxfConverter implements IExportConverter {
         }
 
         dxf.addText(position, (options.style.textSize ?? 10), options.name, {
-            trueColor: TrueColor.fromHex(options.style.textColor!).toString()
+            layerName: lang.nameText,
+            trueColor: TrueColor.fromHex(options.style.textColor!).toString(),
         });
     }
 
@@ -73,7 +79,10 @@ export class DxfConverter implements IExportConverter {
         const point = coordConverter.wgs84g_to_cgcs2000p([position[0], position[1]]);
         const vec = { x: point[0], y: point[1], z: 0 } as vec3_t;
 
-        dxf.addCircle(vec, 10, { trueColor: TrueColor.fromHex(options.style.pointIconColor!).toString() });
+        dxf.addCircle(vec, 10, {
+            layerName: lang.point,
+            trueColor: TrueColor.fromHex(options.style.pointIconColor!).toString()
+        });
         if (withText)
             this.text(dxf, vec, options);
     }
@@ -85,6 +94,7 @@ export class DxfConverter implements IExportConverter {
         });
 
         dxf.addLWPolyline(points, {
+            layerName: lang.line,
             thickness: options.style.lineWidth,
             trueColor: TrueColor.fromHex(options.style.lineColor!).toString()
         });
@@ -103,7 +113,10 @@ export class DxfConverter implements IExportConverter {
             return vertex(point[0], point[1]);
         })));
 
-        dxf.addHatch(boundary, solid, { trueColor: TrueColor.fromHex(options.style.polygonColor!).toString() });
+        dxf.addHatch(boundary, solid, {
+            layerName: lang.polygon,
+            trueColor: TrueColor.fromHex(options.style.polygonColor!).toString()
+        });
         if (withText)
             this.text(dxf, centroid({ type: 'Polygon', coordinates: positionsArray }).geometry.coordinates, options);
     }
