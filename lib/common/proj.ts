@@ -1,7 +1,7 @@
 import proj4 from 'proj4';
 
 
-type TLngLat = [number, number]
+type TLngLat = [number, number] | GeoJSON.Position
 type TCoordConvertOptions = {
     lat_0?: number,
     lon_0?: number,

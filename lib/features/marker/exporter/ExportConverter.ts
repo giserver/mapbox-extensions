@@ -81,7 +81,7 @@ export class DxfConverter implements IExportConverter {
 
     private text(dxf: DxfWriter, position: GeoJSON.Position | vec3_t, options: MarkerFeatrueProperties) {
         if (position instanceof Array) {
-            const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger([position[0], position[1]]);
+            const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger(position);
             position = { x: point[0], y: point[1], z: 0 };
         }
 
@@ -98,7 +98,7 @@ export class DxfConverter implements IExportConverter {
         if ('x' in position) {
             vec = { ...position, z: 0 };
         } else {
-            const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger([position[0], position[1]]);
+            const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger(position);
             vec = { x: point[0], y: point[1], z: 0 } as vec3_t;
         }
 
@@ -111,11 +111,11 @@ export class DxfConverter implements IExportConverter {
     }
 
     private polyline(dxf: DxfWriter, positions: Array<GeoJSON.Position | vec2_t>, options: MarkerFeatrueProperties, withText: boolean = true) {
-        const points = positions.map(p => {
-            if ('x' in p)
-                return { point: p } as LWPolylineVertex;
+        const points = positions.map(position => {
+            if ('x' in position)
+                return { point: position } as LWPolylineVertex;
 
-            const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger([p[0], p[1]]);
+            const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger(position);
             return { point: { x: point[0], y: point[1] } } as LWPolylineVertex;
         });
 
@@ -137,7 +137,7 @@ export class DxfConverter implements IExportConverter {
         const hatchBoundaryPaths = new HatchBoundaryPaths();
         positionsArray.forEach(positionis => {
             const boundary = new HatchPolylineBoundary(positionis.map(position => {
-                const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger([position[0], position[1]]);
+                const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger(position);
                 return vertex(point[0], point[1]);
             }));
 
