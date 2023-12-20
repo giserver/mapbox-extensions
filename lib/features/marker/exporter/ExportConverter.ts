@@ -1,5 +1,16 @@
 import tokml from '@maphubs/tokml';
-import { Colors, DxfWriter, HatchBoundaryPaths, HatchPolylineBoundary, HatchPredefinedPatterns, LWPolylineVertex, TrueColor, pattern, vec3_t, vertex } from '@tarikjabiri/dxf';
+import {
+    Colors,
+    DxfWriter,
+    HatchBoundaryPaths,
+    HatchPolylineBoundary,
+    HatchPredefinedPatterns,
+    LWPolylineVertex,
+    TrueColor,
+    pattern,
+    vec3_t,
+    vertex
+} from '@tarikjabiri/dxf';
 import { array, date } from 'wheater';
 import centroid from '@turf/centroid';
 
@@ -17,6 +28,7 @@ export interface IExportConverter {
 
 export class DxfConverter implements IExportConverter {
     readonly type = 'dxf';
+    private readonly style_name_text = "style_name_text";
 
     convert(geojson: ExportGeoJsonType): string {
         const dxf = new DxfWriter();
@@ -24,6 +36,9 @@ export class DxfConverter implements IExportConverter {
         dxf.addLayer(lang.point, Colors.White);
         dxf.addLayer(lang.line, Colors.White);
         dxf.addLayer(lang.polygon, Colors.White);
+
+        const style_text = dxf.document.tables.addStyle(this.style_name_text);
+        style_text.fontFileName = "黑体";
 
         const featrues = geojson.type === "Feature" ? [geojson] : geojson.features;
         featrues.forEach(f => {
@@ -69,10 +84,12 @@ export class DxfConverter implements IExportConverter {
             position = { x: point[0], y: point[1], z: 0 };
         }
 
-        dxf.addText(position, (options.style.textSize ?? 10), options.name, {
+        const text = dxf.addText(position, (options.style.textSize ?? 10), options.name, {
             layerName: lang.nameText,
             trueColor: TrueColor.fromHex(options.style.textColor!).toString(),
         });
+
+        text.textStyle = this.style_name_text;
     }
 
     private circle(dxf: DxfWriter, position: GeoJSON.Position, options: MarkerFeatrueProperties, withText: boolean = true) {
