@@ -1,18 +1,18 @@
-export function DragBox(drag: HTMLElement) {
+export function DragBox(drag: HTMLElement, handle?: HTMLElement) {
   let initX = 0;
   let initY = 0;
   let isDrag = false;
   let top = getCss(drag, 'top')
   let left = getCss(drag, 'left')
 
-  drag.style.cursor = "move";
+  handle ??= drag;
 
-  drag.addEventListener('mousedown', e => {
+  handle.style.cursor = "move";
+  handle.addEventListener('mousedown', e => {
     isDrag = true;
     initX = e.clientX;
     initY = e.clientY;
   })
-
 
   document.addEventListener('mousemove', e => {
     if (isDrag) {

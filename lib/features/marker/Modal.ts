@@ -4,10 +4,18 @@ import { ExportGeoJsonType, MarkerFeatureType, MarkerLayerProperties } from "./t
 import { getMapMarkerSpriteImages } from "./symbol-icon";
 import Exporter from "./exporter/Exporter";
 import { export_converters } from "./exporter/ExportConverter";
+import { TCoordConvertOptions, TCoordConverterType } from '../../common/proj';
 
 const { SvgBuilder } = svg;
 const { lang } = language;
 const { DragBox } = drag;
+
+const coordConvertOptions: TCoordConvertOptions = {
+    type: 'cgcs2000_gauss_kruger',
+    lon_0: 120,
+    x_0: 500000,
+    towgs84: ""
+}
 
 export interface ModalOptions {
     content: HTMLElement | string,
@@ -45,7 +53,7 @@ export function createModal(options: ModalOptions): [HTMLElement, () => void] {
 
     container.style.top = '0';
     container.style.left = `${(modal.clientWidth - container.clientWidth) / 2}px`;
-    DragBox(container)
+    DragBox(container, header)
 
     const escPress = (e: KeyboardEvent) => {
         if (e.code.toLocaleLowerCase() === 'escape') {
@@ -96,17 +104,86 @@ export function createExportModal(fileName: string, geojson: ExportGeoJsonType) 
     label_select.style.display = 'flex';
     label_select.style.justifyContent = 'space-between';
 
-    const content = dom.createHtmlElement('div', [], [label_select,
-        // dom.createHtmlElement('div', ['jas-modal-content-edit-header'], [lang.proj]),
-        // dom.createHtmlElement('div', ['jas-modal-content-edit-divBorder'])
+    const createInputBindingElement = makeCIBEFunc();
+
+    const select_coord = dom.createHtmlElement('select');
+    select_coord.innerHTML = (["cgcs2000_gauss_kruger", "bj54_gauss_kruger", "wgs84_pseudo_mercator"] as Array<TCoordConverterType>)
+        .map(x => `<option value="${x}" ${x === coordConvertOptions.type ? 'selected' : ''}>${x}</option>`).join('');
+    select_coord.addEventListener('change', e => {
+        coordConvertOptions.type = select_coord.selectedOptions[0].value as any;
+    });
+    const projUI = dom.createHtmlElement('div', [], [
+        dom.createHtmlElement('div', ['jas-modal-content-edit-header'], [lang.proj]),
+        dom.createHtmlElement('div', ['jas-modal-content-edit-divBorder'], [
+
+            // 选择坐标系
+            dom.createHtmlElement('div', ['jas-modal-content-edit-item'], [
+                dom.createHtmlElement('label', [], ["coord"]),
+                select_coord
+            ]),
+            // 中央纬度
+            dom.createHtmlElement('div', ['jas-modal-content-edit-item'], [
+                dom.createHtmlElement('label', [], ["lat_0"]),
+                createInputBindingElement(coordConvertOptions, 'lat_0', e => {
+                    e.type = 'number';
+                    e.max = '90';
+                    e.min = '-90';
+                })
+            ]),
+
+            // 中央经度 
+            dom.createHtmlElement('div', ['jas-modal-content-edit-item'], [
+                dom.createHtmlElement('label', [], ["lon_0"]),
+                createInputBindingElement(coordConvertOptions, 'lon_0', e => {
+                    e.type = 'number';
+                    e.max = '180';
+                    e.min = '-180';
+                })
+            ]),
+            // 东向加常数
+            dom.createHtmlElement('div', ['jas-modal-content-edit-item'], [
+                dom.createHtmlElement('label', [], ["x_0"]),
+                createInputBindingElement(coordConvertOptions, 'x_0', e => {
+                    e.type = 'number';
+                })
+            ]),
+            // 北向加常数
+            dom.createHtmlElement('div', ['jas-modal-content-edit-item'], [
+                dom.createHtmlElement('label', [], ["y_0"]),
+                createInputBindingElement(coordConvertOptions, 'y_0', e => {
+                    e.type = 'number';
+                })
+            ]),
+
+            // 4参数或7参数
+            dom.createHtmlElement('div', ['jas-modal-content-edit-item'], [
+                dom.createHtmlElement('label', [], ["towgs84"]),
+                createInputBindingElement(coordConvertOptions, 'towgs84', e => {
+                    e.type = "text";
+                })
+            ]),
+        ])]);
+
+    const content = dom.createHtmlElement('div', [], [
+        label_select,
+        projUI
     ]);
+
+    select.addEventListener('change', e => {
+        if (select.selectedOptions[0].value as any === 'dxf')
+            projUI.style.display = '';
+        else
+            projUI.style.display = 'none';
+    });
 
     createConfirmModal({
         title: lang.exportItem,
         content,
         onCancel: () => { },
         onConfirm: () => {
-            new Exporter(select.selectedOptions[0].value as any).export(fileName, geojson);
+            new Exporter(select.selectedOptions[0].value as any).export(fileName, geojson, {
+                coordConvertOptions
+            });
         }
     })
 }

@@ -1,7 +1,7 @@
 import { array } from "wheater";
 import { download } from '../../../common/io';
 import { ExportGeoJsonType } from "../types";
-import { FileType, IExportConverter, export_converters } from "./ExportConverter";
+import { ConverterOptions, FileType, IExportConverter, export_converters } from "./ExportConverter";
 
 export default class Exporter {
     private converter: IExportConverter;
@@ -14,7 +14,7 @@ export default class Exporter {
             converter;
     }
 
-    export(fileName: string, geojson: ExportGeoJsonType) {
-        download(fileName + `.${this.converter.type}`, this.converter.convert(geojson));
+    export(fileName: string, geojson: ExportGeoJsonType, options?: ConverterOptions) {
+        download(fileName + `.${this.converter.type}`, this.converter.convert(geojson, options));
     }
 }
