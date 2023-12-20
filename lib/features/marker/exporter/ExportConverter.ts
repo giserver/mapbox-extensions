@@ -8,6 +8,7 @@ import {
     LWPolylineVertex,
     TrueColor,
     pattern,
+    vec2_t,
     vec3_t,
     vertex
 } from '@tarikjabiri/dxf';
@@ -92,9 +93,14 @@ export class DxfConverter implements IExportConverter {
         text.textStyle = this.style_name_text;
     }
 
-    private circle(dxf: DxfWriter, position: GeoJSON.Position, options: MarkerFeatrueProperties, withText: boolean = true) {
-        const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger([position[0], position[1]]);
-        const vec = { x: point[0], y: point[1], z: 0 } as vec3_t;
+    private circle(dxf: DxfWriter, position: GeoJSON.Position | vec2_t, options: MarkerFeatrueProperties, withText: boolean = true) {
+        let vec: vec3_t;
+        if ('x' in position) {
+            vec = { ...position, z: 0 };
+        } else {
+            const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger([position[0], position[1]]);
+            vec = { x: point[0], y: point[1], z: 0 } as vec3_t;
+        }
 
         dxf.addCircle(vec, 10, {
             layerName: lang.point,
@@ -104,8 +110,11 @@ export class DxfConverter implements IExportConverter {
             this.text(dxf, vec, options);
     }
 
-    private polyline(dxf: DxfWriter, positions: GeoJSON.Position[], options: MarkerFeatrueProperties, withText: boolean = true) {
+    private polyline(dxf: DxfWriter, positions: Array<GeoJSON.Position | vec2_t>, options: MarkerFeatrueProperties, withText: boolean = true) {
         const points = positions.map(p => {
+            if ('x' in p)
+                return { point: p } as LWPolylineVertex;
+
             const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger([p[0], p[1]]);
             return { point: { x: point[0], y: point[1] } } as LWPolylineVertex;
         });
@@ -115,6 +124,7 @@ export class DxfConverter implements IExportConverter {
             thickness: options.style.lineWidth,
             trueColor: TrueColor.fromHex(options.style.lineColor!).toString()
         });
+
         if (withText)
             this.text(dxf, { ...array.first(points)!.point, z: 0 }, options);
     }
@@ -124,16 +134,28 @@ export class DxfConverter implements IExportConverter {
             name: HatchPredefinedPatterns.SOLID,
         });
 
-        const boundary = new HatchBoundaryPaths();
-        boundary.addPolylineBoundary(new HatchPolylineBoundary(positionsArray[0].map(coord => {
-            const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger([coord[0], coord[1]]);
-            return vertex(point[0], point[1]);
-        })));
+        const hatchBoundaryPaths = new HatchBoundaryPaths();
+        positionsArray.forEach(positionis => {
+            const boundary = new HatchPolylineBoundary(positionis.map(position => {
+                const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger([position[0], position[1]]);
+                return vertex(point[0], point[1]);
+            }));
 
-        dxf.addHatch(boundary, solid, {
+            hatchBoundaryPaths.addPolylineBoundary(boundary);
+
+            this.polyline(dxf, boundary.vertices, {
+                ...options, style: {
+                    lineWidth: options.style.polygonOutlineWidth,
+                    lineColor: options.style.polygonOutlineColor
+                }
+            }, false);
+        });
+
+        dxf.addHatch(hatchBoundaryPaths, solid, {
             layerName: lang.polygon,
             trueColor: TrueColor.fromHex(options.style.polygonColor!).toString()
         });
+
         if (withText)
             this.text(dxf, centroid({ type: 'Polygon', coordinates: positionsArray }).geometry.coordinates, options);
     }
