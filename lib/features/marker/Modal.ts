@@ -89,16 +89,17 @@ export function createConfirmModal(options: ConfirmModalOptions) {
 }
 
 export function createExportModal(fileName: string, geojson: ExportGeoJsonType) {
-    const content = dom.createHtmlElement('div');
-    content.style.display = 'flex';
-    content.style.justifyContent = 'space-between';
-
-    const fileTypeLabel = dom.createHtmlElement('span');
-    fileTypeLabel.innerText = lang.fileType
     const select = dom.createHtmlElement('select');
     select.innerHTML = export_converters.map(x => `<option value="${x.type}">${x.type}</option>`).join('');
 
-    content.append(fileTypeLabel, select);
+    const label_select = dom.createHtmlElement('div', [], [dom.createHtmlElement('span', [], [lang.fileType]), select]);
+    label_select.style.display = 'flex';
+    label_select.style.justifyContent = 'space-between';
+
+    const content = dom.createHtmlElement('div', [], [label_select,
+        dom.createHtmlElement('div', ['jas-modal-content-edit-header'], [lang.proj]),
+        dom.createHtmlElement('div', ['jas-modal-content-edit-divBorder'])
+    ]);
 
     createConfirmModal({
         title: lang.exportItem,

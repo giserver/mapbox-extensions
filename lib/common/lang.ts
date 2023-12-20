@@ -47,7 +47,9 @@ interface ILanguageOptions {
 
     edit_graph: string,
     area: string,
-    length: string
+    length: string,
+
+    proj: string
 }
 
 const zh: ILanguageOptions = {
@@ -97,7 +99,9 @@ const zh: ILanguageOptions = {
 
     edit_graph: '编辑图形',
     area: '面积',
-    length: '长度'
+    length: '长度',
+
+    proj: '投影'
 }
 
 const en: ILanguageOptions = {
@@ -147,7 +151,9 @@ const en: ILanguageOptions = {
 
     edit_graph: 'edit graph',
     area: 'area',
-    length: 'length'
+    length: 'length',
+
+    proj: 'proj'
 }
 
 const lang = zh;

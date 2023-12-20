@@ -80,7 +80,7 @@ export class DxfConverter implements IExportConverter {
 
     private text(dxf: DxfWriter, position: GeoJSON.Position | vec3_t, options: MarkerFeatrueProperties) {
         if (position instanceof Array) {
-            const point = coordConverter.wgs84g_to_cgcs2000p([position[0], position[1]]);
+            const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger([position[0], position[1]]);
             position = { x: point[0], y: point[1], z: 0 };
         }
 
@@ -93,7 +93,7 @@ export class DxfConverter implements IExportConverter {
     }
 
     private circle(dxf: DxfWriter, position: GeoJSON.Position, options: MarkerFeatrueProperties, withText: boolean = true) {
-        const point = coordConverter.wgs84g_to_cgcs2000p([position[0], position[1]]);
+        const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger([position[0], position[1]]);
         const vec = { x: point[0], y: point[1], z: 0 } as vec3_t;
 
         dxf.addCircle(vec, 10, {
@@ -106,7 +106,7 @@ export class DxfConverter implements IExportConverter {
 
     private polyline(dxf: DxfWriter, positions: GeoJSON.Position[], options: MarkerFeatrueProperties, withText: boolean = true) {
         const points = positions.map(p => {
-            const point = coordConverter.wgs84g_to_cgcs2000p([p[0], p[1]]);
+            const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger([p[0], p[1]]);
             return { point: { x: point[0], y: point[1] } } as LWPolylineVertex;
         });
 
@@ -126,7 +126,7 @@ export class DxfConverter implements IExportConverter {
 
         const boundary = new HatchBoundaryPaths();
         boundary.addPolylineBoundary(new HatchPolylineBoundary(positionsArray[0].map(coord => {
-            const point = coordConverter.wgs84g_to_cgcs2000p([coord[0], coord[1]]);
+            const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger([coord[0], coord[1]]);
             return vertex(point[0], point[1]);
         })));
 
