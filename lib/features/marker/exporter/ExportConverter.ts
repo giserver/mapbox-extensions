@@ -16,7 +16,7 @@ import { array, date } from 'wheater';
 import centroid from '@turf/centroid';
 
 import { ExportGeoJsonType, MarkerFeatrueProperties } from '../types';
-import { coordConverter } from '../../../common/proj';
+import { TCoordConvertOptions, coordConverter } from '../../../common/proj';
 import { lang } from '../../../common/lang';
 
 
@@ -24,7 +24,9 @@ export type FileType = 'dxf' | 'kml' | 'geojson' | 'csv';
 
 export interface IExportConverter {
     readonly type: FileType;
-    convert(geojson: ExportGeoJsonType): string;
+    convert(geojson: ExportGeoJsonType, options?: {
+        coordConvertOptions?: TCoordConvertOptions
+    }): string;
 }
 
 export class DxfConverter implements IExportConverter {
@@ -81,7 +83,7 @@ export class DxfConverter implements IExportConverter {
 
     private text(dxf: DxfWriter, position: GeoJSON.Position | vec3_t, options: MarkerFeatrueProperties) {
         if (position instanceof Array) {
-            const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger(position);
+            const point = coordConverter.convert(position, { type: 'cgcs2000_gauss_kruger', lon_0: 120, x_0: 500000 });
             position = { x: point[0], y: point[1], z: 0 };
         }
 
@@ -98,7 +100,7 @@ export class DxfConverter implements IExportConverter {
         if ('x' in position) {
             vec = { ...position, z: 0 };
         } else {
-            const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger(position);
+            const point = coordConverter.convert(position, { type: 'cgcs2000_gauss_kruger', lon_0: 120, x_0: 500000 });
             vec = { x: point[0], y: point[1], z: 0 } as vec3_t;
         }
 
@@ -115,7 +117,7 @@ export class DxfConverter implements IExportConverter {
             if ('x' in position)
                 return { point: position } as LWPolylineVertex;
 
-            const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger(position);
+            const point = coordConverter.convert(position, { type: 'cgcs2000_gauss_kruger', lon_0: 120, x_0: 500000 });
             return { point: { x: point[0], y: point[1] } } as LWPolylineVertex;
         });
 
@@ -137,7 +139,7 @@ export class DxfConverter implements IExportConverter {
         const hatchBoundaryPaths = new HatchBoundaryPaths();
         positionsArray.forEach(positionis => {
             const boundary = new HatchPolylineBoundary(positionis.map(position => {
-                const point = coordConverter.wgs84g_to_cgcs2000_gauss_kruger(position);
+                const point = coordConverter.convert(position, { type: 'cgcs2000_gauss_kruger', lon_0: 120, x_0: 500000 });
                 return vertex(point[0], point[1]);
             }));
 

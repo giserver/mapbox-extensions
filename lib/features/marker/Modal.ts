@@ -97,8 +97,8 @@ export function createExportModal(fileName: string, geojson: ExportGeoJsonType) 
     label_select.style.justifyContent = 'space-between';
 
     const content = dom.createHtmlElement('div', [], [label_select,
-        dom.createHtmlElement('div', ['jas-modal-content-edit-header'], [lang.proj]),
-        dom.createHtmlElement('div', ['jas-modal-content-edit-divBorder'])
+        // dom.createHtmlElement('div', ['jas-modal-content-edit-header'], [lang.proj]),
+        // dom.createHtmlElement('div', ['jas-modal-content-edit-divBorder'])
     ]);
 
     createConfirmModal({
