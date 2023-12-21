@@ -840,9 +840,9 @@
 }
 
 
-.jas-marker-edit-input.text,
-.jas-marker-edit-input.number,
-.jas-marker-edit-select {
+.jas-input.text,
+.jas-input.number,
+.jas-select {
     outline-style: none;
     border: 1px solid #EEE;
     border-radius: 4px;

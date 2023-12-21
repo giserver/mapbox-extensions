@@ -3,7 +3,7 @@ import { svg, language, drag } from '../../common';
 import { ExportGeoJsonType, MarkerFeatureType, MarkerLayerProperties } from "./types";
 import { getMapMarkerSpriteImages } from "./symbol-icon";
 import Exporter from "./exporter/Exporter";
-import { export_converters } from "./exporter/ExportConverter";
+import { FileType, export_converters } from "./exporter/ExportConverter";
 import { TCoordConvertOptions, TCoordConverterType } from '../../common/proj';
 
 const { SvgBuilder } = svg;
@@ -97,12 +97,6 @@ export function createConfirmModal(options: ConfirmModalOptions) {
 }
 
 export function createExportModal(fileName: string, geojson: ExportGeoJsonType) {
-    const select = dom.createHtmlElement('select');
-    select.innerHTML = export_converters.map(x => `<option value="${x.type}">${x.type}</option>`).join('');
-
-    const label_select = dom.createHtmlElement('div', [], [dom.createHtmlElement('span', [], [lang.fileType]), select]);
-    label_select.style.display = 'flex';
-    label_select.style.justifyContent = 'space-between';
 
     const createInputBindingElement = makeCIBEFunc();
 
@@ -113,7 +107,7 @@ export function createExportModal(fileName: string, geojson: ExportGeoJsonType) 
             // 选择坐标系
             dom.createHtmlElement('div', ['jas-modal-content-edit-item'], [
                 dom.createHtmlElement('label', [], ["coord"]),
-                dom.createHtmlElement('select', [], [], {
+                dom.createHtmlElement('select', ['jas-select'], [], {
                     onChange: (_, element) => { coordConvertOptions.type = element.selectedOptions[0].value as any; },
                     onInit: element => {
                         element.innerHTML = (["cgcs2000_gauss_kruger", "bj54_gauss_kruger", "wgs84_pseudo_mercator"] as Array<TCoordConverterType>)
@@ -164,24 +158,40 @@ export function createExportModal(fileName: string, geojson: ExportGeoJsonType) 
             ]),
         ])]);
 
+    let exportFileType: FileType = 'dxf';
+    const label_select = dom.createHtmlElement('div', [], [
+        dom.createHtmlElement('span', [], [lang.fileType]),
+        dom.createHtmlElement('select', ['jas-select'], [], {
+            onChange: (_, element) => {
+                exportFileType = element.value as any;
+
+                if (exportFileType === 'dxf')
+                    projUI.style.display = '';
+                else
+                    projUI.style.display = 'none';
+            },
+            onInit: element => {
+                element.innerHTML = export_converters.map(x => `<option value="${x.type}" ${exportFileType === x.type ? 'selected' : ''}>${x.type}</option>`).join('');
+            }
+        })], {
+        onInit: (element) => {
+            element.style.display = 'flex';
+            element.style.justifyContent = 'space-between';
+        }
+    });
+
+
     const content = dom.createHtmlElement('div', [], [
         label_select,
         projUI
     ]);
-
-    select.addEventListener('change', e => {
-        if (select.selectedOptions[0].value as any === 'dxf')
-            projUI.style.display = '';
-        else
-            projUI.style.display = 'none';
-    });
 
     createConfirmModal({
         title: lang.exportItem,
         content,
         onCancel: () => { },
         onConfirm: () => {
-            new Exporter(select.selectedOptions[0].value as any).export(fileName, geojson, {
+            new Exporter(exportFileType).export(fileName, geojson, {
                 coordConvertOptions
             });
         }
@@ -192,7 +202,7 @@ type EditMode = "update" | "create";
 
 function makeCIBEFunc(onPropChange?: <T>(v: T) => void) {
     return function createInputBindingElement<T>(v: T, k: keyof T, config?: (element: HTMLInputElement) => void) {
-        const input = dom.createHtmlElement('input', ['jas-marker-edit-input']);
+        const input = dom.createHtmlElement('input', ['jas-input']);
         input.value = (v as any)[k] as string;
         config?.call(undefined, input);
         input.classList.add(input.type);
@@ -281,7 +291,7 @@ export function createFeaturePropertiesEditModal(
     const createColorBindingElement = makeColorInputFunc(options.onPropChange);
 
     function createSelectBindingElement<T>(v: T, k: keyof T, config?: (element: HTMLSelectElement) => void) {
-        const input = dom.createHtmlElement('select', ['jas-marker-edit-select']);
+        const input = dom.createHtmlElement('select', ['jas-select']);
         input.value = (v as any)[k] as string;
         config?.call(undefined, input);
 
