@@ -106,12 +106,6 @@ export function createExportModal(fileName: string, geojson: ExportGeoJsonType) 
 
     const createInputBindingElement = makeCIBEFunc();
 
-    const select_coord = dom.createHtmlElement('select');
-    select_coord.innerHTML = (["cgcs2000_gauss_kruger", "bj54_gauss_kruger", "wgs84_pseudo_mercator"] as Array<TCoordConverterType>)
-        .map(x => `<option value="${x}" ${x === coordConvertOptions.type ? 'selected' : ''}>${x}</option>`).join('');
-    select_coord.addEventListener('change', e => {
-        coordConvertOptions.type = select_coord.selectedOptions[0].value as any;
-    });
     const projUI = dom.createHtmlElement('div', [], [
         dom.createHtmlElement('div', ['jas-modal-content-edit-header'], [lang.proj]),
         dom.createHtmlElement('div', ['jas-modal-content-edit-divBorder'], [
@@ -119,7 +113,13 @@ export function createExportModal(fileName: string, geojson: ExportGeoJsonType) 
             // 选择坐标系
             dom.createHtmlElement('div', ['jas-modal-content-edit-item'], [
                 dom.createHtmlElement('label', [], ["coord"]),
-                select_coord
+                dom.createHtmlElement('select', [], [], {
+                    onChange: (_, element) => { coordConvertOptions.type = element.selectedOptions[0].value as any; },
+                    onInit: element => {
+                        element.innerHTML = (["cgcs2000_gauss_kruger", "bj54_gauss_kruger", "wgs84_pseudo_mercator"] as Array<TCoordConverterType>)
+                            .map(x => `<option value="${x}" ${x === coordConvertOptions.type ? 'selected' : ''}>${x}</option>`).join('');
+                    }
+                })
             ]),
             // 中央纬度
             dom.createHtmlElement('div', ['jas-modal-content-edit-item'], [

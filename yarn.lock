@@ -4281,9 +4281,9 @@ wgs84@0.0.0:
   integrity sha512-ANHlY4Rb5kHw40D0NJ6moaVfOCMrp9Gpd1R/AIQYg2ko4/jzcJ+TVXYYF6kXJqQwITvEZP4yEthjM7U6rYlljQ==
 
 wheater@^1.0.9:
-  version "1.0.9"
-  resolved "https://registry.npmjs.org/wheater/-/wheater-1.0.9.tgz#4f3bf26227a06931707463131e5a173697da1009"
-  integrity sha512-cPvp+Ftcp6jkkSdEiLwjKItbbh/OICttd4FKFbyQZVwMeJwXqGp4UXHtJhQQNe3on14JTtpjqXIKaCf2FPO5rA==
+  version "1.0.10"
+  resolved "https://registry.npmjs.org/wheater/-/wheater-1.0.10.tgz#ddd5c6fd4dbbfb1d22d9e61f5e37614f9e2d2897"
+  integrity sha512-cg+gaG35XiF9zE8b4g2kdUNPdvFYNu+pszklXI6N1vraW9N46XhQbOMz9oqJhRTzDgSTPLwrcX86BE2ImbT9Uw==
 
 which@^2.0.1:
   version "2.0.2"
