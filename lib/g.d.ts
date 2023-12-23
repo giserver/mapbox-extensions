@@ -10,3 +10,7 @@ declare module '@maphubs/tokml' {
             timestamp: string
         }): string
 }
+
+declare module 'kml-geojson' {
+    export function toGeoJSON(kml: string): Promise<GeoJSON.FeatureCollection>
+}

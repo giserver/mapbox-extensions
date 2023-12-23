@@ -21,6 +21,7 @@
     "@turf/bbox": "^6.5.0",
     "@turf/centroid": "^6.5.0",
     "@turf/length": "^6.5.0",
+    "kml-geojson": "^1.2.2",
     "mitt": "^3.0.1",
     "proj4": "^2.9.2",
     "wheater": "^1.0.9"
