@@ -834,6 +834,7 @@
 }
 
 .jas-ctrl-marker-item-container-content {
+    height: 100%;
     cursor: pointer;
     flex: 1;
     margin-left: 5px;

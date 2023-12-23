@@ -29,6 +29,7 @@ interface ILanguageOptions {
 
     newItem: string,
     editItem: string,
+    importItem: string,
     exportItem: string,
     deleteItem: string,
     visibility: string,
@@ -81,6 +82,7 @@ const zh: ILanguageOptions = {
 
     newItem: "新增",
     editItem: "编辑",
+    importItem: "导入",
     exportItem: "导出",
     deleteItem: "删除",
     visibility: "显隐",
@@ -133,6 +135,7 @@ const en: ILanguageOptions = {
 
     newItem: "create",
     editItem: "edit",
+    importItem: "import",
     exportItem: "export",
     deleteItem: "delete",
     visibility: "visibility",

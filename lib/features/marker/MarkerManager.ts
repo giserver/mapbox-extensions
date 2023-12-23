@@ -8,6 +8,7 @@ import LayerGroup from "../LayerGroup";
 import { createConfirmModal, createExportModal, createFeaturePropertiesEditModal, createMarkerLayerEditModel } from "./Modal";
 import { GeometryStyle, MarkerFeatrueProperties, MarkerFeatureType, MarkerLayerProperties } from "./types";
 import DrawManager from "./DrawMarker";
+import Importer from "./importer/Importer";
 
 const { lang } = language;
 const { SvgBuilder } = svg;
@@ -577,7 +578,7 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
 
         suffix.append(
             this.createSuffixEdit(),
-            // this.createSuffixImport(),
+            this.createSuffixImport(),
             this.createSuffixExport(),
             this.createSuffixDel());
 
@@ -608,9 +609,45 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
     }
 
     private createSuffixImport() {
-        const imp = dom.createHtmlElement('div');
-        imp.innerHTML = new SvgBuilder('import').resize(15, 15).create();
-        imp.title = "导入";
+        const importUI = dom.createHtmlElement('input', [], [], {
+            attributes: {
+                type: "file",
+                accept: ".kml,.kmz"
+            }
+        });
+
+        importUI.onchange = async e => {
+            const file = (e.target as HTMLInputElement).files?.[0];
+            if (file) {
+                if (file.name.endsWith('kml') || file.name.endsWith('kmz')) {
+                    const t = await file.text();
+                    const fc = await new Importer('kml').import(this.properties.id, t);
+                    if (fc.features.length > 0) {
+                        fc.features.forEach(f => this.addMarker(f));
+
+                        const b = bbox(fc);
+                        this.map.fitBounds([b[0], b[1], b[2], b[3]], { padding: 100 });
+                        this.collapse(false);
+                    }
+                }
+            }
+
+            // 处理input file不能重复上传
+            importUI.type = "text";
+            importUI.type = "file";
+        }
+
+        const imp = dom.createHtmlElement('div', ["jas-ctrl-marker-suffix-item"], [
+            new SvgBuilder('import').resize(15, 15).create('svg')
+        ], {
+            attributes: {
+                title: lang.importItem
+            },
+            onClick: () => {
+                importUI.click();
+            }
+        });
+
         return imp;
     }
 
