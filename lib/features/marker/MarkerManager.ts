@@ -480,13 +480,14 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
 
             const center = centroid(feature as any).geometry.coordinates as [number, number];
             map.easeTo({ center });
-            const content = item.createSuffixElement({ editGeometry: true });
+            const controls = item.createSuffixElement({ editGeometry: true });
+            const popupContent = dom.createHtmlElement('div', [], [controls]);
 
             if (options.extraInfo) {
                 const info = options.extraInfo(item.feature);
                 if (info)
-                    content.append(dom.createHtmlElement('div',
-                        ['jas-ctrl-marker-item-extra-info'],
+                    popupContent.append(dom.createHtmlElement('div',
+                        ["jas-ctrl-marker-item-extra-info"],
                         [info]));
             }
 
@@ -495,10 +496,10 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
                 closeButton: false
             })
                 .setLngLat(center)
-                .setDOMContent(content)
+                .setDOMContent(popupContent)
                 .addTo(map);
 
-            content.addEventListener('click', () => {
+            controls.addEventListener('click', () => {
                 popup.remove();
             });
         });

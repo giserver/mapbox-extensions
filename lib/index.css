@@ -806,17 +806,7 @@
 }
 
 .jas-ctrl-marker-item-extra-info {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    top: 0px;
-    right: -8px;
-    height: 100%;
-    padding: 0 8px;
-    box-sizing: border-box;
-    transform: translateX(100%);
-    background-color: white;
-    border-radius: 3px;
+    padding: 8px 8px 0px 8px;
 }
 
 .jas-ctrl-marker-item-container {
