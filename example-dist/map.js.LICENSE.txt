@@ -1,1 +1,18 @@
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <http://feross.org>
+ * @license  MIT
+ */
+
+/*!
+ * kml与geojson互转工具类
+ * 版本信息：v1.2.2, hash值: d360e0ddba5996eca83c
+ * 编译日期：2023-05-05 12:41:40
+ * 版权所有：Copyright by 木遥 https://github.com/muyao1987/kml-geojson
+ * 
+ */
+
+/*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
+
 /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
