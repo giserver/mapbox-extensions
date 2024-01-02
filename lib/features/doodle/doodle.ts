@@ -1,4 +1,4 @@
-import mapboxgl, { GeoJSONSource } from "mapbox-gl";
+import mapboxgl from "mapbox-gl";
 import { creator } from "wheater";
 
 type TMapboxEventKey = keyof mapboxgl.MapEventType;
@@ -8,6 +8,9 @@ type TMapboxEvent<T extends TMapboxEventKey> = mapboxgl.MapEventType[T] & mapbox
 export interface DoodleOptions {
     linePaintBuilder?(paint: mapboxgl.LinePaint): void;
     fillPaintBuilder?(paint: mapboxgl.FillPaint): void;
+
+    onStart?(): void;
+    onDrawed?(geometry: GeoJSON.Polygon): void;
 }
 
 export class Doodle {
@@ -46,7 +49,7 @@ export class Doodle {
     private onMouseUp = (e: TMapboxEvent<'mouseup'>) => {
         this.addPoint(e.lngLat, true);
         e.target.off('mousemove', this.onMouseMove);
-
+        this.options.onDrawed?.(this.currentPolygon.geometry);
         this.drawing = false;
     };
 
@@ -70,7 +73,7 @@ export class Doodle {
     /**
      *
      */
-    constructor(private map: mapboxgl.Map, private options: DoodleOptions) {
+    constructor(private map: mapboxgl.Map, private options: DoodleOptions = {}) {
         map.addSource(this.lineSourceId, {
             type: 'geojson',
             data: this.currentLine
@@ -122,9 +125,19 @@ export class Doodle {
             return;
 
         this.drawing = true;
-
+        this.options.onStart?.();
         this.map.getCanvas().style.cursor = `url("${this.pencilImage}"),auto`;
         this.map.once('mousedown', this.onMouseDown);
+    }
+
+    stop() {
+        if (!this.drawing)
+            return;
+
+        // stop operation
+        this.map.off('mousedown', this.onMouseDown);
+        this.map.getCanvas().style.cursor = '';
+        this.drawing = false;
     }
 
     clear() {
@@ -132,9 +145,9 @@ export class Doodle {
         this.updateDataSource(true);
     }
 
-    private addPoint(lngLat: mapboxgl.LngLat, withPolygon?: boolean) {
+    private addPoint(lngLat: mapboxgl.LngLat, updatePolygon?: boolean) {
         this.currentLine.geometry.coordinates.push([lngLat.lng, lngLat.lat]);
-        this.updateDataSource(withPolygon);
+        this.updateDataSource(updatePolygon);
     }
 
     private updateDataSource(withPolygon?: boolean) {
