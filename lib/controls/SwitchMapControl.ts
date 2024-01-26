@@ -118,8 +118,30 @@ export class SwitchMapControl extends SwitchLayerBaseControl {
         const { alertDiv, groupsDiv } = this.createGroupLayerAlertDiv();
         this.groupContainers = SwitchGroupContainer.appendLayerGroups(map, groupsDiv, layerGroups, this.options.extra);
         this.element.append(alertDiv);
+
+        let alertTimer: NodeJS.Timeout;
         this.element.addEventListener('mouseover', e => {
+          if (alertTimer) clearTimeout(alertTimer);
           alertDiv.style.pointerEvents = 'auto';
+        });
+
+        this.element.addEventListener('mouseover', () => {
+          if (!this.element.classList.contains('alert-is-shown'))
+            this.element.classList.add('alert-is-shown');
+        });
+
+        this.element.addEventListener('mouseout', () => {
+          if (this.element.classList.contains('alert-is-shown') && !this.alertDivShowAlways) {
+            this.element.classList.remove('alert-is-shown');
+            alertTimer = setTimeout(() => {
+              alertDiv.style.pointerEvents = 'none';
+            }, 250);
+          }
+        });
+
+        alertDiv.addEventListener('mouseout', e => {
+          if (!this.alertDivShowAlways)
+            alertDiv.style.pointerEvents = 'none';
         });
       }
     }
@@ -173,16 +195,6 @@ export class SwitchMapControl extends SwitchLayerBaseControl {
       map.setLayoutProperty('mapbox-satellite', 'visibility', satelliteVisibled ? 'none' : 'visible');
     });
 
-    div.addEventListener('mouseover', () => {
-      if (!div.classList.contains('alert-is-shown'))
-        div.classList.add('alert-is-shown');
-    })
-
-    div.addEventListener('mouseout', () => {
-      if (div.classList.contains('alert-is-shown') && !this.alertDivShowAlways)
-        div.classList.remove('alert-is-shown');
-    })
-
     return div;
   }
 
@@ -215,11 +227,6 @@ export class SwitchMapControl extends SwitchLayerBaseControl {
 
     alertDiv.addEventListener('click', e => {
       e.stopPropagation();
-    })
-
-    alertDiv.addEventListener('mouseout', e => {
-      if (!this.alertDivShowAlways)
-        alertDiv.style.pointerEvents = 'none';
     });
 
     return { alertDiv, groupsDiv };
