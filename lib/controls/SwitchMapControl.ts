@@ -58,7 +58,8 @@ export interface SwitchMapControlOptions {
   baseOption?: SwitchMapItemOption,
   satelliteOption?: SwitchMapItemOption,
   showSatelliteDefault?: boolean,
-  extra?: SwitchMapExtraInfo
+  onBaseMapChange?(toSatellite: boolean): void,
+  extra?: SwitchMapExtraInfo,
 }
 
 
@@ -193,6 +194,7 @@ export class SwitchMapControl extends SwitchLayerBaseControl {
       const satelliteVisibled = map.getLayoutProperty('mapbox-satellite', 'visibility') === 'visible';
       changeDiv(satelliteVisibled ? this.options.satelliteOption! : this.options.baseOption!);
       map.setLayoutProperty('mapbox-satellite', 'visibility', satelliteVisibled ? 'none' : 'visible');
+      this.options.onBaseMapChange?.call(undefined, !satelliteVisibled);
     });
 
     return div;
