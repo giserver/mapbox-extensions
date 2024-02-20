@@ -884,15 +884,14 @@ class MarkerItem extends AbstractLinkP<MarkerLayer> {
                     geoEditor.changeMode('direct_select', { featureId: this.feature.id!.toString() });
 
                 const handleSelectChange = (e: any) => {
-                    // 当前选择图形失去选择状态 完成修改
-                    if (e.features.length === 0) {
-                        const cFeature = geoEditor.get(this.feature.id!.toString())!;
+                    const cFeature = geoEditor.get(this.feature.id!.toString());
 
+                    // 当前选择图形失去选择状态 完成修改
+                    if (e.features.length === 0 && cFeature) {
                         // 若发生改变
                         if (!deep.equal(cFeature.geometry, this.feature.geometry)) {
                             this.feature.geometry = cFeature.geometry;
                             this.options.onUpdate?.call(undefined, this.feature);
-                            this.parent.updateDataSource();
                         }
 
                         // 删除编辑数据
