@@ -151,3 +151,9 @@ map.addControl(new DoodleControl({
 }))
 ```
 ![涂鸦](./doc/img/doodle.gif)
+
+### `位置`
+``` ts
+map.addControl(new LocationControl({ fractionDigits: 4 }));
+```
+![BackToOrigin](./doc/img/location.gif)

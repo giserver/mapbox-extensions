@@ -867,3 +867,15 @@
         font-weight: 400;
     }
 }
+
+.jas-ctrl-location {
+    min-height: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    color: yellow;
+    background-color: rgba(50, 50, 50, 0.2);
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+}

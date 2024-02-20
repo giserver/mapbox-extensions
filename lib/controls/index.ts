@@ -6,3 +6,4 @@ export * from './Measure2Control';
 export * from './MeasureControl';
 export * from './SwitchLayerControl';
 export * from './SwitchMapControl';
+export * from './LocationControl';
