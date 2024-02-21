@@ -80,6 +80,8 @@ export class EyeControl implements mapboxgl.IControl {
             overviewBox();
         });
 
+        let currentControlMap: "map" | "overviewmap" = "map";
+
         function overviewBox() {
             var sw = map.getBounds().getSouthWest();
             var ne = map.getBounds().getNorthEast();
@@ -104,6 +106,8 @@ export class EyeControl implements mapboxgl.IControl {
             overviewBox();
         }
         function mapzoom() {
+            if (currentControlMap !== 'map') return;
+
             overviewMap.setCenter(map.getCenter());
             overviewMap.setZoom(map.getZoom() - that.options.zoomDiff!);
             overviewBox();
@@ -113,6 +117,8 @@ export class EyeControl implements mapboxgl.IControl {
             overviewBox();
         }
         function overviewzoom() {
+            if (currentControlMap !== 'overviewmap') return;
+
             map.setCenter(overviewMap.getCenter());
             map.setZoom(overviewMap.getZoom() + that.options.zoomDiff!);
             overviewBox();
@@ -120,6 +126,7 @@ export class EyeControl implements mapboxgl.IControl {
 
         map.on("drag", mapdrag);
         map.on("zoom", mapzoom);
+        map.on('move', mapzoom);
         map.on('idle', () => {
             if (!this.options.layoutSync)
                 return;
@@ -132,6 +139,15 @@ export class EyeControl implements mapboxgl.IControl {
         });
         overviewMap.on("drag", overviewdrag);
         overviewMap.on("zoom", overviewzoom);
+        overviewMap.on('move', overviewzoom);
+
+        map.on('mouseover', () => {
+            currentControlMap = 'map';
+        });
+
+        overviewMap.on('mouseover', () => {
+            currentControlMap = "overviewmap";
+        })
 
         return this.element!;
     }
