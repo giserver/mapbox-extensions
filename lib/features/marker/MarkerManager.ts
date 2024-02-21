@@ -34,7 +34,8 @@ export interface MarkerManagerOptions {
     featureCollection?: GeoJSON.FeatureCollection<GeoJSON.Geometry, MarkerFeatrueProperties>,
     drawAfterOffset?: [number, number],
     layerOptions?: MarkerLayerOptions,
-    firstFeatureStyleConfig?(style: Omit<GeometryStyle, "pointIcon">): void
+    geoEditor?: MapboxDraw,
+    firstFeatureStyleConfig?(style: Omit<GeometryStyle, "pointIcon">): void,
 }
 
 export default class MarkerManager {
@@ -148,32 +149,38 @@ export default class MarkerManager {
 
         //防止MapboxDraw内部自动修改doubleClickZoom
         map.doubleClickZoom.disable();
-        // 创建编辑器
-        this.geoEditor = new MapboxDraw({
-            controls: {
-                trash: true
-            },
-            displayControlsDefault: false
-        });
-        this.geoEditor.onAdd(map);
-        // 禁止图形平移
-        const onDrag = MapboxDraw.modes.direct_select.onDrag;
-        MapboxDraw.modes.direct_select.onDrag = function (this, state, e) {
-            if (state.selectedCoordPaths.length > 0)
-                onDrag?.call(this, state, e);
-        };
-        // 禁止删除图形
-        const directSelectOnTrash = MapboxDraw.modes.direct_select.onTrash;
-        MapboxDraw.modes.direct_select.onTrash = function (this, state) {
-            const featureType = state.feature.type;
-            const coordinates = state.feature.coordinates;
-            if ((featureType === 'Polygon' && coordinates[0].length > 3) ||
-                (featureType === 'LineString' && coordinates.length > 2)
-            ) {
-                directSelectOnTrash?.call(this, state);
+
+        if (options.geoEditor) {
+            this.geoEditor = options.geoEditor
+        } else {
+            // 创建编辑器
+            this.geoEditor = new MapboxDraw({
+                controls: {
+                    trash: true
+                },
+                displayControlsDefault: false
+            });
+            this.geoEditor.onAdd(map);
+            // 禁止图形平移
+            const onDrag = MapboxDraw.modes.direct_select.onDrag;
+            MapboxDraw.modes.direct_select.onDrag = function (this, state, e) {
+                if (state.selectedCoordPaths.length > 0)
+                    onDrag?.call(this, state, e);
+            };
+            // 禁止删除图形
+            const directSelectOnTrash = MapboxDraw.modes.direct_select.onTrash;
+            MapboxDraw.modes.direct_select.onTrash = function (this, state) {
+                const featureType = state.feature.type;
+                const coordinates = state.feature.coordinates;
+                if ((featureType === 'Polygon' && coordinates[0].length > 3) ||
+                    (featureType === 'LineString' && coordinates.length > 2)
+                ) {
+                    directSelectOnTrash?.call(this, state);
+                }
             }
+            MapboxDraw.modes.simple_select.onTrash = function (this, _) { }
         }
-        MapboxDraw.modes.simple_select.onTrash = function (this, _) { }
+        
         //#endregion
 
         // 图层通过时间排序、创建图层、图层初始设置不可见
@@ -884,15 +891,14 @@ class MarkerItem extends AbstractLinkP<MarkerLayer> {
                     geoEditor.changeMode('direct_select', { featureId: this.feature.id!.toString() });
 
                 const handleSelectChange = (e: any) => {
-                    // 当前选择图形失去选择状态 完成修改
-                    if (e.features.length === 0) {
-                        const cFeature = geoEditor.get(this.feature.id!.toString())!;
+                    const cFeature = geoEditor.get(this.feature.id!.toString());
 
+                    // 当前选择图形失去选择状态 完成修改
+                    if (e.features.length === 0 && cFeature) {
                         // 若发生改变
                         if (!deep.equal(cFeature.geometry, this.feature.geometry)) {
                             this.feature.geometry = cFeature.geometry;
                             this.options.onUpdate?.call(undefined, this.feature);
-                            this.parent.updateDataSource();
                         }
 
                         // 删除编辑数据
