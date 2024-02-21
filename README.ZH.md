@@ -156,4 +156,12 @@ map.addControl(new DoodleControl({
 ``` ts
 map.addControl(new LocationControl({ fractionDigits: 4 }));
 ```
+### `缩放`
+``` ts
+map.addControl(new ZoomControl());
+```
+### `鹰眼`
+``` ts
+map.addControl(new EyeControl(map));
+```
 ![BackToOrigin](./doc/img/location.gif)

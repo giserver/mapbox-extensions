@@ -6,7 +6,7 @@ import calArea from '@turf/area';
 
 import {
     MeasureControl, Measure2Control, SwitchMapControl, BackToOriginControl, DoodleControl, SwitchLayerControl, MarkerControl, ExtendControl,
-    SetStyleProxy, MBtnRoate, ExtendControlsWrapper, SwitchLayerGroupsType, LocationControl
+    SetStyleProxy, MBtnRoate, ExtendControlsWrapper, SwitchLayerGroupsType, LocationControl, ZoomControl, EyeControl
 } from '../lib';
 import '../lib/index.css';
 
@@ -373,6 +373,12 @@ map.on('load', () => {
     map.addControl(new BackToOriginControl());
     map.addControl(doodleControl);
     map.addControl(new LocationControl({ fractionDigits: 4 }));
+    map.addControl(new ZoomControl());
+    map.addControl(new EyeControl(map));
+    map.addControl(new mapboxgl.ScaleControl({
+        maxWidth: 80,
+        unit: 'metric',//imperial'
+    }), "bottom-left");
 
     const content = dom.createHtmlElement("div", ["jas-ctrl-measure-mobile-operation-item"]);
     content.style.width = '200px';

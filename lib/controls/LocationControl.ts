@@ -10,10 +10,18 @@ export interface LocationControlOptions {
      * 经纬度保留的小数位数
      */
     fractionDigits?: number;
+    /**
+     * 经度显示文本前缀
+     */
+    lngPrefix?: string;
+    /**
+     * 纬度显示文本前缀
+     */
+    latPrefix?: string;
 }
 
 /**
- * 实时显示鼠标所在位置的经纬度
+ * 位置控件：实时显示鼠标所在位置的经纬度
  */
 export class LocationControl implements mapboxgl.IControl {
 
@@ -22,12 +30,16 @@ export class LocationControl implements mapboxgl.IControl {
     constructor(private options: LocationControlOptions = {}) {
         this.options.defaultPosition ??= "top-left";
         this.options.fractionDigits ??= 5;
+        this.options.lngPrefix ??= "经度";
+        this.options.latPrefix ??= "纬度";
     }
 
     onAdd(map: mapboxgl.Map): HTMLElement {
         let that = this;
         map.on("mousemove", function (e) {
-            that.element.innerHTML = formatLocation(e.lngLat.lng, e.lngLat.lat, that.options.fractionDigits);
+            let lng = e.lngLat.lng;
+            let lat = e.lngLat.lat;
+            that.element.innerHTML = `${that.options.lngPrefix} ${Math.abs(lng).toFixed(that.options.fractionDigits)}° ${lng > 0 ? "E" : "W"}&nbsp;&nbsp;${that.options.latPrefix} ${Math.abs(lat).toFixed(that.options.fractionDigits)}° ${lat > 0 ? "N" : "S"}`;
         });
         return that.element;
     }
@@ -38,8 +50,4 @@ export class LocationControl implements mapboxgl.IControl {
 
     getDefaultPosition(): string { return this.options.defaultPosition! };
 
-}
-
-function formatLocation(lng: any, lat: any, n?: number) {
-    return `${lng > 0 ? "东经" : "西经"}：${Math.abs(lng).toFixed(n)}°&nbsp;&nbsp;${lat > 0 ? "北纬" : "南纬"}：${Math.abs(lat).toFixed(n ?? 5)}°`;
 }
