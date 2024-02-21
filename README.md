@@ -152,4 +152,12 @@ map.addControl(new DoodleControl({
 ``` ts
 map.addControl(new LocationControl({ fractionDigits: 4 }));
 ```
+### `Zoom`
+``` ts
+map.addControl(new ZoomControl());
+```
+### `Eye`
+``` ts
+map.addControl(new EyeControl(map));
+```
 ![BackToOrigin](./doc/img/location.gif)
