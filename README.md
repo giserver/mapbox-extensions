@@ -160,4 +160,9 @@ map.addControl(new ZoomControl());
 ``` ts
 map.addControl(new EyeControl(map));
 ```
-![BackToOrigin](./doc/img/location.gif)
+![Eye](./doc/img/location.gif)
+### `Grid`
+``` ts
+map.addControl(new GridControl({ show: true }));
+```
+![Grid](./doc/img/grid.gif)

@@ -37,7 +37,7 @@ export interface MeasurePolygonOptions extends MeasureOptions<GeoJSON.Polygon> {
 
 export default class MeasurePolygon extends MeasureBase {
     private currentMeasurePoint: GeoJSON.Feature | undefined;
-    private moveTimer: NodeJS.Timer | undefined;
+    private moveTimer: NodeJS.Timeout | undefined;
 
     type: MeasureType = 'Polygon';
 

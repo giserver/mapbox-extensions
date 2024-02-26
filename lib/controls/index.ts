@@ -9,3 +9,4 @@ export * from './SwitchMapControl';
 export * from './LocationControl';
 export * from './ZoomControl';
 export * from './EyeControl';
+export * from './GridControl';

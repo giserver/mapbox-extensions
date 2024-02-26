@@ -155,7 +155,10 @@ export default class SwitchGroupContainer {
             .sort((a, b) => a.zoom! - b.zoom!)
             .forEach(l => {
                 getLayers(l.layer).forEach(l => {
-                    map.addLayer(l);
+                    // 消除以编程方式添加图层时引起的错误，比如经纬度网格
+                    // error: Layer with id <id> already exists on this map
+                    if (!map.getLayer(l.id))
+                        map.addLayer(l);
                 });
             });
 

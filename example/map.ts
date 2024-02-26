@@ -6,7 +6,7 @@ import calArea from '@turf/area';
 
 import {
     MeasureControl, Measure2Control, SwitchMapControl, BackToOriginControl, DoodleControl, SwitchLayerControl, MarkerControl, ExtendControl,
-    SetStyleProxy, MBtnRoate, ExtendControlsWrapper, SwitchLayerGroupsType, LocationControl, ZoomControl, EyeControl
+    SetStyleProxy, MBtnRoate, ExtendControlsWrapper, SwitchLayerGroupsType, LocationControl, ZoomControl, EyeControl, GridControl
 } from '../lib';
 import '../lib/index.css';
 
@@ -374,11 +374,12 @@ map.on('load', () => {
     map.addControl(doodleControl);
     map.addControl(new LocationControl({ fractionDigits: 4 }));
     map.addControl(new ZoomControl());
-    map.addControl(new EyeControl(map));
     map.addControl(new mapboxgl.ScaleControl({
         maxWidth: 80,
         unit: 'metric',//imperial'
-    }), "bottom-left");
+    }), "top-left");
+    map.addControl(new EyeControl(map, { layoutSync: true }));
+    map.addControl(new GridControl({ show: true }));
 
     const content = dom.createHtmlElement("div", ["jas-ctrl-measure-mobile-operation-item"]);
     content.style.width = '200px';
@@ -445,6 +446,48 @@ map.on('load', () => {
                         layout: {
                             "text-field": ['get', 'name']
                         }
+                    }
+                }]
+            },
+            "经纬度网格": {
+
+                uiType: 'SwitchBtn',
+                collapse: true,
+                defaultCollapsed: false,
+                layers: [{
+                    name: "网格线",
+                    layer: {
+                        id: 'grid-layer',
+                        'type': 'line',
+                        "source": undefined
+                    }
+                }, {
+                    name: "左侧纬度标签",
+                    layer: {
+                        'id': 'grid-text-left-layer',
+                        'type': 'symbol',
+                        "source": undefined
+                    }
+                }, {
+                    name: "右侧纬度标签",
+                    layer: {
+                        'id': 'grid-text-right-layer',
+                        'type': 'symbol',
+                        "source": undefined
+                    }
+                }, {
+                    name: "顶部经度标签",
+                    layer: {
+                        'id': 'grid-text-top-layer',
+                        'type': 'symbol',
+                        "source": undefined
+                    }
+                }, {
+                    name: "底部经度标签",
+                    layer: {
+                        'id': 'grid-text-bottom-layer',
+                        'type': 'symbol',
+                        "source": undefined
                     }
                 }]
             }
