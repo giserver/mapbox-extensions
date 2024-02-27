@@ -323,7 +323,7 @@ export class GridControl implements mapboxgl.IControl {
             }
 
             // 使用 globe 投影时，根据缩放级别调整文本偏移
-            if (map.getProjection().name === "globe") {
+            if ("getProjection" in map && (map as any).getProjection().name === "globe") {
                 map.setLayoutProperty("grid-text-left-layer", "text-offset", [zoom < 6 ? 6 : 0.5, 0]);
                 map.setLayoutProperty("grid-text-right-layer", "text-offset", [zoom < 6 ? -8 : -3, 0]);
                 map.setLayoutProperty("grid-text-top-layer", "text-offset", [-1.5, zoom < 4 ? 6 : zoom < 4.5 ? 5 : zoom < 5 ? 4 : zoom < 5.5 ? 3 : zoom < 6 ? 2 : 1]);
