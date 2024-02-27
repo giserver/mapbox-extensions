@@ -164,4 +164,9 @@ map.addControl(new ZoomControl());
 ``` ts
 map.addControl(new EyeControl(map));
 ```
-![BackToOrigin](./doc/img/location.gif)
+![鹰眼](./doc/img/location.gif)
+### `经纬网格`
+``` ts
+map.addControl(new GridControl({ show: true }));
+```
+![网格](./doc/img/grid.gif)
