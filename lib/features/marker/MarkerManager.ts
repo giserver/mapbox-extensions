@@ -180,7 +180,7 @@ export default class MarkerManager {
             }
             MapboxDraw.modes.simple_select.onTrash = function (this, _) { }
         }
-        
+
         //#endregion
 
         // 图层通过时间排序、创建图层、图层初始设置不可见
@@ -324,11 +324,11 @@ export default class MarkerManager {
         this.layerContainer.append(markerLayer.htmlElement);
     }
 
-    addMarker(feature: MarkerFeatureType) {
+    addMarker(feature: MarkerFeatureType, create: boolean = true) {
         const layer = array.first(this.markerLayers, x => x.properties.id === feature.properties.layerId);
         if (!layer) throw Error(`layer id : ${feature.properties.layerId} not found`);
 
-        layer.addMarker(feature);
+        layer.addMarker(feature, create);
     }
 
     setGeometryVisible(value: boolean) {
@@ -517,8 +517,9 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
         this.htmlElement.append(this.createHeader(), this.itemContainerElement);
     }
 
-    addMarker(feature: MarkerFeatureType) {
-        this.options?.markerItemOptions?.onCreate?.call(undefined, feature);
+    addMarker(feature: MarkerFeatureType, create: boolean = true) {
+        if (create)
+            this.options?.markerItemOptions?.onCreate?.call(undefined, feature);
 
         const markerItem = new MarkerItem(this, this.map, feature, this.options.markerItemOptions);
         const firstNode = this.itemContainerElement.querySelector(`.${MarkerItem.getGeometryMatchClass(feature)}`)
@@ -795,9 +796,10 @@ class MarkerItem extends AbstractLinkP<MarkerLayer> {
         return [];
     }
 
-    remove() {
-        // 外部删除 
-        this.options.onRemove?.call(undefined, this.feature);
+    remove(del: boolean = true) {
+        if (del)
+            // 外部删除 
+            this.options.onRemove?.call(undefined, this.feature);
 
         // 更新地图
         const index = this.parent.items.indexOf(this);
@@ -848,12 +850,18 @@ class MarkerItem extends AbstractLinkP<MarkerLayer> {
                 });
 
                 createFeaturePropertiesEditModal(this.feature, {
-                    layers: [],
+                    layers: this.parent.parent.markerLayers.map(x => x.properties),
                     mode: 'update',
                     onConfirm: () => {
                         // 外部更新
                         this.options.onUpdate?.call(undefined, this.feature);
-                        update();
+                        // 切换图层
+                        if (this.feature.properties.layerId !== this.parent.properties.id) {
+                            this.remove(false);
+                            this.parent.parent.addMarker(this.feature, false);
+                        } else {
+                            update();
+                        }
                         this.map.easeTo({ center: orgCenter });
                     },
                     onCancel: () => {

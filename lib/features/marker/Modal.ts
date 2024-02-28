@@ -316,16 +316,16 @@ export function createFeaturePropertiesEditModal(
 
     //#region 添加图层选择
 
-    if (options.mode === 'create') {
-        content.append(dom.createHtmlElement('div',
-            ['jas-modal-content-edit-item'],
-            [dom.createHtmlElement('label', [], [lang.chooseLayer]), createSelectBindingElement(properties, 'layerId', x => {
-                options.layers.forEach(l => {
-                    x.innerHTML += `<option value="${l.id}">${l.name}</option>`
-                });
-                x.value = properties.layerId;
-            })]))
-    }
+
+    content.append(dom.createHtmlElement('div',
+        ['jas-modal-content-edit-item'],
+        [dom.createHtmlElement('label', [], [lang.chooseLayer]), createSelectBindingElement(properties, 'layerId', x => {
+            options.layers.forEach(l => {
+                x.innerHTML += `<option value="${l.id}">${l.name}</option>`
+            });
+            x.value = properties.layerId;
+        })]))
+
     //#endregion
     content.append(dom.createHtmlElement('div',
         ['jas-modal-content-edit-item'],
@@ -462,6 +462,9 @@ export function createFeaturePropertiesEditModal(
             options.onCancel?.call(undefined);
             options.onPropChange?.call(undefined);
         },
-        onConfirm: options.onConfirm
+        onConfirm: () => {
+            if (!deep.equal(propsCopy, feature.properties))
+                options.onConfirm?.();
+        }
     })
 }
