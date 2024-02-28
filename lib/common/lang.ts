@@ -50,7 +50,12 @@ interface ILanguageOptions {
     area: string,
     length: string,
 
-    proj: string
+    proj: string,
+    lat_0: string,
+    lon_0: string,
+    x_0: string,
+    y_0: string,
+    towgs84: string
 }
 
 const zh: ILanguageOptions = {
@@ -103,7 +108,12 @@ const zh: ILanguageOptions = {
     area: '面积',
     length: '长度',
 
-    proj: '投影'
+    proj: '投影',
+    lat_0: "纬度原点",
+    lon_0: "中央子午线",
+    x_0: "东向加常数",
+    y_0: "北向加常数",
+    towgs84: "七参数"
 }
 
 const en: ILanguageOptions = {
@@ -156,7 +166,12 @@ const en: ILanguageOptions = {
     area: 'area',
     length: 'length',
 
-    proj: 'proj'
+    proj: 'proj',
+    lat_0: "lat_0",
+    lon_0: "lon_0",
+    x_0: "x_0",
+    y_0: "x_0",
+    towgs84: "towgs84"
 }
 
 const lang = zh;

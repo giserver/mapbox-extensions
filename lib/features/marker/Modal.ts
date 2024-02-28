@@ -106,7 +106,7 @@ export function createExportModal(fileName: string, geojson: ExportGeoJsonType) 
 
             // 选择坐标系
             dom.createHtmlElement('div', ['jas-modal-content-edit-item'], [
-                dom.createHtmlElement('label', [], ["coord"]),
+                dom.createHtmlElement('label', [], [lang.proj]),
                 dom.createHtmlElement('select', ['jas-select'], [], {
                     onChange: (_, element) => { coordConvertOptions.type = element.selectedOptions[0].value as any; },
                     onInit: element => {
@@ -117,7 +117,7 @@ export function createExportModal(fileName: string, geojson: ExportGeoJsonType) 
             ]),
             // 中央纬度
             dom.createHtmlElement('div', ['jas-modal-content-edit-item'], [
-                dom.createHtmlElement('label', [], ["lat_0"]),
+                dom.createHtmlElement('label', [], [lang.lat_0]),
                 createInputBindingElement(coordConvertOptions, 'lat_0', e => {
                     e.type = 'number';
                     e.max = '90';
@@ -127,7 +127,7 @@ export function createExportModal(fileName: string, geojson: ExportGeoJsonType) 
 
             // 中央经度 
             dom.createHtmlElement('div', ['jas-modal-content-edit-item'], [
-                dom.createHtmlElement('label', [], ["lon_0"]),
+                dom.createHtmlElement('label', [], [lang.lon_0]),
                 createInputBindingElement(coordConvertOptions, 'lon_0', e => {
                     e.type = 'number';
                     e.max = '180';
@@ -136,14 +136,14 @@ export function createExportModal(fileName: string, geojson: ExportGeoJsonType) 
             ]),
             // 东向加常数
             dom.createHtmlElement('div', ['jas-modal-content-edit-item'], [
-                dom.createHtmlElement('label', [], ["x_0"]),
+                dom.createHtmlElement('label', [], [lang.x_0]),
                 createInputBindingElement(coordConvertOptions, 'x_0', e => {
                     e.type = 'number';
                 })
             ]),
             // 北向加常数
             dom.createHtmlElement('div', ['jas-modal-content-edit-item'], [
-                dom.createHtmlElement('label', [], ["y_0"]),
+                dom.createHtmlElement('label', [], [lang.y_0]),
                 createInputBindingElement(coordConvertOptions, 'y_0', e => {
                     e.type = 'number';
                 })
@@ -151,7 +151,7 @@ export function createExportModal(fileName: string, geojson: ExportGeoJsonType) 
 
             // 4参数或7参数
             dom.createHtmlElement('div', ['jas-modal-content-edit-item'], [
-                dom.createHtmlElement('label', [], ["towgs84"]),
+                dom.createHtmlElement('label', [], [lang.towgs84]),
                 createInputBindingElement(coordConvertOptions, 'towgs84', e => {
                     e.type = "text";
                 })
