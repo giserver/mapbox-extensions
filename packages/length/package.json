@@ -1,0 +1,19 @@
+{
+    "name": "@cocaine_coder/bbox",
+    "version": "1.0.0",
+    "description": "",
+    "main": "./dist/index.es.js",
+    "typings": "./dist/index.d.ts",
+    "scripts": {
+        "build": "vite build --config ../../configs/vite.config.ts -- --name area & tsc"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "proj4": "^2.10.0"
+    },
+    "devDependencies": {
+        "@types/proj4": "^2.5.5"
+    }
+}
