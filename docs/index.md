@@ -11,7 +11,7 @@ hero:
   actions:
     - theme: brand
       text: 快速开始
-      link: /guide/introduction/index
+      link: /guide/index
     - theme: alt
       text: github
       link: https://github.com/cocaine-coder/wheater

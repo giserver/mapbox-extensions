@@ -1,5 +1,5 @@
 {
-  "name": "@cocaine_coder/area",
+  "name": "@giserver/area",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/index.es.js",

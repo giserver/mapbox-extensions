@@ -1,0 +1,15 @@
+{
+    "name": "@giserver/common",
+    "version": "1.0.0",
+    "description": "",
+    "main": "./dist/index.es.js",
+    "typings": "./dist/index.d.ts",
+    "scripts": {
+        "build": "vite build --config ../../configs/vite.config.ts -- --name GiserverCommon & tsc"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {},
+    "devDependencies": {}
+}

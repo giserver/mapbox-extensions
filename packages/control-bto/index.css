@@ -1,0 +1,9 @@
+.giserver-ctrl-bto {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 0;
+    height: 29px;
+    width: 29px;
+    cursor: pointer;
+}

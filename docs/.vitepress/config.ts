@@ -7,7 +7,7 @@ export default {
     base: '/mapbox-extensions/',
     head: [
         [
-            'link', 
+            'link',
             { rel: 'icon', href: '/logo.svg' }
         ]
     ],
@@ -16,8 +16,24 @@ export default {
     },
     themeConfig: {
         logo: '/logo.svg',
-        sidebar: [
-        ],
-        socialLinks: [{ icon: 'github', link: "https://github.com/giserver/mapbox-extensions" }]
+        sidebar: {
+            "/guide": {
+                "base": "/guide",
+                items: [
+                    { text: "简介", link: "/" },
+                    { text: "安装", link: "/install" },
+                    {
+                        text: "组件",
+                        base: "/guide/controls",
+                        collapsed: true,
+                        items: [
+                            { text: "bto", collapsed: true, link: "/bto" }
+                        ]
+                    }
+                ]
+            }
+        },
+        // nav: [{ 'text': "组件", link: '/controls/' }],
+        socialLinks: [{ icon: 'github', link: "https://github.com/giserver/mapbox-extensions" }],
     }
 } as UserConfig<DefaultTheme.Config>
