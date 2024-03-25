@@ -1,12 +1,11 @@
 import './index.css';
 import { dom } from 'wheater';
-import { gmap } from '@giserver/common';
 
 export interface BackToOriginControlOptions {
-    easeToOptions?: gmap.EaseToOptions
+    easeToOptions?: mapboxgl.EaseToOptions
 }
 
-export class BackToOriginControl implements gmap.IControl {
+export class BackToOriginControl implements mapboxgl.IControl {
 
     readonly element = dom.createHtmlElement('div', ["giserver-ctrl-bto", "maplibregl-ctrl-group", "maplibregl-ctrl", "mapboxgl-ctrl", "mapboxgl-ctrl-group"], [], {
         onInit: e => {
@@ -28,7 +27,7 @@ export class BackToOriginControl implements gmap.IControl {
     constructor(public options: BackToOriginControlOptions = {}) {
     }
 
-    onAdd(map: gmap.Map): HTMLElement {
+    onAdd(map: mapboxgl.Map): HTMLElement {
         this.options.easeToOptions ??= {};
         const easeToOptions = this.options.easeToOptions;
         easeToOptions.center ??= map.getCenter();
@@ -42,7 +41,7 @@ export class BackToOriginControl implements gmap.IControl {
 
         return this.element;
     }
-    onRemove(map: gmap.Map): void {
+    onRemove(map: mapboxgl.Map): void {
         this.element.remove();
     }
     getDefaultPosition?: () => string;

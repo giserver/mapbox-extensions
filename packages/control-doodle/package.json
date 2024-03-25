@@ -1,15 +1,16 @@
 {
-    "name": "@giserver/common",
+    "name": "@giserver/ctrl-doodle",
     "version": "1.0.0",
     "description": "",
     "main": "./dist/index.es.js",
     "typings": "./dist/index.d.ts",
     "scripts": {
-        "build": "vite build --config ../../configs/vite.config.ts -- --name GiserverCommon & tsc"
+        "build": "vite build --config ../../configs/vite.config.ts -- --name GiserverControl & tsc"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "dependencies": {},
-    "devDependencies": {}
+    "dependencies": {
+        "wheater": "^1.0.11"
+    }
 }

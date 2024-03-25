@@ -11,7 +11,6 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@giserver/common": "workspace:^",
         "wheater": "^1.0.11"
     }
 }

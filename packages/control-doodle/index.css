@@ -1,0 +1,27 @@
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.giserver-ctrl-doodle {
+    display: flex;
+    color: black;
+}
+
+.giserver-ctrl-doodle>div {
+    pointer-events: auto;
+    cursor: pointer;
+    height: 29px;
+    padding: 0 5px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.giserver-ctrl-doodle-switch {
+    margin-left: 10px;
+}
+
+.giserver-ctrl-doodle-switch-svg {
+    height: 20px;
+}
