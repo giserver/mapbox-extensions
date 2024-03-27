@@ -1,16 +1,26 @@
 {
-    "name": "@giserver/ctrl-bto",
-    "version": "1.0.0",
-    "description": "",
-    "main": "./dist/index.es.js",
-    "typings": "./dist/index.d.ts",
-    "scripts": {
-        "build": "vite build --config ../../configs/vite.config.ts -- --name GiserverControl & tsc"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "wheater": "^1.0.11"
+  "name": "@giserver/ctrl-bto",
+  "version": "1.0.0",
+  "description": "",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.es.js",
+  "typings": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js"
     }
+  },
+  "scripts": {
+    "build": "vite build --config ../../configs/vite.config.ts & tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "wheater": "^1.0.11"
+  }
 }

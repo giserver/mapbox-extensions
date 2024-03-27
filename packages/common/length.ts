@@ -4,15 +4,15 @@ import proj4 from "proj4";
  * 计算长度
  * @param value 
  */
-export default function length(value: Array<[number, number]>): number
+export function length(value: Array<[number, number]>): number;
 
 /**
  * 计算长度
  * @param value Geometry
  * @param projExpression proj4 投影参数 {@link http://proj4js.org/}，也可以在 {@link https://epsg.io/} 中获取
  */
-export default function length(value: GeoJSON.Geometry, projExpression?: string | ((coordinates: GeoJSON.Position[]) => string)): number
-export default function length(value: GeoJSON.Geometry | Array<[number, number]>, projExpression?: string | ((coordinates: GeoJSON.Position[]) => string)): number {
+export function length(value: GeoJSON.Geometry, projExpression?: string | ((coordinates: GeoJSON.Position[]) => string)): number;
+export function length(value: GeoJSON.Geometry | Array<[number, number]>, projExpression?: string | ((coordinates: GeoJSON.Position[]) => string)): number {
     if (value instanceof Array) {
         return value.reduce((p, c, i) => {
             return i === value.length - 1 ?

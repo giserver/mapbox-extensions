@@ -4,7 +4,7 @@ import proj4 from 'proj4';
  * 计算环形闭合围成多边形的面积
  * @param value 
  */
-export default function area(value: Array<[number, number]>): number
+export function area(value: Array<[number, number]>): number;
 
 /**
  * 计算地理多边形面积
@@ -12,8 +12,8 @@ export default function area(value: Array<[number, number]>): number
  * @param projExpression  proj4 投影参数 {@link http://proj4js.org/}，也可以在 {@link https://epsg.io/} 中获取
  * @returns 
  */
-export default function area(value: GeoJSON.Polygon | GeoJSON.MultiPolygon, projExpression?: string | ((coordinates: GeoJSON.Position[]) => string)): number
-export default function area(value: GeoJSON.Polygon | GeoJSON.MultiPolygon | Array<[number, number]>, projExpression?: string | ((coordinates: GeoJSON.Position[]) => string)): number {
+export function area(value: GeoJSON.Polygon | GeoJSON.MultiPolygon, projExpression?: string | ((coordinates: GeoJSON.Position[]) => string)): number;
+export function area(value: GeoJSON.Polygon | GeoJSON.MultiPolygon | Array<[number, number]>, projExpression?: string | ((coordinates: GeoJSON.Position[]) => string)): number {
     if (value instanceof Array) {
         if (value.length < 3) return 0;
 

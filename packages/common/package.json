@@ -1,5 +1,5 @@
 {
-  "name": "@giserver/ctrl-doodle",
+  "name": "@giserver/common",
   "version": "1.0.0",
   "description": "",
   "files": [
@@ -14,10 +14,17 @@
       "require": "./dist/index.umd.js"
     }
   },
+  "scripts": {
+    "build": "vite build --config ../../configs/vite.config.ts & tsc"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "wheater": "^1.0.11"
+    "@turf/centroid": "^6.5.0",
+    "proj4": "^2.11.0"
+  },
+  "devDependencies": {
+    "@types/proj4": "^2.5.5"
   }
 }
