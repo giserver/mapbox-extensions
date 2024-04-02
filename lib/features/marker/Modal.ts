@@ -463,7 +463,7 @@ export function createFeaturePropertiesEditModal(
             options.onPropChange?.call(undefined);
         },
         onConfirm: () => {
-            if (!deep.equal(propsCopy, feature.properties))
+            if (options.mode === 'create' || !deep.equal(propsCopy, feature.properties))
                 options.onConfirm?.();
         }
     })

@@ -135,7 +135,6 @@ export default class MarkerManager {
                     },
                     onCancel: () => {
                         flush();
-
                         map.easeTo({
                             center: orgCenter
                         });
@@ -324,6 +323,11 @@ export default class MarkerManager {
         this.layerContainer.append(markerLayer.htmlElement);
     }
 
+    /**
+     * 增加marker
+     * @param feature 
+     * @param create 默认为 true
+     */
     addMarker(feature: MarkerFeatureType, create: boolean = true) {
         const layer = array.first(this.markerLayers, x => x.properties.id === feature.properties.layerId);
         if (!layer) throw Error(`layer id : ${feature.properties.layerId} not found`);
