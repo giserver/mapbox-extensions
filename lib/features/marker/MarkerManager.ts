@@ -353,7 +353,7 @@ export default class MarkerManager {
     }
 }
 
-abstract class AbstractLinkP<P>{
+abstract class AbstractLinkP<P> {
 
     /**
      *
@@ -591,6 +591,7 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
 
         suffix.append(
             this.createSuffixEdit(),
+            this.createSuffixAddPoint(),
             this.createSuffixImport(),
             this.createSuffixExport(),
             this.createSuffixDel());
@@ -678,6 +679,43 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
             });
         });
         return edit;
+    }
+
+    private createSuffixAddPoint() {
+        const el = dom.createHtmlElement('div', ["jas-ctrl-marker-suffix-item"]);
+        el.innerHTML = new SvgBuilder('add_point').resize(18, 18).create();
+        el.title = lang.addPoint;
+        el.addEventListener('click', () => {
+            createConfirmModal({
+                title: lang.addPoint,
+                content: dom.createHtmlElement('div', ["jas-ctrl-marker-add-point"], [
+                    dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
+                        onInit: e => {
+                            e.placeholder = lang.markerName
+                        }
+                    }),
+                    dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
+                        onInit: e => {
+                            e.type = 'number';
+                            e.placeholder = lang.lat;
+                        }
+                    }),
+                    dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
+                        onInit: e => {
+                            e.type = 'number';
+                            e.placeholder = lang.lng;
+                        }
+                    })
+                ], {
+                    onInit: e => {
+                    }
+                }),
+                onConfirm() {
+
+                },
+            })
+        });
+        return el;
     }
 
     private createSuffixDel() {

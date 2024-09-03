@@ -830,6 +830,18 @@
     margin-left: 5px;
 }
 
+.jas-ctrl-marker-add-point {
+    display: flex;
+    gap: 8px;
+}
+
+.jas-ctrl-marker-add-point-input {
+    width: 96px;
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    outline: none;
+}
 
 .jas-input.text,
 .jas-input.number,

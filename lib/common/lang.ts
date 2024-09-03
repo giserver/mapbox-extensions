@@ -55,7 +55,11 @@ interface ILanguageOptions {
     lon_0: string,
     x_0: string,
     y_0: string,
-    towgs84: string
+    towgs84: string,
+
+    addPoint: string,
+    lat: string,
+    lng: string
 }
 
 const zh: ILanguageOptions = {
@@ -113,7 +117,11 @@ const zh: ILanguageOptions = {
     lon_0: "中央子午线",
     x_0: "东向加常数",
     y_0: "北向加常数",
-    towgs84: "七参数"
+    towgs84: "七参数",
+
+    addPoint: '添加点',
+    lat: "维度",
+    lng: "精度"
 }
 
 const en: ILanguageOptions = {
@@ -171,7 +179,11 @@ const en: ILanguageOptions = {
     lon_0: "lon_0",
     x_0: "x_0",
     y_0: "x_0",
-    towgs84: "towgs84"
+    towgs84: "towgs84",
+
+    addPoint: "add point",
+    lat: "latitude",
+    lng: "longitude"
 }
 
 const lang = zh;

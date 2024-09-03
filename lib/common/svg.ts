@@ -217,6 +217,12 @@ const SvgTemplateInfoMapper = {
         template: `<svg width="{w}" height="{h}" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6413"><path d="M801.171 483.589H544V226.418c0-17.673-14.327-32-32-32s-32 14.327-32 32v257.171H222.83c-17.673 0-32 14.327-32 32s14.327 32 32 32H480v257.17c0 17.673 14.327 32 32 32s32-14.327 32-32v-257.17h257.171c17.673 0 32-14.327 32-32s-14.327-32-32-32z" fill="#515151" p-id="6414"></path></svg>`,
         width: 20,
         height: 20
+    },
+
+    add_point: {
+        template: `<svg width="{w}" height="{h}" viewBox="100 80 800 924" version="1.1" xmlns="http://www.w3.org/2000/svg"  ><path d="M511.936 176A264.32 264.32 0 0 0 248 439.936c0 140.48 236.608 390.016 246.656 400.64 4.48 4.736 10.88 7.424 17.408 7.424h0.512a23.232 23.232 0 0 0 17.536-8.256l81.92-93.76C720.96 612.672 776 509.76 776 440.064A264.32 264.32 0 0 0 512 176z m0 383.936a119.936 119.936 0 1 1 0-240 119.936 119.936 0 1 1 0 240z" fill="#707070" p-id="1661" data-darkreader-inline-fill="" style="--darkreader-inline-fill: #262a2b;"></path></svg>`,
+        width: 20,
+        height: 20
     }
 } as const
 
