@@ -2,7 +2,7 @@ import mapboxgl from "mapbox-gl";
 import centroid from '@turf/centroid';
 import bbox from '@turf/bbox';
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import { dom, array, creator, deep } from 'wheater';
+import { dom, array, creator, deep, date } from 'wheater';
 import { svg, language } from "../../common";
 import LayerGroup from "../LayerGroup";
 import { createConfirmModal, createExportModal, createFeaturePropertiesEditModal, createMarkerLayerEditModel } from "./Modal";
@@ -60,7 +60,7 @@ export default class MarkerManager {
     /**
      * 标记属性编辑缓存，为下一次创建标记做准备
      */
-    private lastFeaturePropertiesCache: MarkerFeatrueProperties;
+    public lastFeaturePropertiesCache: MarkerFeatrueProperties;
 
     /**
      *
@@ -688,21 +688,40 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
 
         const txt = dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
             onInit: e => {
-                e.placeholder = lang.markerName
+                e.placeholder = lang.markerName,
+                    e.maxLength = 20;
             }
         });
         const lat = dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
             onInit: e => {
                 e.type = 'number';
+                e.value = "0";
                 e.placeholder = lang.lat;
+                e.max = '90';
+                e.min = '-90';
+                e.addEventListener('input', () => {
+                    const v = parseFloat(e.value);
+                    if (v < -90) e.value = "-90";
+                    if (v > 90) e.value = "90";
+                });
             }
         });
         const lng = dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
             onInit: e => {
                 e.type = 'number';
+                e.value = "0";
                 e.placeholder = lang.lng;
+                e.max = "180";
+                e.min = "-180";
+                e.addEventListener('input', () => {
+                    const v = parseFloat(e.value);
+                    if (v < -180) e.value = "-180";
+                    if (v > 180) e.value = "180";
+                });
             }
         });
+
+        const that = this;
 
         el.addEventListener('click', () => {
             createConfirmModal({
@@ -712,8 +731,32 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
                     }
                 }),
                 onConfirm() {
-                    
+                    that.addMarker({
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [parseFloat(lng.value), parseFloat(lat.value)]
+                        },
+                        properties: {
+                            id: creator.uuid(),
+                            name: txt.value.trim(),
+                            layerId: that.properties.id,
+                            date: Date.now(),
+                            style: that.parent.lastFeaturePropertiesCache.style
+                        }
+                    });
                 },
+                validate() {
+                    const isValid = 
+                        lat.value.trim().length > 0 &&
+                        lng.value.trim().length > 0;
+
+                    if(!isValid){
+
+                    }
+
+                    return isValid
+                }
             })
         });
         return el;
@@ -904,6 +947,7 @@ class MarkerItem extends AbstractLinkP<MarkerLayer> {
                             this.parent.parent.addMarker(this.feature, false);
                         } else {
                             update();
+                            this.parent.parent.lastFeaturePropertiesCache = deep.clone(this.feature.properties);
                         }
                         this.map.easeTo({ center: orgCenter });
                     },

@@ -120,8 +120,8 @@ const zh: ILanguageOptions = {
     towgs84: "七参数",
 
     addPoint: '添加点',
-    lat: "维度",
-    lng: "精度"
+    lat: "纬度",
+    lng: "经度"
 }
 
 const en: ILanguageOptions = {
