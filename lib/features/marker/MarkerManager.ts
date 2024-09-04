@@ -685,33 +685,34 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
         const el = dom.createHtmlElement('div', ["jas-ctrl-marker-suffix-item"]);
         el.innerHTML = new SvgBuilder('add_point').resize(18, 18).create();
         el.title = lang.addPoint;
+
+        const txt = dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
+            onInit: e => {
+                e.placeholder = lang.markerName
+            }
+        });
+        const lat = dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
+            onInit: e => {
+                e.type = 'number';
+                e.placeholder = lang.lat;
+            }
+        });
+        const lng = dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
+            onInit: e => {
+                e.type = 'number';
+                e.placeholder = lang.lng;
+            }
+        });
+
         el.addEventListener('click', () => {
             createConfirmModal({
                 title: lang.addPoint,
-                content: dom.createHtmlElement('div', ["jas-ctrl-marker-add-point"], [
-                    dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
-                        onInit: e => {
-                            e.placeholder = lang.markerName
-                        }
-                    }),
-                    dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
-                        onInit: e => {
-                            e.type = 'number';
-                            e.placeholder = lang.lat;
-                        }
-                    }),
-                    dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
-                        onInit: e => {
-                            e.type = 'number';
-                            e.placeholder = lang.lng;
-                        }
-                    })
-                ], {
+                content: dom.createHtmlElement('div', ["jas-ctrl-marker-add-point"], [txt, lat, lng], {
                     onInit: e => {
                     }
                 }),
                 onConfirm() {
-
+                    
                 },
             })
         });

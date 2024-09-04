@@ -25,6 +25,7 @@ export interface ModalOptions {
 
 export interface ConfirmModalOptions extends ModalOptions {
     onConfirm?(): void,
+    validate?(): boolean,
     withCancel?: boolean
 }
 
@@ -82,6 +83,7 @@ export function createConfirmModal(options: ConfirmModalOptions) {
     cancleBtn.innerText = lang.cancel;
 
     confirmBtn.addEventListener('click', () => {
+        if(options.validate && !options.validate()) return;
         options.onConfirm?.call(undefined);
         remove();
     });
