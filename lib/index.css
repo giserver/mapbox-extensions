@@ -843,6 +843,14 @@
     outline: none;
 }
 
+.jas-ctrl-marker-add-point-input.error{
+    border-block-end-color: red;
+}
+
+.jas-ctrl-marker-add-point-input.error::placeholder{
+    color: red;
+}
+
 .jas-input.text,
 .jas-input.number,
 .jas-select {

@@ -686,56 +686,55 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
         el.innerHTML = new SvgBuilder('add_point').resize(18, 18).create();
         el.title = lang.addPoint;
 
-        const txt = dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
-            onInit: e => {
-                e.placeholder = lang.markerName,
-                    e.maxLength = 20;
-            }
-        });
-        const lat = dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
-            onInit: e => {
-                e.type = 'number';
-                e.value = "0";
-                e.placeholder = lang.lat;
-                e.max = '90';
-                e.min = '-90';
-                e.addEventListener('input', () => {
-                    const v = parseFloat(e.value);
-                    if (v < -90) e.value = "-90";
-                    if (v > 90) e.value = "90";
-                });
-            }
-        });
-        const lng = dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
-            onInit: e => {
-                e.type = 'number';
-                e.value = "0";
-                e.placeholder = lang.lng;
-                e.max = "180";
-                e.min = "-180";
-                e.addEventListener('input', () => {
-                    const v = parseFloat(e.value);
-                    if (v < -180) e.value = "-180";
-                    if (v > 180) e.value = "180";
-                });
-            }
-        });
-
         const that = this;
 
         el.addEventListener('click', () => {
+            const txt = dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
+                onInit: e => {
+                    e.placeholder = lang.markerName;
+                    e.maxLength = 20;
+                }
+            });
+            const lat = dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
+                onInit: e => {
+                    e.type = 'number';
+                    e.placeholder = lang.lat;
+                    e.max = '90';
+                    e.min = '-90';
+                    e.addEventListener('input', () => {
+                        const v = parseFloat(e.value);
+                        if (v < -90) e.value = "-90";
+                        if (v > 90) e.value = "90";
+                    });
+                }
+            });
+            const lng = dom.createHtmlElement('input', ["jas-ctrl-marker-add-point-input"], [], {
+                onInit: e => {
+                    e.type = 'number';
+                    e.placeholder = lang.lng;
+                    e.max = "180";
+                    e.min = "-180";
+                    e.addEventListener('input', () => {
+                        const v = parseFloat(e.value);
+                        if (v < -180) e.value = "-180";
+                        if (v > 180) e.value = "180";
+                    });
+                }
+            });
+
             createConfirmModal({
                 title: lang.addPoint,
-                content: dom.createHtmlElement('div', ["jas-ctrl-marker-add-point"], [txt, lat, lng], {
+                content: dom.createHtmlElement('div', ["jas-ctrl-marker-add-point"], [txt, lng, lat], {
                     onInit: e => {
                     }
                 }),
                 onConfirm() {
+                    const point: [number, number] = [parseFloat(lng.value), parseFloat(lat.value)];
                     that.addMarker({
                         type: 'Feature',
                         geometry: {
                             type: 'Point',
-                            coordinates: [parseFloat(lng.value), parseFloat(lat.value)]
+                            coordinates: point
                         },
                         properties: {
                             id: creator.uuid(),
@@ -745,17 +744,32 @@ class MarkerLayer extends AbstractLinkP<MarkerManager> {
                             style: that.parent.lastFeaturePropertiesCache.style
                         }
                     });
+
+                    that.map.flyTo({
+                        center: point,
+                        zoom: 18
+                    })
                 },
                 validate() {
-                    const isValid = 
-                        lat.value.trim().length > 0 &&
-                        lng.value.trim().length > 0;
+                    let isValid = true;
 
-                    if(!isValid){
-
+                    if (lat.value.trim().length === 0) {
+                        lat.classList.add('error');
+                        isValid = false;
+                    } else {
+                        lat.classList.remove('error');
+                        isValid = true;
                     }
 
-                    return isValid
+                    if (lng.value.trim().length === 0) {
+                        lng.classList.add('error');
+                        isValid = false;
+                    } else {
+                        lng.classList.remove('error');
+                        isValid = true;
+                    }
+
+                    return isValid;
                 }
             })
         });
